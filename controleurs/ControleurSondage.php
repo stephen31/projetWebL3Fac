@@ -321,7 +321,7 @@ class ControleurSondage extends Controleur
 				{
 					$this->erreur("Erreur lors de la suppression");
 				}
-				Header('Location: '.ABSOLUTE_ROOT.'/controleurs/ControleurSondage.php?action=afficherRetraitVotandSondage&donnee='.$id_s);
+				Header('Location: '.ABSOLUTE_ROOT.'/controleurs/ControleurSondage.php?action=afficherRetraitVotantSondage&donnee='.$id_s);
 
 			}
 			else
