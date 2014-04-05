@@ -1,0 +1,640 @@
+<?php
+
+require_once(ROOT . '/models/Model.php');
+
+class Sondage extends Model{
+
+    // attributs
+    private $sondage_id;
+    private $ut_id;
+    private $titre;
+    private $texte_desc;
+    private $sondage_droit;
+    private $date_fin;
+    private $type_methode;
+    private $visibilite;
+    private $groupe_id;
+    private $option1;
+    private $option2;
+    private $option3;
+    private $option4;
+    private $option5;
+    private $option6;
+    private $option7;
+
+
+    // constructeur
+
+    public function __construct()
+    {
+        switch(func_num_args())
+        {
+            case 0:
+            $this->constructeurVide();
+            break;
+            case 1:
+            $this->constructeurParametre(func_get_arg(0));
+            break;
+        }
+    }
+
+    public function constructeurVide()
+    {
+        $this->sondage_id = -1;
+        $this->ut_id =-1;
+        $this->titre='';
+        $this->texte_desc='';
+        $this->sondage_droit=0;
+        $this->date_fin='0000-00-00';
+        $this->type_methode=0;
+        $this->visibilite='';
+        $this->groupe_id=-1;
+        $this->option1='';
+        $this->option2='';
+        $this->option3='';
+        $this->option4='';
+        $this->option5='';
+        $this->option6='';
+        $this->option7='';
+    }
+
+
+    public function constructeurParametre($id_s)
+    {
+        $req = "SELECT * FROM sondage WHERE sondage_id=?";
+        $res = $this->executerRequete($req,array($id_s));
+        $result = $res->fetch(PDO::FETCH_ASSOC);;
+        if($res->rowCount()==1)
+        {
+            $this->sondage_id = $result['sondage_id'];
+            $this->ut_id =$result['ut_id'];
+            $this->titre=$result['titre'];
+            $this->texte_desc=$result['texte_desc'];
+            $this->sondage_droit=$result['sondage_droit'];
+            $this->date_fin=$result['date_fin'];
+            $this->type_methode=$result['type_methode'];
+            $this->visibilite=$result['visibilite'];
+            $this->groupe_id=$result['groupe_id'];
+        }
+        else
+        {
+            $this->sondage_id = -1;
+            $this->ut_id =-1;
+            $this->titre='';
+            $this->texte_desc='';
+            $this->sondage_droit=0;
+            $this->date_fin='0000-00-00';
+            $this->type_methode=0;
+            $this->visibilite='';
+            $this->groupe_id=-1;
+            $this->option1='';
+            $this->option2='';
+            $this->option3='';
+            $this->option4='';
+            $this->option5='';
+            $this->option6='';
+            $this->option7='';
+        }
+    }
+
+    // Getters et setters
+
+    public function getSondageId()
+    {
+        return $this->sondage_id;
+    }
+    public function getUtid()
+    {
+        return $this->ut_id;
+    }
+    public function getTitre()
+    {
+        return $this->titre;
+    }
+    public function getTexteDesc()
+    {
+        return $this->texte_desc;
+    }
+    public function getSondageDroit()
+    {
+        return $this->sondage_droit;
+    }
+    public function getDateFin()
+    {
+        return $this->date_fin;
+    }
+    public function getTypeMethode()
+    {
+        return $this->typeMethode;
+    }
+    public function getVisibilite()
+    {
+        return $this->visibilite;
+    }
+    public function getGroupeId()
+    {
+        return $this->groupe_id;
+    }
+    public function getOption1()
+    {
+        return $this->option1;
+    }
+    public function getOption2()
+    {
+        return $this->option2;
+    }
+    public function getOption3()
+    {
+        return $this->option3;
+    }
+    public function getOption4()
+    {
+        return $this->option4;
+    }
+    public function getOption5()
+    {
+        return $this->option1;
+    }
+    public function getOption6()
+    {
+        return $this->option6;
+    }
+    public function getOption7()
+    {
+        return $this->option7;
+    }
+
+
+
+
+    /*************************/
+
+
+    public function setSondageId($si)
+    {
+        $this->sondage_id=$si;
+    }
+    public function setUtId($ui)
+    {
+        $this->ut_id=$ui;
+    }
+
+    public function setTitre($t)
+    {
+        $this->titre=$t;
+    }
+    public function setTexteDesc($td)
+    {
+        $this->texte_desc=$td;
+    }
+    public function setSondageDroit($sd)
+    {
+        $this->sondage_droit=$sd;
+    }
+    public function seDateFin($df)
+    {
+        $this->date_fin=$df;
+    }
+    public function setTypeMethode($tp)
+    {
+        $this->typeMethode=$tp;
+    }
+    public function setVisibilite($vs)
+    {
+        $this->visibilite=$vs;
+    }
+    public function setOption1($op1)
+    {
+        $this->option1=$op1;
+    }
+    public function setOption2($op2)
+    {
+        $this->option2=$op2;
+    }
+    public function setOption3($op3)
+    {
+        $this->option3=$op3;
+    }
+    public function setOption4($op4)
+    {
+        $this->option4=$op4;
+    }
+    public function setOption5($op5)
+    {
+        $this->option5=$op5;
+    }
+    public function setOption6($op6)
+    {
+        $this->option6=$op6;
+
+    }
+    public function setOption7($op7)
+    {
+        $this->option7=$op7;
+    }
+
+
+
+
+
+
+    /*************************/
+
+
+    /* Formate les variables récupérées d'un formulaire et les stocke dans $this */ 
+    public function POSTToVar($array){
+        foreach ($array as $key => $value) 
+        {
+            //Suppression des espaces en début et en fin de chaîne
+            $trimedValue = trim($value);
+            //Conversion des tags HTML par leur entité HTML
+            $this->$key = htmlspecialchars($trimedValue);
+        }
+    }
+    /*
+    public function getAuteur($id_sondage){
+        $sql = 'select * as id'
+            . ' from sondage natural join utilisateur'
+            . ' where sondage_id=?';
+        $case=$this->executerRequete($sql,array($id_sondage));
+
+        //$case=current($case);
+        $case->fetch();
+        $this->auteur=$case['ut_nom'];
+
+    }
+    */
+    public function addSondage()
+    {
+        if(($this->groupe_id == -1))
+        {
+
+            $sql ='INSERT INTO sondage SET
+            ut_id=?,
+            titre=?,
+            texte_desc=?,
+            sondage_droit=?,
+            date_fin=?,
+            type_methode=?,
+            visibilite=?
+            groupe_id=NULL';
+
+            $res = $this->executerRequete($sql,array($this->ut_id,$this->titre,
+                $this->texte_desc,$this->sondage_droit,$this->date_fin,
+                $this->type_methode,$this->visibilite));
+            /*$resres = $res->fetchAll();
+            print_r ($resres);*/
+            if($res->rowCount() == 1)
+            {
+                //echo $this->getBdd()->lastInsertId();
+                return $this->getBdd()->lastInsertId();
+            }
+            else
+            {
+                return false;  
+            }
+
+        }
+        else
+        {
+            $sql ='INSERT INTO sondage SET
+            ut_id=?,
+            titre=?,
+            texte_desc=?,
+            sondage_droit=?,
+            date_fin=?,
+            type_methode=?,
+            visibilite=?,
+            groupe_id=?
+            ';
+
+            $res = $this->executerRequete($sql,array($this->ut_id,$this->titre,
+                $this->texte_desc,$this->sondage_droit,$this->date_fin,
+                $this->type_methode,$this->visibilite,$this->groupe_id));
+
+            if($res->rowCount() == 1)
+            {
+                //echo $this->getBdd()->lastInsertId();
+                return $this->getBdd()->lastInsertId();
+            }
+            else
+            {
+                return false;  
+            }
+        }
+    }
+
+    /* MISE A jour du sondage */
+
+    public function updateSondage()
+    {
+        if(($this->groupe_id == -1))
+        {
+            $sql = 'UPDATE sondage SET
+            ut_id=?,
+            titre=?,
+            texte_desc=?,
+            sondage_droit=?,
+            date_fin=?,
+            type_methode=?,
+            visibilite=?,
+            groupe_id=NULL
+            WHERE sondage_id = ?';
+
+            $res = $this->executerRequete($sql,array($this->ut_id,$this->titre,
+                $this->texte_desc,$this->sondage_droit,$this->date_fin,
+                $this->type_methode,$this->visibilite,$this->sondage_id));
+        //echo $this->groupe_id;
+
+            return ($res->rowCount() == 1);
+        }
+        else
+        {
+             $sql = 'UPDATE sondage SET
+            ut_id=?,
+            titre=?,
+            texte_desc=?,
+            sondage_droit=?,
+            date_fin=?,
+            type_methode=?,
+            visibilite=?,
+            groupe_id=?
+            WHERE sondage_id = ?';
+
+            $res = $this->executerRequete($sql,array($this->ut_id,$this->titre,
+                $this->texte_desc,$this->sondage_droit,$this->date_fin,
+                $this->type_methode,$this->visibilite,$this->groupe_id,$this->sondage_id));
+
+            return ($res->rowCount() == 1);
+        }
+    }
+
+
+    public function addOption($opt)
+    {
+        $sql ='INSERT INTO sondagax.option SET
+        sondage_id =?,
+        titre=?';
+
+        $res = $this->executerRequete($sql,array($this->sondage_id,$opt));
+        //echo $this->sondage_id,$opt;
+
+        if($res->rowCount()==1)
+        {
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    // ajoute un votant a la table votant
+    public function addVotant($idV)
+    {
+        $sql ='INSERT INTO votant SET
+        sondage_id =?,
+        ut_id=?';
+
+        $res = $this->executerRequete($sql,array($this->sondage_id,$idV));
+        //echo $this->sondage_id,$opt;
+
+        if($res->rowCount()==1)
+        {
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // retire un votant a la table votant
+    public function deleteVotant($idV)
+    {
+        $sql ='DELETE FROM votant WHERE
+        sondage_id =? and
+        ut_id=?';
+
+        $res = $this->executerRequete($sql,array($this->sondage_id,$idV));
+        //echo $this->sondage_id,$opt;
+        if($res->rowCount()==1)
+        {
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //check si deja dans la liste des personnes pouvant voter au sondage // retourne faux si present dans votant , true sinon
+    public function checkPseudoVotant($pseudo,$id_s)
+    {
+        //echo $this->getSondageId();
+        $sql="SELECT ut_id FROM utilisateur natural join votant WHERE ut_pseudo=? and sondage_id=?";
+        $tuple = $this->executerRequete($sql,array($pseudo,$id_s));
+
+        $result = $tuple->fetchAll();
+        if(count($result)>0)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    // recupere les infos d'un utilisateur participant a un sondage privé
+    public function getUserInfosSondagePrive($id_s)
+    {
+        $sql="SELECT ut_id,ut_pseudo,ut_mail,sondage_id FROM utilisateur natural join votant WHERE sondage_id=?";
+        $tuple = $this->executerRequete($sql,array($id_s));
+        return $tuple->fetchAll();
+
+    }
+
+
+    public function getGroupe($utId)
+    {
+        $sql='SELECT * from groupe
+        WHERE ut_id=?';
+
+        $res = $this->executerRequete($sql,array($utId));
+
+        return $res->fetchAll();
+    }
+
+    // verifie si une personne a deja participer au sondage ou non
+
+    public function checkDejaVoter($utId)
+    {
+        $sql='SELECT * FROM reponse
+        WHERE ut_id=?';
+
+        $res= $this->executerRequete($sql,array($utId));
+        if($res)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // fonction qui check si l'utilisateur est admin du sondage
+    public function checkSondageAdmin($idS,$utId)
+    {
+        $sql='SELECT * FROM sondage
+        WHERE sondage.ut_id=? and sondage.sondage_id=?';
+
+        $res = $this->executerRequete($sql,array($utId,$idS));
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    // fonction qui check si le sondage est privé
+
+    public function checkSondagePrivate($id_s)
+    {
+        
+        $sql='SELECT * FROM sondage
+        WHERE sondage.sondage_id=? and sondage_droit=2';
+
+        $res = $this->executerRequete($sql,array($id_s));
+
+        //print_r($res->fetchAll());
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+
+    // fonction qui recupere les options du sondage
+    public function getOptions($idS)
+    {
+        $sql='SELECT * FROM `option` WHERE sondage_id=?';
+
+        $res = $this->executerRequete($sql,array($idS));
+        return $res->fetchAll();
+    }
+
+    // fonctions qui recupere les infos d'un sondage
+    public function getInfosSondage($idS)
+    {
+        $sql='SELECT * FROM sondage
+        WHERE sondage_id =?';
+
+        $res = $this->executerRequete($sql,array($idS));
+        return $res->fetchAll();
+    }
+
+    // fonctions qui recupere les sondages au quel un utilisateur a deja voter
+    public function getSondagesRepondus($utId)
+    {
+        $sql='SELECT * FROM reponse natural join sondage natural join utilisateur
+        WHERE ut_id =?';
+
+        $res = $this->executerRequete($sql,array($utId));
+        return $res->fetchAll();
+    }
+
+
+
+        // methode qui renvoie les sondages public
+    public function getSondagesPublic()
+    {
+        $sql ='SELECT * FROM
+        sondage 
+        natural join utilisateur 
+        WHERE sondage_droit=0 ORDER BY sondage_id desc';
+
+
+        $sondage_pub=$this->executerRequete($sql,array());
+        return ($sondage_pub->fetchAll());
+    }
+
+    // methode qui renvoie les sondages auquel l'utilisateur peut participer ordonner par ordre d'insertion (dont la date de fin n'est pas depassée et oter de ce qu'il a crée lui même
+    //et ceux qu'il n'a pas repondu)
+    public function getSondagesUserConnect($id_ut)
+    {
+        $sql ='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
+        FROM sondage s natural join utilisateur u
+        WHERE s.date_fin >= NOW() AND s.ut_id<>? AND ((s.sondage_droit=0 OR s.sondage_droit=1 
+            OR EXISTS(SELECT * FROM votant v WHERE s.sondage_id=v.sondage_id AND v.ut_id=? ) 
+            OR EXISTS(SELECT * FROM groupe g WHERE s.groupe_id=g.groupe_id AND(g.ut_id=? OR EXISTS( SELECT * FROM inscrit i WHERE g.groupe_id=i.groupe_id AND i.ut_id=?))) ) 
+AND NOT EXISTS ( SELECT * FROM reponse r WHERE r.ut_id=? AND r.sondage_id=s.sondage_id))
+ORDER BY s.sondage_date_create desc';
+
+$sondage_pub=$this->executerRequete($sql,array($id_ut,$id_ut,$id_ut,$id_ut,$id_ut));
+return ($sondage_pub->fetchAll());
+}
+    // pour n'afficher que 5 sondage sur la page d'accueil dont la date de fin n'est pas depassée
+public function getSondagesUserConnectAccueuil($id_ut)
+{
+    $sql ='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
+    FROM sondage s natural join utilisateur u 
+    WHERE s.date_fin >= NOW() AND s.ut_id<>? AND ((s.sondage_droit=0 OR s.sondage_droit=1 
+        OR EXISTS(SELECT * FROM votant v WHERE s.sondage_id=v.sondage_id AND v.ut_id=? ) 
+        OR EXISTS(SELECT * FROM groupe g WHERE s.groupe_id=g.groupe_id AND(g.ut_id=? OR EXISTS( SELECT * FROM inscrit i WHERE g.groupe_id=i.groupe_id AND i.ut_id=?))) ) 
+AND NOT EXISTS ( SELECT * FROM reponse r WHERE r.ut_id=? AND r.sondage_id=s.sondage_id)) 
+ORDER BY s.sondage_date_create desc LIMIT 5';
+
+
+$sondage_pub=$this->executerRequete($sql,array($id_ut,$id_ut,$id_ut,$id_ut,$id_ut));
+return ($sondage_pub->fetchAll());
+} 
+    //methode qui renvoie les sondages dont la date de fin est depassée afin de connaitre le resultat (pas encore utilisée)
+public function getSondagesFini($id_ut)
+{
+    $sql ='SELECT DISTINCT  s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
+    FROM sondage s natural join utilisateur u
+    WHERE s.date_fin < NOW() AND ((s.ut_id=? OR s.sondage_droit=0 OR s.sondage_droit=1 
+        OR EXISTS(SELECT * FROM votant v WHERE s.sondage_id=v.sondage_id AND v.ut_id=? ) 
+        OR EXISTS(SELECT * FROM groupe g WHERE s.groupe_id=g.groupe_id AND(g.ut_id=? OR EXISTS( SELECT * FROM inscrit i WHERE g.groupe_id=i.groupe_id AND i.ut_id=?))) ) 
+AND NOT EXISTS ( SELECT * FROM reponse r WHERE r.ut_id=? AND r.sondage_id=s.sondage_id)) 
+ORDER BY s.sondage_id desc';
+
+
+$sondage_pub=$this->executerRequete($sql,array($id_ut,$id_ut,$id_ut,$id_ut,$id_ut));
+return ($sondage_pub->fetchAll());
+} 
+
+    //methode qui renvoie les sondages crees par un utilisateur
+public function getSondagesCres($id)
+{
+    $sql='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
+    FROM sondage s natural join utilisateur u
+    WHERE s.ut_id=?
+    ORDER BY s.sondage_date_create DESC';
+
+    $sondage_pub=$this->executerRequete($sql,array($id));
+    return ($sondage_pub->fetchAll());
+    
+}
+
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
