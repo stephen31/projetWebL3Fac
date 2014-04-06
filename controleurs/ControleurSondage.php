@@ -180,7 +180,7 @@ class ControleurSondage extends Controleur
 			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
 			//$isAccessible = 
 			$infosUser = $this->sondage->getUserInfosSondagePrive($id_s);
-			//print_r($infosUser);
+			print_r($sondageInfos);
 			if(1)
 			{
 				$this->vue = new VueConnecter("InfosSondage");

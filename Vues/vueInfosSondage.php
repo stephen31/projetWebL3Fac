@@ -35,6 +35,10 @@
 								<div class="control-group">
 										Type Mythode:
 										<?php
+										$sondage[0]['type_methode'];
+										$sondage[0]['type_methode'];
+										$sondage[0]['type_methode'];
+										$sondage[0]['type_methode'];
 											switch($sondage[0]['type_methode'])
 											{
 												case O:
