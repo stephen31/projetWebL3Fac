@@ -591,9 +591,8 @@ class Sondage extends Model
     /* Ajout des reponses */
     public function addReponse($id_s,$id_ut,$array)
     {
-		$boolean= true;
         $opts=$this->getOptions($id_s);
-        
+        $this->beginTransaction(); // demarrage d'une transaction
         foreach ($array as $key => $value)
         {
             $id_opt=0;
@@ -610,20 +609,21 @@ class Sondage extends Model
             option_id=?,
             rang=?';
             $res = $this->executerRequete($sql,array($id_s,$id_ut,$id_opt,$value));
-            if(count($res->fetchAll())==0)
+            if($res->rowcount()==0) // si aucune ligne affecter par la requete alors on rollback et on return faux
             {
-                $boolean= false;
+                $this->rollback();
+                return false;
             }
         }
-        return $boolean;
+        $this->commit();//on valide toute les insertions de reponse
+        return true;
 
     }
 
     public function addReponseAnonyme($id_s,$array)
     {
-		$boolean= true;
         $opts=$this->getOptions($id_s);
-        
+        $this->beginTransaction(); // demarrage d'une transaction
         foreach ($array as $key => $value)
         {
             $id_opt=0;
@@ -640,12 +640,14 @@ class Sondage extends Model
             option_id=?,
             rang=?';
             $res = $this->executerRequete($sql,array($id_s,$id_opt,$value));
-            if(count($res->fetchAll())==0)
+            if($res->rowcount()==0) // si aucune ligne affecter par la requete alors on rollback et on return faux
             {
-                $boolean= false;
+                $this->rollback();
+                return false;
             }
         }
-        return $boolean;
+        $this->commit(); // on valide toute les insertions de reponse
+        return true;
 
     }
 
