@@ -659,12 +659,10 @@ public function getSondagesCres($id)
 		foreach ($array as $key => $value)
 		{
 			$id_opt=0;
-			echo $value;
 			foreach($opts as $opt)
 			{
 				if($opt['titre']===$key)
 				{
-					echo "yea";
 					$id_opt=$opt['option_id'];
 				}
 			}
@@ -684,7 +682,6 @@ public function getSondagesCres($id)
 		foreach ($array as $key => $value)
 		{
 			$id_opt=0;
-			echo $value;
 			foreach($opts as $opt)
 			{
 				if($opt['titre']===$key)
