@@ -90,7 +90,7 @@ $(document).ready(function(){
 				{
 					//$("#table_connexion").replaceWith('<p>Vous venez d\'effectuer votre inscription sur Sondagax<br/>Un lien d\'activation de votre vient de vous etre envoyer</p>');
 					alert("Vous venez de voter");
-					window.location = self.location;
+					window.location = '../index.php';
 					//$("#bloc_global").replaceWith('<div id="bloc_contents"><p style="text-align:center;color:red"> Bravo Bravo Bravo </br> Vous venez de creer un sondage sur Sondagax</div>');
 				}
 			},
