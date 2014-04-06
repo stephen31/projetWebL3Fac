@@ -404,7 +404,11 @@ class ControleurSondage extends Controleur
 		{
 			if(count($res)>0)
 			{
-			if(!isset($_COOKIE[$id_s]) && !$this->sondage->checkSondageGroupe($id_s) && !$this->sondage->checkSondagePrivate($id_s))
+			if($this->sondage->checkSondageGroupe($id_s) || $this->sondage->checkSondagePrivate($id_s) || !$this->sondage->checkPublic($id_s))
+			{
+				$this->erreur("Vous ne pouvez pas participer");
+			}
+			else if(!isset($_COOKIE[$id_s]))
 			{
 				$sondageInstance = new Sondage($id_s);
 				$sondageInfos = $sondageInstance->getInfosSondage($id_s);

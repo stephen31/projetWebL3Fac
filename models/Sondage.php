@@ -464,6 +464,22 @@ class Sondage extends Model
             return false;
     }
 
+	//check si le sondage est plublic
+	public function checkPublic($id_s)
+	{
+		$sql='SELECT * FROM sondage
+        WHERE sondage.sondage_id=? and sondage_droit=0';
+		
+		$res = $this->executerRequete($sql,array($id_s));
+
+        //print_r($res->fetchAll());
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }
+        else
+            return false;
+	}
     // fonction qui check si le sondage est privé
 
     public function checkSondagePrivate($id_s)
@@ -514,10 +530,8 @@ class Sondage extends Model
         $res = $this->executerRequete($sql,array($utId));
         return $res->fetchAll();
     }
-
-
-
-    // methode qui renvoie les sondages public
+    
+	// methode qui renvoie les sondages public
     public function getSondagesPublic()
     {
         $sql ='SELECT * FROM
