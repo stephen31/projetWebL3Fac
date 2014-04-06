@@ -586,7 +586,7 @@ class Sondage extends Model{
         $sql ='SELECT * FROM
         sondage 
         natural join utilisateur 
-        WHERE sondage_droit=0 ORDER BY sondage_id desc';
+        WHERE sondage_droit=0 and groupe_id IS NULL ORDER BY sondage_id desc';
 
 
         $sondage_pub=$this->executerRequete($sql,array());

@@ -393,7 +393,7 @@ class ControleurSondage extends Controleur
 		}
 		else
 		{
-			if(!isset($_COOKIE[$id_s]))
+			if(!isset($_COOKIE[$id_s]) && !$this->sondage->checkSondageGroupe($id_s) && !$this->sondage->checkSondagePrivate($id_s))
 			{
 				$sondageInstance = new Sondage($id_s);
 				$sondageInfos = $sondageInstance->getInfosSondage($id_s);
@@ -405,7 +405,7 @@ class ControleurSondage extends Controleur
 			}
 			else 
 			{
-				$this->erreur("Vous avez deja voté");
+				$this->erreur("Vous n'avez pas le droit de participer");
 			}
 		}
 	}
