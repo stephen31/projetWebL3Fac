@@ -16,8 +16,17 @@ class Controleur{
 	}
 	public function erreur($msgErreur) 
 	{
-		$this->vue = new VueNonConnecter("Erreur");
-		$this->vue->generer(array("erreur"=>$msgErreur));
+		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) 
+		{
+			$this->vue = new VueConnecter("Erreur");
+			$this->vue->generer(array("erreur"=>$msgErreur));
+		}
+		else
+		{
+			$this->vue = new VueNonConnecter("Erreur");
+			$this->vue->generer(array("erreur"=>$msgErreur));
+		}
+
 	}
 }
 
