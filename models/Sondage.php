@@ -264,7 +264,7 @@ class Sondage extends Model{
     {
         if(($this->groupe_id == -1))
         {
-
+            
             $sql ='INSERT INTO sondage SET
             ut_id=?,
             titre=?,
