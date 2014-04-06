@@ -434,10 +434,21 @@ class ControleurSondage extends Controleur
 		{
 			if(!$this->sondage->checkDejaVoter($_SESSION['id'],$id_s))//tester qu'il n'a pas deja voté
 			{
-				$this->sondage->addReponse($id_s,$_SESSION['id'],$_POST);
-				$sondages=$this->sondage->getSondagesUserConnectAccueuil($_SESSION['id']);
-				$this->vue= new VueConnecter("Accueil");
-				$this->vue->generer(array("sondages"=>$sondages));
+				$res=$this->sondage->addReponse($id_s,$_SESSION['id'],$_POST);
+				if($res)
+				{
+					echo "UpdateSuccess";
+					exit();
+				}
+				else
+				{
+					echo "erreur interne lors de la validation du vote ";
+					exit();
+				}
+				//$sondages=$this->sondage->getSondagesUserConnectAccueuil($_SESSION['id']);
+				
+				/*$this->vue= new VueConnecter("Accueil");
+				$this->vue->generer(array("sondages"=>$sondages));*/
 			}
 			else //pas le droit d'acceder de voter
 			{
@@ -450,11 +461,22 @@ class ControleurSondage extends Controleur
 			if(!isset($_COOKIE[$id_s]))
 			{
 				//setcookie($id_s, 'M@teo21', time() + 365*24*3600);
-				setcookie($id_s, 'M@teo21', time() + 365*24*3600, null, null, false, true);
-				$this->sondage->addReponseAnonyme($id_s,$_POST);
-				$sondages=$this->sondage->getSondagesPublic();
+
+				$res=$this->sondage->addReponseAnonyme($id_s,$_POST);
+				if($res)
+				{
+					setcookie($id_s, 'voter', time() + 365*24*3600, null, null, false, true);
+					echo "UpdateSuccess";
+					exit();
+				}
+				else
+				{
+					echo "erreur interne lors de la validation du vote ";
+					exit();
+				}
+				/*$sondages=$this->sondage->getSondagesPublic();
 				$this->vue= new VueNonConnecter("Accueil");
-				$this->vue->generer(array("sondages"=>$sondages));
+				$this->vue->generer(array("sondages"=>$sondages));*/
 			}
 			else
 			{

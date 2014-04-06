@@ -686,7 +686,7 @@ public function getSondagesCres($id)
 			{
 				if($opt['titre']===$key)
 				{
-					echo "yea";
+					//echo "yea";
 					$id_opt=$opt['option_id'];
 				}
 			}
