@@ -13,7 +13,7 @@
 						<?php endforeach; ?>
 					</legend>
 					<div class="form registration">
-						<form id="voteSondage"  autocomplete="off" method="post" name="login" action="<?php echo ABSOLUTE_ROOT . "/controleurs/ControleurSondage.php?action=validerVoteSondage&donnee=".$s['sondage_id']; ?>">
+						<form id="voteSondage"  autocomplete="off" onsubmit="return false;" method="post" name="login" action="<?php echo ABSOLUTE_ROOT . "/controleurs/ControleurSondage.php?action=validerVoteSondage&donnee=".$s['sondage_id']; ?>">
 
 							<?php foreach($options as $option): ?>
 								<!--type sondage -->

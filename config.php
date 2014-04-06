@@ -9,7 +9,7 @@ define('NOM_SITE', 'Sondagax');
 define('DB_HOST', 'localhost'); //Hôte hébergeant le serveur
 define('DB_NAME', 'sondagax'); //Nom de la base de donnée
 define('DB_USERNAME', 'root'); //Nom d'utilisateur de connexion à la base
-define('DB_PASSWD', ''); //Password de connexion à la base
+define('DB_PASSWD', 'azertyui1'); //Password de connexion à la base
 define('DB_CHARSET', 'utf8'); //Méthode d'encodage de la base
 
 /* Variables de configuration de la boîte SMTP */
