@@ -445,7 +445,7 @@ class ControleurSondage extends Controleur
 	//validation du vote
 	public function validerVoteSondage($id_s)
 	{
-		
+		print_r($_POST);
 		if(isset($_SESSION['pseudo']) && isset($_SESSION['email']))
 		{
 			if(!$this->sondage->checkDejaVoter($_SESSION['id'],$id_s))//tester qu'il n'a pas deja voté

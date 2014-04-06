@@ -13,7 +13,7 @@
 						<?php endforeach; ?>
 					</legend>
 					<div class="form registration">
-						<form id="voteSondage"  autocomplete="off" onsubmit="return false;" method="post" name="login" action="<?php echo ABSOLUTE_ROOT . "/controleurs/ControleurSondage.php?action=validerVoteSondage&donnee=".$s['sondage_id']; ?>">
+						<form id="voteSondage"  autocomplete="off" method="post" name="login" action="<?php echo ABSOLUTE_ROOT . "/controleurs/ControleurSondage.php?action=validerVoteSondage&donnee=".$s['sondage_id']; ?>">
 
 							<?php foreach($options as $option): ?>
 								<!--type sondage -->
@@ -26,7 +26,7 @@
 
 									</label>
 									<div class="controls">
-										<SELECT id=<?php echo "".$option['titre']; ?> name=<?php echo "".$option['titre']; ?> required="required">
+										<SELECT class="recup" id=<?php echo "".$option['titre']; ?> name=<?php echo "".$option['titre']; ?> required="required">
 											<?php for($i=1;$i<=sizeof($options);$i++) 
 
 											echo "<OPTION VALUE=".$i.">".$i."</OPTION>";
@@ -67,12 +67,14 @@ $(document).ready(function(){
 	});
 
 
+
 	$("#voteSondage").submit(function()
 	{
 		var status = $(".checkSubmit");
 		$.ajax({
 			type:"post",
 			url:$(this).attr('action'),
+			data:$(this).serialize(),
 			beforeSend:function()
 			{
 				$("#registerbtn").attr('value', 'Traitement en Cours....').fadeIn(1000);
