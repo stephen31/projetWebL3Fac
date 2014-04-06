@@ -338,8 +338,12 @@ class ControleurSondage extends Controleur
 
 	public function participerSondage($id_s)
 	{
+		$res=$this->sondage->getInfosSondage($id_s);
+		
 		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
 		{
+			if(count($res)>0)
+			{
 			if($this->sondage->checkSondagePrivate($id_s))//si le sondage est prive
 			{
 				if($this->sondage->checkPseudoVotant($_SESSION['pseudo'],$id_s) && !$this->sondage->checkDejaVoter($_SESSION['id'],$id_s))//s'il a le droit de voter et qu'il n'a pas deja voter
@@ -389,10 +393,17 @@ class ControleurSondage extends Controleur
 			{
 				$this->erreur("Vous n'avez pas le droit de participer");
 			}
+			}
+			else 
+			{
+				$this->erreur("cette page n'existe pas");
+			}
 
 		}
 		else
 		{
+			if(count($res)>0)
+			{
 			if(!isset($_COOKIE[$id_s]) && !$this->sondage->checkSondageGroupe($id_s) && !$this->sondage->checkSondagePrivate($id_s))
 			{
 				$sondageInstance = new Sondage($id_s);
@@ -405,7 +416,12 @@ class ControleurSondage extends Controleur
 			}
 			else 
 			{
-				$this->erreur("Vous n'avez pas le droit de participer");
+				$this->erreur("Vous avez deja participer");
+			}
+			}
+			else 
+			{
+				$this->erreur("cettte page n'existe pas");
 			}
 		}
 	}
@@ -480,7 +496,7 @@ class ControleurSondage extends Controleur
 			}
 			else
 			{
-				$this->erreur("Vous ne pouvez acceder a cette page");
+				$this->erreur("Vous avez deja voté");
 			}
 		}
 	

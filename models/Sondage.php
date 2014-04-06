@@ -154,7 +154,7 @@ class Sondage extends Model
     }
     public function getOption5()
     {
-        return $this->option1;
+        return $this->option5;
     }
     public function getOption6()
     {
@@ -591,6 +591,7 @@ class Sondage extends Model
     /* Ajout des reponses */
     public function addReponse($id_s,$id_ut,$array)
     {
+		$boolean= true;
         $opts=$this->getOptions($id_s);
         
         foreach ($array as $key => $value)
@@ -611,15 +612,16 @@ class Sondage extends Model
             $res = $this->executerRequete($sql,array($id_s,$id_ut,$id_opt,$value));
             if(count($res->fetchAll())==0)
             {
-                return false;
+                $boolean= false;
             }
         }
-        return true;
+        return $boolean;
 
     }
 
     public function addReponseAnonyme($id_s,$array)
     {
+		$boolean= true;
         $opts=$this->getOptions($id_s);
         
         foreach ($array as $key => $value)
@@ -640,10 +642,10 @@ class Sondage extends Model
             $res = $this->executerRequete($sql,array($id_s,$id_opt,$value));
             if(count($res->fetchAll())==0)
             {
-                return false;
+                $boolean= false;
             }
         }
-        return true;
+        return $boolean;
 
     }
 
