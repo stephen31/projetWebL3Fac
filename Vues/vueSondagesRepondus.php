@@ -13,7 +13,7 @@
 				<?php echo $sondage['texte_desc']; ?>
 			</div>
 			<div id="blocBouton">
-				<a href="<?php echo ABSOLUTE_ROOT . "/controleurs/ControleurSondage.php?action=participerSondage&donnee={$sondage['sondage_id']}"; ?>">
+				<a>
 					<div class="btn_participer">
 						Voir<br/>Resultat du sondage
 					</div>

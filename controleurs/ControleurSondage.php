@@ -340,7 +340,42 @@ class ControleurSondage extends Controleur
 	{
 		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
 		{
-			if($this->sondage->checkDejaVoter($_SESSION['id']) && !isset($_COOKIE['sondage_id']))
+			if($this->sondage->checkSondagePrivate($id_s))//si le sondage est prive
+			{
+				if($this->sondage->checkPseudoVotant($_SESSION['pseudo'],$id_s) && !$this->sondage->checkDejaVoter($_SESSION['id'],$id_s))//s'il a le droit de voter et qu'il n'a pas deja voter
+				{
+					$sondageInstance = new Sondage($id_s);
+					$sondageInfos = $sondageInstance->getInfosSondage($id_s);
+
+					$options = $this->sondage->getOptions($id_s);
+					//print_r($options);
+					$this->vue = new VueConnecter("ParticiperSondage");
+					$this->vue->generer(array("options"=>$options,"sondage"=>$sondageInfos));
+				}
+				else
+				{
+					$this->erreur("Vous n'avez pas le droit de participer");
+				}
+			}
+			
+			else if($this->sondage->checkSondageGroupe($id_s))//si le sondage appartient a un groupe
+			{
+				if($this->sondage->checkAppartientGroupe($id_s,$_SESSION['id']) && !$this->sondage->checkDejaVoter($_SESSION['id'],$id_s))//tester qu'il est inscrit et qu'il n'a pas voter
+				{
+					$sondageInstance = new Sondage($id_s);
+					$sondageInfos = $sondageInstance->getInfosSondage($id_s);
+
+					$options = $this->sondage->getOptions($id_s);
+					//print_r($options);
+					$this->vue = new VueConnecter("ParticiperSondage");
+					$this->vue->generer(array("options"=>$options,"sondage"=>$sondageInfos));
+				}
+				else
+				{
+					$this->erreur("Vous n'avez pas le droit de participer");
+				}		
+			}
+			else if(!($this->sondage->checkDejaVoter($_SESSION['id'],$id_s)) && !isset($_COOKIE['sondage_id']))
 			{
 				$sondageInstance = new Sondage($id_s);
 				$sondageInfos = $sondageInstance->getInfosSondage($id_s);
@@ -350,18 +385,28 @@ class ControleurSondage extends Controleur
 				$this->vue = new VueConnecter("ParticiperSondage");
 				$this->vue->generer(array("options"=>$options,"sondage"=>$sondageInfos));
 			}
+			else //pas le droit d'acceder au vote
+			{
+				$this->erreur("Vous n'avez pas le droit de participer");
+			}
 
 		}
 		else
 		{
-			//$this->erreur("Vous ne pouvez acceder a cette page");
-			$sondageInstance = new Sondage($id_s);
-			$sondageInfos = $sondageInstance->getInfosSondage($id_s);
+			if(!isset($_COOKIE[$id_s]))
+			{
+				$sondageInstance = new Sondage($id_s);
+				$sondageInfos = $sondageInstance->getInfosSondage($id_s);
 
-			$options = $this->sondage->getOptions($id_s);
-			//print_r($options);
-			$this->vue = new VueNonConnecter("ParticiperSondage");
-			$this->vue->generer(array("options"=>$options,"sondage"=>$sondageInfos));
+				$options = $this->sondage->getOptions($id_s);
+				//print_r($options);
+				$this->vue = new VueNonConnecter("ParticiperSondage");
+				$this->vue->generer(array("options"=>$options,"sondage"=>$sondageInfos));
+			}
+			else 
+			{
+				$this->erreur("Vous avez deja voté");
+			}
 		}
 	}
 
@@ -381,7 +426,43 @@ class ControleurSondage extends Controleur
 		}
 	}
 
-
+	//validation du vote
+	public function validerVoteSondage($id_s)
+	{
+		
+		if(isset($_SESSION['pseudo']) && isset($_SESSION['email']))
+		{
+			if(!$this->sondage->checkDejaVoter($_SESSION['id'],$id_s))//tester qu'il n'a pas deja voté
+			{
+				$this->sondage->addReponse($id_s,$_SESSION['id'],$_POST);
+				$sondages=$this->sondage->getSondagesUserConnectAccueuil($_SESSION['id']);
+				$this->vue= new VueConnecter("Accueil");
+				$this->vue->generer(array("sondages"=>$sondages));
+			}
+			else //pas le droit d'acceder de voter
+			{
+				$this->erreur("Vous n'avez pas le droit de participer");
+			}
+			
+		}
+		else
+		{
+			if(!isset($_COOKIE[$id_s]))
+			{
+				//setcookie($id_s, 'M@teo21', time() + 365*24*3600);
+				setcookie($id_s, 'M@teo21', time() + 365*24*3600, null, null, false, true);
+				$this->sondage->addReponseAnonyme($id_s,$_POST);
+				$sondages=$this->sondage->getSondagesPublic();
+				$this->vue= new VueNonConnecter("Accueil");
+				$this->vue->generer(array("sondages"=>$sondages));
+			}
+			else
+			{
+				$this->erreur("Vous ne pouvez acceder a cette page");
+			}
+		}
+	
+	}
 
 	// Fonction de validation du formulaire et creation
 
