@@ -2,7 +2,8 @@
 
 require_once(ROOT . '/models/Model.php');
 
-class Sondage extends Model{
+class Sondage extends Model
+{
 
     // attributs
     private $sondage_id;
@@ -233,7 +234,7 @@ class Sondage extends Model{
         $this->option7=$op7;
     }
 
-	
+
     /*************************/
 
 
@@ -247,24 +248,11 @@ class Sondage extends Model{
             $this->$key = htmlspecialchars($trimedValue);
         }
     }
-    /*
-    public function getAuteur($id_sondage){
-        $sql = 'select * as id'
-            . ' from sondage natural join utilisateur'
-            . ' where sondage_id=?';
-        $case=$this->executerRequete($sql,array($id_sondage));
-
-        //$case=current($case);
-        $case->fetch();
-        $this->auteur=$case['ut_nom'];
-
-    }
-    */
     public function addSondage()
     {
         if(($this->groupe_id == -1))
         {
-            
+
             $sql ='INSERT INTO sondage SET
             ut_id=?,
             titre=?,
@@ -275,14 +263,9 @@ class Sondage extends Model{
             visibilite=?,
             groupe_id=NULL';
 
-            $res = $this->executerRequete($sql,array($this->ut_id,$this->titre,
-                $this->texte_desc,$this->sondage_droit,$this->date_fin,
-                $this->type_methode,$this->visibilite));
-            /*$resres = $res->fetchAll();
-            print_r ($resres);*/
+            $res = $this->executerRequete($sql,array($this->ut_id,$this->titre,$this->texte_desc,$this->sondage_droit,$this->date_fin,$this->type_methode,$this->visibilite));
             if($res->rowCount() == 1)
             {
-                //echo $this->getBdd()->lastInsertId();
                 return $this->getBdd()->lastInsertId();
             }
             else
@@ -304,13 +287,10 @@ class Sondage extends Model{
             groupe_id=?
             ';
 
-            $res = $this->executerRequete($sql,array($this->ut_id,$this->titre,
-                $this->texte_desc,$this->sondage_droit,$this->date_fin,
-                $this->type_methode,$this->visibilite,$this->groupe_id));
+            $res = $this->executerRequete($sql,array($this->ut_id,$this->titre,$this->texte_desc,$this->sondage_droit,$this->date_fin,$this->type_methode,$this->visibilite,$this->groupe_id));
 
             if($res->rowCount() == 1)
             {
-                //echo $this->getBdd()->lastInsertId();
                 return $this->getBdd()->lastInsertId();
             }
             else
@@ -322,48 +302,7 @@ class Sondage extends Model{
 
     /* MISE A jour du sondage */
 
-    public function updateSondage()
-    {
-        if(($this->groupe_id == -1))
-        {
-            $sql = 'UPDATE sondage SET
-            ut_id=?,
-            titre=?,
-            texte_desc=?,
-            sondage_droit=?,
-            date_fin=?,
-            type_methode=?,
-            visibilite=?,
-            groupe_id=NULL
-            WHERE sondage_id = ?';
 
-            $res = $this->executerRequete($sql,array($this->ut_id,$this->titre,
-                $this->texte_desc,$this->sondage_droit,$this->date_fin,
-                $this->type_methode,$this->visibilite,$this->sondage_id));
-        //echo $this->groupe_id;
-
-            return ($res->rowCount() == 1);
-        }
-        else
-        {
-             $sql = 'UPDATE sondage SET
-            ut_id=?,
-            titre=?,
-            texte_desc=?,
-            sondage_droit=?,
-            date_fin=?,
-            type_methode=?,
-            visibilite=?,
-            groupe_id=?
-            WHERE sondage_id = ?';
-
-            $res = $this->executerRequete($sql,array($this->ut_id,$this->titre,
-                $this->texte_desc,$this->sondage_droit,$this->date_fin,
-                $this->type_methode,$this->visibilite,$this->groupe_id,$this->sondage_id));
-
-            return ($res->rowCount() == 1);
-        }
-    }
 
 
     public function addOption($opt)
@@ -481,37 +420,35 @@ class Sondage extends Model{
         }
     }
 	//fonstion qui renvoie vrai si le sondage appartient à un groupe
-	public function checkSondageGroupe($id_s)
-	{
-		$sql='SELECT * FROM sondage
-        WHERE sondage.groupe_id IS NOT NULL and sondage.sondage_id=?';
-		
-		$res = $this->executerRequete($sql,array($id_s));
+    public function checkSondageGroupe($id_s)
+    {
+      $sql='SELECT * FROM sondage
+      WHERE sondage.groupe_id IS NOT NULL and sondage.sondage_id=?';
 
-        //print_r($res->fetchAll());
-        if(count($res->fetchAll())>0)
-        {
-            return true;
-        }
-        else
-            return false;
-	}
+      $res = $this->executerRequete($sql,array($id_s));
+      if(count($res->fetchAll())>0)
+      {
+        return true;
+      }
+      else
+        return false;
+    }
 	//teste si le mec appartient au groupe
-	public function checkAppartientGroupe($id_s,$id_u)
-	{
-		$sql='SELECT * FROM sondage s,groupe g,inscrit i 
-		WHERE s.groupe_id=g.groupe_id and g.groupe_id=i.groupe_id and s.sondage_id=? and i.ut_id=?';
-		
-		$res = $this->executerRequete($sql,array($id_s,$id_u));
+    public function checkAppartientGroupe($id_s,$id_u)
+    {
+      $sql='SELECT * FROM sondage s,groupe g,inscrit i 
+      WHERE s.groupe_id=g.groupe_id and g.groupe_id=i.groupe_id and s.sondage_id=? and i.ut_id=?';
 
-        //print_r($res->fetchAll());
-        if(count($res->fetchAll())>0)
-        {
-            return true;
-        }
-        else
-            return false;
-	}
+      $res = $this->executerRequete($sql,array($id_s,$id_u));
+
+      //print_r($res->fetchAll());
+      if(count($res->fetchAll())>0)
+      {
+        return true;
+    }
+    else
+        return false;
+    }
     // fonction qui check si l'utilisateur est admin du sondage
     public function checkSondageAdmin($idS,$utId)
     {
@@ -522,7 +459,7 @@ class Sondage extends Model{
         if(count($res->fetchAll())>0)
         {
             return true;
-        }
+        }       
         else
             return false;
     }
@@ -531,7 +468,7 @@ class Sondage extends Model{
 
     public function checkSondagePrivate($id_s)
     {
-        
+
         $sql='SELECT * FROM sondage
         WHERE sondage.sondage_id=? and sondage_droit=2';
 
@@ -556,7 +493,7 @@ class Sondage extends Model{
         return $res->fetchAll();
     }
 
-	
+
     // fonctions qui recupere les infos d'un sondage
     public function getInfosSondage($idS)
     {
@@ -571,7 +508,7 @@ class Sondage extends Model{
     public function getSondagesRepondus($utId)
     {
         $sql='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
-		FROM reponse r,sondage s,utilisateur u
+        FROM reponse r,sondage s,utilisateur u
         WHERE s.sondage_id=r.sondage_id and u.ut_id=r.ut_id and u.ut_id =?';
 
         $res = $this->executerRequete($sql,array($utId));
@@ -580,7 +517,7 @@ class Sondage extends Model{
 
 
 
-        // methode qui renvoie les sondages public
+    // methode qui renvoie les sondages public
     public function getSondagesPublic()
     {
         $sql ='SELECT * FROM
@@ -602,158 +539,168 @@ class Sondage extends Model{
         WHERE s.date_fin >= NOW() AND s.ut_id<>? AND ((s.sondage_droit=0 OR s.sondage_droit=1 
             OR EXISTS(SELECT * FROM votant v WHERE s.sondage_id=v.sondage_id AND v.ut_id=? ) 
             OR EXISTS(SELECT * FROM groupe g WHERE s.groupe_id=g.groupe_id AND(g.ut_id=? OR EXISTS( SELECT * FROM inscrit i WHERE g.groupe_id=i.groupe_id AND i.ut_id=?))) ) 
-AND NOT EXISTS ( SELECT * FROM reponse r WHERE r.ut_id=? AND r.sondage_id=s.sondage_id))
-ORDER BY s.sondage_date_create desc';
+        AND NOT EXISTS ( SELECT * FROM reponse r WHERE r.ut_id=? AND r.sondage_id=s.sondage_id))
+        ORDER BY s.sondage_date_create desc';
 
-$sondage_pub=$this->executerRequete($sql,array($id_ut,$id_ut,$id_ut,$id_ut,$id_ut));
-return ($sondage_pub->fetchAll());
-}
+        $sondage_pub=$this->executerRequete($sql,array($id_ut,$id_ut,$id_ut,$id_ut,$id_ut));
+        return ($sondage_pub->fetchAll());
+    }
     // pour n'afficher que 5 sondage sur la page d'accueil dont la date de fin n'est pas depassée
-public function getSondagesUserConnectAccueuil($id_ut)
-{
-    $sql ='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
-    FROM sondage s natural join utilisateur u 
-    WHERE s.date_fin >= NOW() AND s.ut_id<>? AND ((s.sondage_droit=0 OR s.sondage_droit=1 
-        OR EXISTS(SELECT * FROM votant v WHERE s.sondage_id=v.sondage_id AND v.ut_id=? ) 
-        OR EXISTS(SELECT * FROM groupe g WHERE s.groupe_id=g.groupe_id AND(g.ut_id=? OR EXISTS( SELECT * FROM inscrit i WHERE g.groupe_id=i.groupe_id AND i.ut_id=?))) ) 
-AND NOT EXISTS ( SELECT * FROM reponse r WHERE r.ut_id=? AND r.sondage_id=s.sondage_id)) 
-ORDER BY s.sondage_date_create desc LIMIT 5';
+    public function getSondagesUserConnectAccueuil($id_ut)
+    {
+        $sql ='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
+        FROM sondage s natural join utilisateur u 
+        WHERE s.date_fin >= NOW() AND s.ut_id<>? AND ((s.sondage_droit=0 OR s.sondage_droit=1 
+            OR EXISTS(SELECT * FROM votant v WHERE s.sondage_id=v.sondage_id AND v.ut_id=? ) 
+            OR EXISTS(SELECT * FROM groupe g WHERE s.groupe_id=g.groupe_id AND(g.ut_id=? OR EXISTS( SELECT * FROM inscrit i WHERE g.groupe_id=i.groupe_id AND i.ut_id=?))) ) 
+        AND NOT EXISTS ( SELECT * FROM reponse r WHERE r.ut_id=? AND r.sondage_id=s.sondage_id)) 
+        ORDER BY s.sondage_date_create desc LIMIT 5';
 
 
-$sondage_pub=$this->executerRequete($sql,array($id_ut,$id_ut,$id_ut,$id_ut,$id_ut));
-return ($sondage_pub->fetchAll());
-} 
+        $sondage_pub=$this->executerRequete($sql,array($id_ut,$id_ut,$id_ut,$id_ut,$id_ut));
+        return ($sondage_pub->fetchAll());
+    } 
     //methode qui renvoie les sondages dont la date de fin est depassée afin de connaitre le resultat (pas encore utilisée)
-public function getSondagesFini($id_ut)
-{
-    $sql ='SELECT DISTINCT  s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
-    FROM sondage s natural join utilisateur u
-    WHERE s.date_fin < NOW() AND ((s.ut_id=? OR s.sondage_droit=0 OR s.sondage_droit=1 
-        OR EXISTS(SELECT * FROM votant v WHERE s.sondage_id=v.sondage_id AND v.ut_id=? ) 
-        OR EXISTS(SELECT * FROM groupe g WHERE s.groupe_id=g.groupe_id AND(g.ut_id=? OR EXISTS( SELECT * FROM inscrit i WHERE g.groupe_id=i.groupe_id AND i.ut_id=?))) ) 
-AND NOT EXISTS ( SELECT * FROM reponse r WHERE r.ut_id=? AND r.sondage_id=s.sondage_id)) 
-ORDER BY s.sondage_id desc';
+    public function getSondagesFini($id_ut)
+    {
+        $sql ='SELECT DISTINCT  s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
+        FROM sondage s natural join utilisateur u
+        WHERE s.date_fin < NOW() AND ((s.ut_id=? OR s.sondage_droit=0 OR s.sondage_droit=1 
+            OR EXISTS(SELECT * FROM votant v WHERE s.sondage_id=v.sondage_id AND v.ut_id=? ) 
+            OR EXISTS(SELECT * FROM groupe g WHERE s.groupe_id=g.groupe_id AND(g.ut_id=? OR EXISTS( SELECT * FROM inscrit i WHERE g.groupe_id=i.groupe_id AND i.ut_id=?))) ) 
+        AND NOT EXISTS ( SELECT * FROM reponse r WHERE r.ut_id=? AND r.sondage_id=s.sondage_id)) 
+        ORDER BY s.sondage_id desc';
 
 
-$sondage_pub=$this->executerRequete($sql,array($id_ut,$id_ut,$id_ut,$id_ut,$id_ut));
-return ($sondage_pub->fetchAll());
-} 
+        $sondage_pub=$this->executerRequete($sql,array($id_ut,$id_ut,$id_ut,$id_ut,$id_ut));
+        return ($sondage_pub->fetchAll());
+    } 
 
     //methode qui renvoie les sondages crees par un utilisateur
-public function getSondagesCres($id)
-{
-    $sql='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
-    FROM sondage s natural join utilisateur u
-    WHERE s.ut_id=?
-    ORDER BY s.sondage_date_create DESC';
+    public function getSondagesCres($id)
+    {
+        $sql='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
+        FROM sondage s natural join utilisateur u
+        WHERE s.ut_id=?
+        ORDER BY s.sondage_date_create DESC';
 
-    $sondage_pub=$this->executerRequete($sql,array($id));
-    return ($sondage_pub->fetchAll());
-    
-}
-/* Ajout des reponses */
-	public function addReponse($id_s,$id_ut,$array)
-	{
-		$opts=$this->getOptions($id_s);
-		
-		foreach ($array as $key => $value)
-		{
-			$id_opt=0;
-			foreach($opts as $opt)
-			{
-				if($opt['titre']===$key)
-				{
-					$id_opt=$opt['option_id'];
-				}
-			}
-			$sql ='INSERT INTO reponse SET
-			sondage_id =?,
-			ut_id=?,
-			option_id=?,
-			rang=?';
-			$res = $this->executerRequete($sql,array($id_s,$id_ut,$id_opt,$value));
-		}
+        $sondage_pub=$this->executerRequete($sql,array($id));
+        return ($sondage_pub->fetchAll());
 
-	}
-	public function addReponseAnonyme($id_s,$array)
-	{
-		$opts=$this->getOptions($id_s);
-		
-		foreach ($array as $key => $value)
-		{
-			$id_opt=0;
-			foreach($opts as $opt)
-			{
-				if($opt['titre']===$key)
-				{
-					//echo "yea";
-					$id_opt=$opt['option_id'];
-				}
-			}
-			$sql ='INSERT INTO reponseanonyme SET
-			sondage_id =?,
-			option_id=?,
-			rang=?';
-			$res = $this->executerRequete($sql,array($id_s,$id_opt,$value));
-		}
+    }
+    /* Ajout des reponses */
+    public function addReponse($id_s,$id_ut,$array)
+    {
+        $opts=$this->getOptions($id_s);
+        
+        foreach ($array as $key => $value)
+        {
+            $id_opt=0;
+            foreach($opts as $opt)
+            {
+                if($opt['titre']===$key)
+                {
+                    $id_opt=$opt['option_id'];
+                }
+            }
+            $sql ='INSERT INTO reponse SET
+            sondage_id =?,
+            ut_id=?,
+            option_id=?,
+            rang=?';
+            $res = $this->executerRequete($sql,array($id_s,$id_ut,$id_opt,$value));
+            if(count($res->fetchAll())==0)
+            {
+                return false;
+            }
+        }
+        return true;
 
-	}
-	
-public function borda($id_s)
-{
-	$sond=new Sondage();
-	$sond->constructeurParametre($id_s);
-	$opts=$this->getOptions($id_s);
-	$tab=array(array());;
-	$k=1;
-	$id;
-	foreach($opts as $opt)
-	{
-		$mafonction="setOption".$k;
-		$sond->$mafonction($opt['titre']);
-		$k++;
-	}
-	for($i=0 ; $i<sizeof($opts) ; $i++)
-	{
-		$tab[i][sizeof(opts)]=0;
-		for($j=0 ; $j<=sizeof($opts) ; $j++)
-		{
-			$k=$i+1;
-			$mafonction="getOption".$k;
-			foreach($opts as $opt)
-			{
-				if($opt['titre']===$sond->mafonction())
-				{
-					$id=$opt['option_id'];
-				}
-			}			
-			$sql1="SELECT COUNT(*) as nb FROM reponse WHERE rang=".($j+1)."and".$id."=option_id";
-			$res1=$this->executerRequete($sql1,array());
-			$resul1=$res1->fetch();
-			$resultat1=$resul1['nb'];
-			
-			$sql2="SELECT COUNT(*) as nb FROM reponseanonyme WHERE rang=".($j+1)."and".$id."=option_id";
-			$res2=$this->executerRequete($sql2,array());
-			$resul2=$res2->fetch();
-			$resultat2=$resul2['nb'];
-			
-			$resultat=$resultat1+$resultat2;	
+    }
 
-			$tab[$i][$j]=$resultat;
-		}
-	}
-	for($i=0 ; $i<sizeof($opts) ; $i++)
-	{
-		$k=sizeof($opts);
-		for($j=0 ; $j<=sizeof($opts) ; $j++)
-		{
-			$tab[i][sizeof(opts)]+=$tab[i][j] * $k;
-			$k--;
-		}
-	}
-	return $tab;
-}
+    public function addReponseAnonyme($id_s,$array)
+    {
+        $opts=$this->getOptions($id_s);
+        
+        foreach ($array as $key => $value)
+        {
+            $id_opt=0;
+            foreach($opts as $opt)
+            {
+                if($opt['titre']===$key)
+                {
+                    //echo "yea";
+                    $id_opt=$opt['option_id'];
+                }
+            }
+            $sql ='INSERT INTO reponseanonyme SET
+            sondage_id =?,
+            option_id=?,
+            rang=?';
+            $res = $this->executerRequete($sql,array($id_s,$id_opt,$value));
+            if(count($res->fetchAll())==0)
+            {
+                return false;
+            }
+        }
+        return true;
 
+    }
+
+    public function borda($id_s)
+    {
+        $sond=new Sondage();
+        $sond->constructeurParametre($id_s);
+        $opts=$this->getOptions($id_s);
+        $tab=array(array());;
+        $k=1;
+        $id;
+        foreach($opts as $opt)
+        {
+            $mafonction="setOption".$k;
+            $sond->$mafonction($opt['titre']);
+            $k++;
+        }
+        for($i=0 ; $i<sizeof($opts) ; $i++)
+        {
+          $tab[i][sizeof(opts)]=0;
+          for($j=0 ; $j<=sizeof($opts) ; $j++)
+          {
+            $k=$i+1;
+            $mafonction="getOption".$k;
+            foreach($opts as $opt)
+            {
+                if($opt['titre']===$sond->mafonction())
+                {
+                    $id=$opt['option_id'];
+                }
+            }           
+            $sql1="SELECT COUNT(*) as nb FROM reponse WHERE rang=".($j+1)."and".$id."=option_id";
+            $res1=$this->executerRequete($sql1,array());
+            $resul1=$res1->fetch();
+            $resultat1=$resul1['nb'];
+            
+            $sql2="SELECT COUNT(*) as nb FROM reponseanonyme WHERE rang=".($j+1)."and".$id."=option_id";
+            $res2=$this->executerRequete($sql2,array());
+            $resul2=$res2->fetch();
+            $resultat2=$resul2['nb'];
+            
+            $resultat=$resultat1+$resultat2;    
+
+            $tab[$i][$j]=$resultat;
+        }
+    }
+    for($i=0 ; $i<sizeof($opts) ; $i++)
+    {
+        $k=sizeof($opts);
+        for($j=0 ; $j<=sizeof($opts) ; $j++)
+        {
+            $tab[i][sizeof(opts)]+=$tab[i][j] * $k;
+            $k--;
+        }
+    }
+    return $tab;
+    }
 
 } 
 
