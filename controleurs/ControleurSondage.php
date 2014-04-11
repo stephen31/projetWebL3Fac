@@ -666,7 +666,6 @@ class ControleurSondage extends Controleur
 			if(!$this->sondage->checkDejaVoter($_SESSION['id'],$id_s))//tester qu'il n'a pas deja voté
 			{
 				$res=$this->sondage->addReponse($id_s,$_SESSION['id'],$_POST);
-				echo $res;
 				if($res)
 				{
 					echo "UpdateSuccess";
