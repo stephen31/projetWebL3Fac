@@ -20,6 +20,21 @@
 					echo("<div class='private_sondage'>
 					</div>");
 				}
+				if($sondage['sondage_droit']==0)
+				{
+					echo("<div class='public_sondage'>
+					</div>");
+				}
+				if($sondage['sondage_droit']==1)
+				{
+					echo("<div class='publicInscrit_sondage'>
+					</div>");
+				}
+				if($sondage['sondage_droit']==3)
+				{
+					echo("<div class='groupe_sondage'>
+					</div>");
+				}
 			?>
 			<div id="blocBouton">
 				<a href="<?php echo ABSOLUTE_ROOT . "/controleurs/ControleurSondage.php?action=afficherModifSondage&donnee={$sondage['sondage_id']}"; ?>">
