@@ -35,23 +35,22 @@
 								<div class="control-group">
 										Type Mythode:
 										<?php
-										$sondage[0]['type_methode'];
-										$sondage[0]['type_methode'];
-										$sondage[0]['type_methode'];
-										$sondage[0]['type_methode'];
-											switch($sondage[0]['type_methode'])
+	
+											if($sondage[0]['type_methode'] == 0)
 											{
-												case O:
-													echo " Borda";
-													break;
-												case 1:
-													echo " Condorcet";
-													break;
-												case 2:
-													echo " Vote Alternatif";
-													break;
-												default:
-													echo "sait pas";
+												echo " Borda";
+											}
+											else if($sondage[0]['type_methode'] == 1)
+											{
+												echo " Condorcet";
+											}
+											else if($sondage[0]['type_methode'] == 2)
+											{
+												echo " Vote Alternatif";
+											}
+											else
+											{
+												echo "sait pas";
 											}
 										?>
 								</div>

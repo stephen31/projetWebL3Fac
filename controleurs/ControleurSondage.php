@@ -46,6 +46,7 @@ class ControleurSondage extends Controleur
 		{
 			$id=$_SESSION['id'];
 			$sondages=$this->sondage->getSondagesCres($id);
+			//print_r($sondages);
 			$this->vue = new VueConnecter("SondagesCres");
 			$this->vue->generer(array("sondages"=>$sondages));
 		}
@@ -83,10 +84,41 @@ class ControleurSondage extends Controleur
 			$id=$_SESSION['id'];
 
 			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
-			if($admin == true)
+			$moderateur = $this->sondage->checkIsModerateur($id); // moderateur ?
+			if($admin == true || $moderateur == true)
 			{
 				$this->vue = new VueConnecter("ModifSondage");
 				$this->vue->generer(array("sondage"=>$sondageInfos,"groupes"=>$groupes));
+			}
+			else
+			{
+				$this->erreur("Vous ne pouvez acceder a cette page");
+			}
+
+		}
+		else
+		{	
+			$this->erreur("Vous ne pouvez acceder a cette page");
+		}
+	}
+
+	public function afficherAjoutModerateurSondage($id_s)
+	{
+		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
+		{
+			//$sondageInstance = new Sondage($id_s);
+			//$this->sondage=new Sondage($id_s);
+			$this->sondage->setSondageId($id_s);
+			$sondageInfos = $this->sondage->getInfosSondage($id_s); // on recupere les infos du sondage
+			//$groupes=$this->sondage->getGroupe($_SESSION['id']); // on recupere les groupes crees par lutilisateur
+			$id=$_SESSION['id'];
+
+			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
+			//$noModerator = $this->sondage->checkHaveModerateur($id_s); // on check s'il le sondage a deja un moderateur
+			if($admin == true)
+			{
+				$this->vue = new VueConnecter("AjoutModerateur");
+				$this->vue->generer(array("sondage"=>$sondageInfos));
 			}
 			else
 			{
@@ -113,7 +145,8 @@ class ControleurSondage extends Controleur
 
 			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
 			$isPrivate = $this->sondage->checkSondagePrivate($id_s);
-			if($admin == true && $isPrivate == true)
+			$moderateur = $this->sondage->checkIsModerateur($id);
+			if(($admin == true && $isPrivate == true) && ($moderateur == true && $isPrivate == true)) 
 			{
 				$this->vue = new VueConnecter("AjoutVotant");
 				$this->vue->generer(array("sondage"=>$sondageInfos));
@@ -130,7 +163,7 @@ class ControleurSondage extends Controleur
 		}
 	}
 
-
+	// methdoe de retrait de votant
 	public function afficherRetraitVotantSondage($id_s)
 	{
 		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
@@ -146,10 +179,45 @@ class ControleurSondage extends Controleur
 			$isPrivate = $this->sondage->checkSondagePrivate($id_s);
 			$infosUser = $this->sondage->getUserInfosSondagePrive($id_s);
 			//print_r($infosUser);
-			if($admin == true && $isPrivate == true)
+			$moderateur = $this->sondage->checkIsModerateur($id);
+			if(($admin == true && $isPrivate == true) && ($moderateur == true && $isPrivate == true)) 
 			{
 				$this->vue = new VueConnecter("RetraitVotant");
 				$this->vue->generer(array("sondage"=>$sondageInfos,"infosUser"=>$infosUser));
+			}
+			else
+			{
+				$this->erreur("Vous ne pouvez acceder a cette page");
+			}
+
+		}
+		else
+		{	
+			$this->erreur("Vous ne pouvez acceder a cette page");
+		}
+	}
+
+
+	// methdoe de retrait de Moderateur
+	public function afficherRetraitModerateur($id_s)
+	{
+		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
+		{
+			//$sondageInstance = new Sondage($id_s);
+			//$this->sondage=new Sondage($id_s);
+			$this->sondage->setSondageId($id_s);
+			$sondageInfos = $this->sondage->getInfosSondage($id_s); // on recupere les infos du sondage
+			//$groupes=$this->sondage->getGroupe($_SESSION['id']); // on recupere les groupes crees par lutilisateur
+			$id=$_SESSION['id'];
+
+			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
+			//$isPrivate = $this->sondage->checkSondagePrivate($id_s);
+			$infosModerateurs = $this->sondage->getUserInfosModerateurSondage($id_s);
+			//print_r($infosModerateurs);
+			if($admin == true)
+			{
+				$this->vue = new VueConnecter("RetraitModerateur");
+				$this->vue->generer(array("sondage"=>$sondageInfos,"infosUser"=>$infosModerateurs ));
 			}
 			else
 			{
@@ -176,12 +244,11 @@ class ControleurSondage extends Controleur
 			$sondageInfos = $this->sondage->getInfosSondage($id_s); // on recupere les infos du sondage
 			//$groupes=$this->sondage->getGroupe($_SESSION['id']); // on recupere les groupes crees par lutilisateur
 			$id=$_SESSION['id'];
-
 			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
 			//$isAccessible = 
 			$infosUser = $this->sondage->getUserInfosSondagePrive($id_s);
 			print_r($sondageInfos);
-			if(1)
+			if($admin==true)
 			{
 				$this->vue = new VueConnecter("InfosSondage");
 				$this->vue->generer(array("sondage"=>$sondageInfos,"infosUser"=>$infosUser));
@@ -208,6 +275,7 @@ class ControleurSondage extends Controleur
 		{
 			$user = new Utilisateur();
 			$user->POSTToVar($_POST);// on echappe le code html des possible donnees recues et on initialise les attributs de l'instance avec les donnees!!
+			//print_r($user->getPseudo());
 			if($user->is_dispo_pseudo($user->getPseudo()) == false) // si le pseudo est dispo 
 			{
 				if($this->sondage->checkPseudoVotant($user->getPseudo(),$id_s)==true)
@@ -236,6 +304,113 @@ class ControleurSondage extends Controleur
 
 	}
 
+	//fonction qui verifie si un pseudo peut etre ajouter a un sondage prive
+	public function verifPseudoModerateur($id_s)
+	{
+		if(isset($_SESSION['id']) && isset($_SESSION['email']) )
+		{
+			$user = new Utilisateur();
+			$user->POSTToVar($_POST);// on echappe le code html des possible donnees recues et on initialise les attributs de l'instance avec les donnees!!
+			$this->sondage->setSondageId($id_s);
+			if($user->is_dispo_pseudo($user->getPseudo()) == false) // si le pseudo est dispo 
+			{
+				$infosUser = $user->getInfosUser2($user->getPseudo()); // on recupere els infos du nom envoyer
+				if($this->sondage->checkIsModerateur($infosUser['ut_id'])==false  && $this->sondage->checkSondageAdmin($id_s,$infosUser['ut_id']) == false)
+				{
+					//echo $this->sondage->getSondageId();
+					echo "dispo";
+					return 0;
+				}
+				else
+				{
+					echo "Cette personne est déja moderateur de ce sondage!!";
+					return 1;
+				}
+			}
+			else
+			{
+				echo "pseudo inconnu";
+				return 2;
+			}
+		}
+		else
+		{	
+			echo ("Vous ne pouvez acceder a cette page");
+			return 3;
+		}
+
+	}
+
+	public function validerAjoutModerateur($id_s)
+	{
+		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
+		{
+			$this->sondage->setSondageId($id_s);
+			$sondageInfos = $this->sondage->getInfosSondage($id_s); // on recupere les infos du sondage
+			//$groupes=$this->sondage->getGroupe($_SESSION['id']); // on recupere les groupes crees par lutilisateur
+			$id=$_SESSION['id'];
+
+			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
+			//$noModerator = $this->sondage->checkHaveModerateur($id_s); // on check s'il le sondage a deja un moderateur
+			if($admin == true)
+			{
+				$user = new Utilisateur();
+				$user->POSTToVar($_POST);// on echappe le code html des possible donnees recues et on initialise les attributs de l'instance avec les donnees!!
+				if($user->getPseudo()=="")
+				{
+					echo "Veuillez precisez le pseudo";
+					exit();
+				}
+				else if($res=($this->verifPseudoModerateur($id_s))==1)
+				{
+					//echo "Cette personne a deja été ajouter a ce sondage!!";
+					exit();
+				}
+				else if($res=($this->verifPseudoModerateur($id_s))==2)
+				{
+					//echo "pseudo inconnu";
+					exit();
+				}
+				else if($res=($this->verifPseudoModerateur($id_s))==3)
+				{
+					//echo ("Vous ne pouvez acceder a cette page");
+					exit();
+				}
+				else // pas d'erreur on peut inserer en base
+				{
+					$info = $user->getInfosUser2($user->getPseudo()); // recupere els infos par rapport au pseudo
+					$resultatAddModerateur = $this->sondage->addModerateur($info['ut_id']);
+					if($resultatAddModerateur)
+					{
+						echo "UpdateSuccess";
+						exit();
+					}
+					else
+					{
+						echo "Erreur Ajout Votant";
+						exit();
+					}
+				}
+			}
+			else
+			{
+				echo ("Vous ne pouvez acceder a cette page");
+				exit();
+			}
+
+		}
+		else
+		{	
+			echo ("Vous ne pouvez acceder a cette page");
+			exit();
+		}
+	}
+
+
+
+
+
+	//methode de validation d'ajout d'un moderateur a un sondage
 	public function validerAjoutVotant($id_s)
 	{
 		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
@@ -247,7 +422,8 @@ class ControleurSondage extends Controleur
 
 			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
 			$isPrivate = $this->sondage->checkSondagePrivate($id_s);
-			if($admin == true && $isPrivate == true)
+			$moderateur = $this->sondage->checkIsModerateur($id);
+			if(($admin == true && $isPrivate == true) && ($moderateur == true && $isPrivate == true)) 
 			{
 				$user = new Utilisateur();
 				$user->POSTToVar($_POST);// on echappe le code html des possible donnees recues et on initialise les attributs de l'instance avec les donnees!!
@@ -312,7 +488,8 @@ class ControleurSondage extends Controleur
 
 			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
 			$isPrivate = $this->sondage->checkSondagePrivate($id_s); // on verifie si le sondage est privé 
-			if($admin == true && $isPrivate == true)
+			$moderateur = $this->sondage->checkIsModerateur($id);
+			if(($admin == true && $isPrivate == true) && ($moderateur == true && $isPrivate == true)) 
 			{
 				$user = new Utilisateur($ut_id);
 				//echo $ut_id,$this->sondage->getSondageId();
@@ -322,6 +499,40 @@ class ControleurSondage extends Controleur
 					$this->erreur("Erreur lors de la suppression");
 				}
 				Header('Location: '.ABSOLUTE_ROOT.'/controleurs/ControleurSondage.php?action=afficherRetraitVotantSondage&donnee='.$id_s);
+
+			}
+			else
+			{
+				$this->erreur("Vous ne pouvez acceder a cette page");
+			}
+
+		}
+		else
+		{	
+			$this->erreur("Vous ne pouvez acceder a cette page");
+		}
+	}
+
+	public function validerRetraitModerateur($id_s,$ut_id)
+	{
+		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
+		{
+			$this->sondage->setSondageId($id_s);
+			$sondageInfos = $this->sondage->getInfosSondage($id_s); // on recupere les infos du sondage
+			//$groupes=$this->sondage->getGroupe($_SESSION['id']); // on recupere les groupes crees par lutilisateur
+			$id=$_SESSION['id'];
+
+			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
+			if($admin == true)
+			{
+				$user = new Utilisateur($ut_id);
+				//echo $ut_id,$this->sondage->getSondageId();
+				$resultatDeleteModerateur= $this->sondage->deleteModerateur($ut_id);
+				if(!$resultatDeleteModerateur)
+				{
+					$this->erreur("Erreur lors de la suppression");
+				}
+				Header('Location: '.ABSOLUTE_ROOT.'/controleurs/ControleurSondage.php?action=afficherRetraitModerateur&donnee='.$id_s);
 
 			}
 			else

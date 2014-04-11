@@ -475,7 +475,7 @@ input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
 
 }
 
-#contenu #bloc_principal #bloc_contents .sondage h4
+#contenu #bloc_principal #bloc_contents .sondage h4 a,#contenu #bloc_principal #bloc_contents .sondage h4 
 {
 	display:inline-block;
 	color:#006ca6;
@@ -525,7 +525,7 @@ input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
 	display: inline-block;
 	width:300px;
 	font-size:0.8em;
-	margin-top:10px;
+	margin-top:4px;
 	color:#686868;
 }
 
@@ -534,10 +534,9 @@ input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
 {
 	position:absolute;
 	display: inline-block;
-	width: 48px;
-	height:48px;
-	margin-top:10px;
-	background: url("../images/private.png")no-repeat;
+	width: 80px;
+	height:80px;
+	background: url("../images/private2.png")no-repeat;
 }
 .small_image
 {
@@ -566,6 +565,48 @@ input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
 	
 }
 
+
+.btn_modif
+{
+	display:inline-block;
+	background: #3498db;
+	background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+	background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+	background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+	background-image: -o-linear-gradient(top, #3498db, #2980b9);
+	background-image: linear-gradient(to bottom, #3498db, #2980b9);
+	-webkit-border-radius: 6;
+	-moz-border-radius: 6;
+	border-radius: 6px;
+	color: #ffffff;
+	font-size:0.6em;
+	padding: 6px 10px 6px 10px;
+	text-decoration: none;
+	vertical-align: top;
+	position:relative;
+	/*margin-left:160px;*/
+	margin-top:4px;
+	text-align: center;
+	
+}
+
+.btn_modif:hover
+{
+	background: #f78811;
+	background-image: -webkit-linear-gradient(top, #f78811, #fcb900);
+	background-image: -moz-linear-gradient(top, #f78811, #fcb900);
+	background-image: -ms-linear-gradient(top, #f78811, #fcb900);
+	background-image: -o-linear-gradient(top, #f78811, #fcb900);
+	background-image: linear-gradient(to bottom, #f78811, #fcb900);
+	text-decoration: none;
+}
+
+
+
+
+
+
+
 .btn_participer
 {
 	display:inline-block;
@@ -592,12 +633,12 @@ input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
 
 .btn_participer:hover
 {
-	background: #00b5c2;
-	background-image: -webkit-linear-gradient(top, #00b5c2, #00bfa6);
-	background-image: -moz-linear-gradient(top, #00b5c2, #00bfa6);
-	background-image: -ms-linear-gradient(top, #00b5c2, #00bfa6);
-	background-image: -o-linear-gradient(top, #00b5c2, #00bfa6);
-	background-image: linear-gradient(to bottom, #00b5c2, #00bfa6);
+	background: #f78811;
+	background-image: -webkit-linear-gradient(top, #f78811, #fcb900);
+	background-image: -moz-linear-gradient(top, #f78811, #fcb900);
+	background-image: -ms-linear-gradient(top, #f78811, #fcb900);
+	background-image: -o-linear-gradient(top, #f78811, #fcb900);
+	background-image: linear-gradient(to bottom, #f78811, #fcb900);
 	text-decoration: none;
 }
 

@@ -100,7 +100,6 @@ class Utilisateur extends Model
 	{
 		return $this->id;
 	}
-
 	public function getNom()
 	{
 		return $this->nom;
@@ -196,7 +195,6 @@ class Utilisateur extends Model
 	{
 		$sql="SELECT ut_id FROM utilisateur WHERE ut_pseudo=?";
 		$tuple = $this->executerRequete($sql,array($pseudo));
-
 		$numRows = $tuple->rowCount();
 		if($numRows>0)
 		{

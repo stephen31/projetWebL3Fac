@@ -303,8 +303,9 @@ $(document).ready(function(){
 						else
 						{
 							//$("#table_connexion").replaceWith('<p>Vous venez d\'effectuer votre inscription sur Sondagax<br/>Un lien d\'activation de votre vient de vous etre envoyer</p>');
-							//alert("VOus venez de modifier le sondage")
-							$("#bloc_global").replaceWith('<div id="bloc_contents"><p style="text-align:center;color:red"> Modification effectuée avec succes</div>');
+							alert("Vous venez de modifier le sondage")
+							window.location.href="ControleurSondage.php?action=afficherMesSondagesCres";
+							
 						}
 					},
 					error:function(result)

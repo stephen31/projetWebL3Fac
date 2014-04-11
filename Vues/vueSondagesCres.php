@@ -3,7 +3,9 @@
 	<h3> MES SONDAGES CRES </h3>
 	<?php foreach($sondages as $sondage): ?>
 		<div class="sondage">
-			<h4><?php echo $sondage['titre']; ?></h4>
+			<h4><a href="<?php echo ABSOLUTE_ROOT . "/controleurs/ControleurSondage.php?action=afficherInfosSondage&donnee={$sondage['sondage_id']}"; ?>">
+				<?php echo $sondage['titre']; ?></a>
+			</h4>
 			<div id="bloc">
 				<span class="sondage_auteur"> creeé par <span class="nom_auteur"><?php echo $sondage['ut_nom'] ." ". $sondage['ut_prenom']; ?></span></span>
 				<span class="sondage_heure"> <?php echo "fini le ". $sondage['date_fin']; ?></span>
@@ -30,7 +32,22 @@
 						Etat<br/>sondage
 					</div>
 				</a>
+				<br/>
+				<a href="<?php echo ABSOLUTE_ROOT ."/controleurs/ControleurSondage.php?action=afficherAjoutModerateurSondage&donnee={$sondage['sondage_id']}";?>">
+					<div class='btn_modif'>
+						Ajout<br/>Moderateur
+					</div>
+				</a>
+				<br/>
 				<?php 
+				if(isset($sondage['idModerateur']))
+				{
+					echo ("<a href=".ABSOLUTE_ROOT ."/controleurs/ControleurSondage.php?action=afficherRetraitModerateur&donnee={$sondage['sondage_id']}>".
+							"<div class='btn_modif'>
+								Retrait<br/>Moderateur
+							</div>
+						</a><br/>");
+				}
 				if($sondage['sondage_droit']==2)
 				{
 					echo ("<a href=".ABSOLUTE_ROOT ."/controleurs/ControleurSondage.php?action=afficherAjoutVotantSondage&donnee={$sondage['sondage_id']}>".
@@ -44,7 +61,6 @@
 							</div>
 						</a>"
 						);
-
 				} 
 				?>
 			</div>
