@@ -350,7 +350,7 @@ input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
 	position: relative;
 	width:940px;
 	margin: 0 auto;
-	margin-bottom:20px;
+	margin-bottom:100px;
 }
 
 #contenu #bloc_intro
@@ -882,7 +882,15 @@ fieldset .checkSubmit{
 	color:red;
 	text-align: center;
 }
-
+fieldset .checkComment{
+	display:block;
+	position:relative;
+	height: 5px;
+	color:red;
+	margin: 0px auto;
+	text-align: center;
+	width:250px;
+}
 fieldset .control-group > .controls {
 	margin-left: 180px;
 }
@@ -1109,20 +1117,6 @@ fieldset table tr:hover td {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #contenu #bloc_principal #bloc_contents #tab_groupes tbody tr td #bloc_images 
 {
 	position:relative;
@@ -1183,6 +1177,151 @@ fieldset table tr:hover td {
 	color:#b5af03;
 }
 
+#comment
+{
+	position:relative;
+	padding-top:10px;
+	margin-top: 20px;
+	width: 600px;
+	border-top: 1px dotted #999;
+	min-height: 40px;
+}
+#comment p
+{
+	display:block;
+	width: 320px;
+	font-size: 11px;
+	color: #777;
+}
+#ligneInfo
+{
+	position:relative;
+	width: 500px;
+	margin-bottom: 10px;
+	font-weight: bold;
+}
+
+#ligneInfo .date
+{
+	font-size: 11px;
+	margin: 5px 0 0 5px;
+	color: #777;
+}
+
+#ligneInfo .auteur,#ligneInfo .date,.comment-controls
+{
+	display: inline-block;
+}
+
+#ligneInfo .comment-controls
+{
+	position: absolute;
+	right:0px;
+	font-size: 11px;
+	margin: 5px 0 0 5px;
+	color: #777;
+}
+
+#sous-comment
+{
+	position:relative;
+	background-color: white;
+	width: 560px;
+	padding-left:40px;
+	margin-top: 20px;
+}
+
+.comment-controls span 
+{
+	padding: 0 5px 0 5px;
+	border-left: 1px solid #ccc;
+	color: #ef3e36;
+	cursor: pointer;
+}
+
+
+#textCommentInput
+{
+	border-radius: 0 0 10px 10px;
+	padding: 20px;
+	border-bottom: 1px solid #ddd;
+	margin: 10px 0 18px 0;
+	background: #eee;
+	border-top: 1px solid #ccc;
+}
+
+
+#textCommentInput textarea
+{
+	height: 75px;
+	width: 100%;
+	border:1px dotted grey;
+}
+
+.SendBtn
+{
+	position: relative;
+	margin-left:410px;
+	margin-top: 10px;
+	background: #3498db;
+	background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+	background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+	background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+	background-image: -o-linear-gradient(top, #3498db, #2980b9);
+	background-image: linear-gradient(to bottom, #3498db, #2980b9);
+	-webkit-border-radius: 9;
+	-moz-border-radius: 9;
+	border-radius: 9px;
+	font-family: Arial;
+	color: #ffffff;
+	font-size: 10px;
+	padding: 5px 10px 5px 10px;
+	text-decoration: none;
+	border:none;
+}
+
+.SendBtn:hover
+{
+	background: #3cb0fd;
+	background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+	background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+	background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+	background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+	background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+	text-decoration: none;
+}
+.closeBtn
+{
+	margin-top: 10px;
+	background: #fc9f3c;
+	background-image: -webkit-linear-gradient(top, #fc9f3c, #d17d00);
+	background-image: -moz-linear-gradient(top, #fc9f3c, #d17d00);
+	background-image: -ms-linear-gradient(top, #fc9f3c, #d17d00);
+	background-image: -o-linear-gradient(top, #fc9f3c, #d17d00);
+	background-image: linear-gradient(to bottom, #fc9f3c, #d17d00);
+	-webkit-border-radius: 9;
+	-moz-border-radius: 9;
+	border-radius: 9px;
+	font-family: Arial;
+	color: #ffffff;
+	font-size: 10px;
+	padding: 5px 10px 5px 10px;
+	text-decoration: none;
+	border:none;
+
+}
+
+.closeBtn:hover
+{
+
+	text-decoration: none;
+	background: #d90050;
+	background-image: -webkit-linear-gradient(top, #d90050, #b82b63);
+	background-image: -moz-linear-gradient(top, #d90050, #b82b63);
+	background-image: -ms-linear-gradient(top, #d90050, #b82b63);
+	background-image: -o-linear-gradient(top, #d90050, #b82b63);
+	background-image: linear-gradient(to bottom, #d90050, #b82b63);
+}
 
 /***** FOOTER *****/
 

@@ -7,6 +7,7 @@ require_once ROOT.'/Vues/VueNonConnecter.php';*/
 require_once ROOT.'/models/Utilisateur.php';
 require_once ROOT.'/models/Sondage.php';
 require_once ROOT.'/models/Groupe.php';
+require_once ROOT.'/models/Commentaire.php';
 //require_once ROOT.'/controleurs/ControleurUser.php';
 
 
@@ -259,16 +260,19 @@ class ControleurSondage extends Controleur
 
 			//echo ($sondageInfos[0]['groupe_id']);
 			$groupeInstance = new Groupe($sondageInfos[0]['groupe_id']);
-			
+			$allComments = $this->sondage->getAllCommentaire();
+			$allSousCommentaire = $this->sondage->getAllSousCommentaire();
 			$infosGroupe = $groupeInstance->getInfosGroupe($sondageInfos[0]['groupe_id']); // on recupere les infos du groupe du sondage
-			print_r($infosGroupe);
+			/*print_r($infosGroupe);
 			print_r($sondageInfos);
+			print_r($allComments);
+			print_r($allSousCommentaire);*/
 
 
 			if($admin==true)
 			{
 				$this->vue = new VueConnecter("InfosSondage");
-				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe));
+				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire));
 			}
 			else
 			{
@@ -277,7 +281,7 @@ class ControleurSondage extends Controleur
 					if($isInSondagePrivate == true)
 					{
 						$this->vue = new VueConnecter("InfosSondage");
-						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe));
+						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire));
 					}
 					else
 						$this->erreur("Vous ne pouvez acceder a cette page");
@@ -287,7 +291,7 @@ class ControleurSondage extends Controleur
 					if($isInGroupe == true)
 					{
 						$this->vue = new VueConnecter("InfosSondage");
-						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe));
+						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire));
 					}
 					else
 					{
@@ -295,7 +299,11 @@ class ControleurSondage extends Controleur
 					}
 				}
 				else
-					$this->erreur("Vous ne pouvez acceder a cette page");
+				{
+					$this->vue = new VueConnecter("InfosSondage");
+					$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire));
+				}
+				
 			}
 
 		}
@@ -304,18 +312,18 @@ class ControleurSondage extends Controleur
 			if($this->sondage->checkPublic($id_s) == true)
 			{
 				$sondageInfos = $this->sondage->getInfosSondage($id_s); // on recupere les infos du sondage
-				//$groupes=$this->sondage->getGroupe($_SESSION['id']); // on recupere les groupes crees par lutilisateur
+				$optionsGroupe = $this->sondage->getOptions($id_s); // on recupere les options du sondage
+				$groupeInstance = new Groupe($sondageInfos[0]['groupe_id']);
+				$allComments = $this->sondage->getAllCommentaire();
+				$allSousCommentaire = $this->sondage->getAllSousCommentaire();
+				$infosGroupe = $groupeInstance->getInfosGroupe($sondageInfos[0]['groupe_id']); // on recupere les infos du groupe du sondage
 				$this->vue = new VueNonConnecter("InfosSondage");
-				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe));
+				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments));
 			}
 			else
 				$this->erreur("Vous ne pouvez acceder a cette page");
 		}
 	}
-
-
-
-
 	//fonction qui verifie si un pseudo peut etre ajouter a un sondage prive
 	public function verifPseudoVotant($id_s)
 	{
@@ -603,55 +611,53 @@ class ControleurSondage extends Controleur
 		{
 			if(count($res)>0)
 			{
-			if($this->sondage->checkSondagePrivate($id_s))//si le sondage est prive
-			{
-				if($this->sondage->checkPseudoVotant($_SESSION['pseudo'],$id_s) && !$this->sondage->checkDejaVoter($_SESSION['id'],$id_s))//s'il a le droit de voter et qu'il n'a pas deja voter
+				if($this->sondage->checkSondagePrivate($id_s))//si le sondage est prive
+				{
+					if($this->sondage->checkPseudoVotant($_SESSION['pseudo'],$id_s) && !$this->sondage->checkDejaVoter($_SESSION['id'],$id_s))//s'il a le droit de voter et qu'il n'a pas deja voter
+					{
+						$sondageInstance = new Sondage($id_s);
+						$sondageInfos = $sondageInstance->getInfosSondage($id_s);
+
+						$options = $this->sondage->getOptions($id_s);
+					//print_r($options);
+						$this->vue = new VueConnecter("ParticiperSondage");
+						$this->vue->generer(array("options"=>$options,"sondage"=>$sondageInfos));
+					}
+					else
+					{
+						$this->erreur("Vous n'avez pas le droit de participer");
+					}
+				}
+
+				else if($this->sondage->checkSondageGroupe($id_s))//si le sondage appartient a un groupe
+				{
+					if($this->sondage->checkAppartientGroupe($id_s,$_SESSION['id']) && !$this->sondage->checkDejaVoter($_SESSION['id'],$id_s))//tester qu'il est inscrit et qu'il n'a pas voter
+					{
+						$sondageInstance = new Sondage($id_s);
+						$sondageInfos = $sondageInstance->getInfosSondage($id_s);
+
+						$options = $this->sondage->getOptions($id_s);
+					//print_r($options);
+						$this->vue = new VueConnecter("ParticiperSondage");
+						$this->vue->generer(array("options"=>$options,"sondage"=>$sondageInfos));
+					}
+					else
+					{
+						$this->erreur("Vous n'avez pas le droit de participer");
+					}		
+				}
+				else if(!($this->sondage->checkDejaVoter($_SESSION['id'],$id_s)) && !isset($_COOKIE['sondage_id']))
 				{
 					$sondageInstance = new Sondage($id_s);
 					$sondageInfos = $sondageInstance->getInfosSondage($id_s);
-
 					$options = $this->sondage->getOptions($id_s);
-					//print_r($options);
 					$this->vue = new VueConnecter("ParticiperSondage");
 					$this->vue->generer(array("options"=>$options,"sondage"=>$sondageInfos));
 				}
-				else
+				else //pas le droit d'acceder au vote
 				{
 					$this->erreur("Vous n'avez pas le droit de participer");
 				}
-			}
-			
-			else if($this->sondage->checkSondageGroupe($id_s))//si le sondage appartient a un groupe
-			{
-				if($this->sondage->checkAppartientGroupe($id_s,$_SESSION['id']) && !$this->sondage->checkDejaVoter($_SESSION['id'],$id_s))//tester qu'il est inscrit et qu'il n'a pas voter
-				{
-					$sondageInstance = new Sondage($id_s);
-					$sondageInfos = $sondageInstance->getInfosSondage($id_s);
-
-					$options = $this->sondage->getOptions($id_s);
-					//print_r($options);
-					$this->vue = new VueConnecter("ParticiperSondage");
-					$this->vue->generer(array("options"=>$options,"sondage"=>$sondageInfos));
-				}
-				else
-				{
-					$this->erreur("Vous n'avez pas le droit de participer");
-				}		
-			}
-			else if(!($this->sondage->checkDejaVoter($_SESSION['id'],$id_s)) && !isset($_COOKIE['sondage_id']))
-			{
-				$sondageInstance = new Sondage($id_s);
-				$sondageInfos = $sondageInstance->getInfosSondage($id_s);
-
-				$options = $this->sondage->getOptions($id_s);
-				//print_r($options);
-				$this->vue = new VueConnecter("ParticiperSondage");
-				$this->vue->generer(array("options"=>$options,"sondage"=>$sondageInfos));
-			}
-			else //pas le droit d'acceder au vote
-			{
-				$this->erreur("Vous n'avez pas le droit de participer");
-			}
 			}
 			else 
 			{
@@ -663,24 +669,23 @@ class ControleurSondage extends Controleur
 		{
 			if(count($res)>0)
 			{
-			if($this->sondage->checkSondageGroupe($id_s) || $this->sondage->checkSondagePrivate($id_s) || !$this->sondage->checkPublic($id_s))
-			{
-				$this->erreur("Vous ne pouvez pas participer");
-			}
-			else if(!isset($_COOKIE[$id_s]))
-			{
-				$sondageInstance = new Sondage($id_s);
-				$sondageInfos = $sondageInstance->getInfosSondage($id_s);
+				if($this->sondage->checkSondageGroupe($id_s) || $this->sondage->checkSondagePrivate($id_s) || !$this->sondage->checkPublic($id_s))
+				{
+					$this->erreur("Vous ne pouvez pas participer");
+				}
+				else if(!isset($_COOKIE[$id_s]))
+				{
+					$sondageInstance = new Sondage($id_s);
+					$sondageInfos = $sondageInstance->getInfosSondage($id_s);
 
-				$options = $this->sondage->getOptions($id_s);
-				//print_r($options);
-				$this->vue = new VueNonConnecter("ParticiperSondage");
-				$this->vue->generer(array("options"=>$options,"sondage"=>$sondageInfos));
-			}
-			else 
-			{
-				$this->erreur("Vous avez deja participer");
-			}
+					$options = $this->sondage->getOptions($id_s);
+					$this->vue = new VueNonConnecter("ParticiperSondage");
+					$this->vue->generer(array("options"=>$options,"sondage"=>$sondageInfos));
+				}
+				else 
+				{
+					$this->erreur("Vous avez deja participer");
+				}
 			}
 			else 
 			{
@@ -688,6 +693,7 @@ class ControleurSondage extends Controleur
 			}
 		}
 	}
+
 
 	public function afficherCreerSondage()
 	{
@@ -762,7 +768,7 @@ class ControleurSondage extends Controleur
 				$this->erreur("Vous avez deja voté");
 			}
 		}
-	
+
 	}
 
 	// Fonction de validation du formulaire et creation
@@ -937,6 +943,173 @@ class ControleurSondage extends Controleur
 			$this->erreur("Vous ne pouvez acceder a cette page");
 		}
 	}
+
+
+
+	/* ajout d'un commentaire */
+
+	public function validerAjoutCommentaire($idS)
+	{
+		$res=$this->sondage->getInfosSondage($idS);
+		if($res>0)
+		{
+			if(isset($_SESSION['pseudo']) && isset($_SESSION['email']))
+			{
+
+				$comInstance = new Commentaire();
+				$comInstance->POSTToVar($_POST);
+				// on verifie si le commentaire contient du texte
+				if($comInstance->getTexte()=="")
+				{
+					echo " veuillez remplir le champ commentaire";
+					exit();
+				}
+
+				else
+				{
+
+					$comInstance->setSondageId($idS);
+					$comInstance->setUtId($_SESSION['id']);
+					$idCom = $comInstance->addCommentaire();
+					if($idCom)
+					{
+						echo "success";
+						exit();
+					}
+					else
+					{
+						echo "veuillez revalider votre commentaire , une erreur est survenue";
+						exit();
+					}
+				}
+			}
+			else
+			{
+				echo "Vous devez etre connecter pour poster des commentaires";
+				exit();
+			}
+		}
+		else
+		{
+			$this->erreur("cette page n'existe pas");
+		}
+	}
+
+
+	/* ajout d'un Sous commentaire */
+
+	public function validerAjoutSousCommentaire($idS)
+	{
+		$res=$this->sondage->getInfosSondage($idS);
+		$comInstance = new Commentaire();
+		$res2 = $comInstance->getInfosCommentaire($_POST['com_parent_id']); 
+		if($res>0  && $res2 >0)
+		{
+			if(isset($_SESSION['pseudo']) && isset($_SESSION['email']))
+			{
+				$comInstance->POSTToVar($_POST);
+				$comInstance->setSondageId($idS);
+				$comInstance->setUtId($_SESSION['id']);
+			// on verifie si le commentaire contient du texte
+				if($comInstance->getTexte()=="")
+				{
+					echo " veuillez remplir le champ commentaire";
+					exit();
+				}
+
+				else
+				{
+					$comInstance->setSondageId($idS);
+					$idCom = $comInstance->addSousCommentaire();
+					if($idCom)
+					{
+						echo "success";
+						exit();
+					}
+					else
+					{
+						echo "veuillez revalider votre commentaire , une erreur est survenue";
+						exit();
+					}
+				}
+			}
+			else
+			{
+				echo "Vous devez etre connecter pour poster des commentaires";
+				exit();
+			}
+		}
+		else
+		{
+			$this->erreur("cette page n'existe pas");
+		}
+	}
+
+
+
+
+	/* ajout d'un Soutient */
+
+	public function validerAjoutSoutien($idS)
+	{
+		$res=$this->sondage->getInfosSondage($idS);
+		$comInstance = new Commentaire();
+		$res2 = $comInstance->getInfosCommentaire($_POST['com_id']); 
+		if($res>0  && $res2 >0)
+		{
+			if(isset($_SESSION['pseudo']) && isset($_SESSION['email']))
+			{
+				$comInstance->POSTToVar($_POST);
+				$comInstance->setSondageId($idS);
+				$comInstance->setUtId($_SESSION['id']);
+			// on verifie si le commentaire contient du texte
+				if($comInstance->getSoutien()=="")
+				{
+					echo " Erreur lors de la prise en comtpe de votre soutien";
+					exit();
+				}
+
+				else
+				{
+					$comInstance->setSondageId($idS);
+					$idCom = $comInstance->addSoutien();
+					if($idCom)
+					{
+						echo "success";
+						exit();
+					}
+					else
+					{
+						echo "veuillez refaire votre soutient , une erreur est survenue";
+						exit();
+					}
+				}
+			}
+			else
+			{
+				echo "Vous devez etre connecter pour soutenir";
+				exit();
+			}
+		}
+		else
+		{
+			$this->erreur("cette page n'existe pas");
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 ?>	

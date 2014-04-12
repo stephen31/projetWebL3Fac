@@ -807,6 +807,34 @@ public function addReponse($id_s,$id_ut,$array)
 
     }
 
+
+     /* renvoie tout les commentaires d'un sondage */
+
+    public function getAllCommentaire()
+    {
+        $sql='SELECT u.ut_pseudo,u.ut_id,s.sondage_id,c.commentaire_date,c.soutien,c.texte,c.com_id 
+        FROM commentaire c,sondage s ,utilisateur u 
+        WHERE s.sondage_id=? and c.ut_id=u.ut_id and s.sondage_id = c.sondage_id and c.com_parent_id IS NULL
+        ORDER BY c.soutien DESC';
+        $allcommentaires=$this->executerRequete($sql,array($this->sondage_id));
+        return ($allcommentaires->fetchAll());
+    }
+
+    /* renvoie tout les Sous commentaires d'un sondage */
+
+    public function getAllSousCommentaire()
+    {
+        $sql='SELECT u.ut_pseudo,u.ut_id,s.sondage_id,c.commentaire_date,c.soutien,c.texte,c.com_id,c.com_parent_id 
+        FROM commentaire c,sondage s ,utilisateur u 
+        WHERE s.sondage_id=? and c.ut_id=u.ut_id and s.sondage_id = c.sondage_id and c.com_parent_id IS NOT NULL
+        ORDER BY c.soutien DESC';
+        //echo $this->sondage_id;
+        $allSubcommentaires=$this->executerRequete($sql,array($this->sondage_id));
+        return ($allSubcommentaires->fetchAll());
+    }
+
+
+
     /*public function borda($id_s)
     {
         $sond=new Sondage();
