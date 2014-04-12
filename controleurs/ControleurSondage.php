@@ -6,6 +6,7 @@ require_once ROOT.'/Vues/VueConnecter.php';
 require_once ROOT.'/Vues/VueNonConnecter.php';*/
 require_once ROOT.'/models/Utilisateur.php';
 require_once ROOT.'/models/Sondage.php';
+require_once ROOT.'/models/Groupe.php';
 //require_once ROOT.'/controleurs/ControleurUser.php';
 
 
@@ -242,26 +243,73 @@ class ControleurSondage extends Controleur
 			//$this->sondage=new Sondage($id_s);
 			$this->sondage->setSondageId($id_s);
 			$sondageInfos = $this->sondage->getInfosSondage($id_s); // on recupere les infos du sondage
-			//$groupes=$this->sondage->getGroupe($_SESSION['id']); // on recupere les groupes crees par lutilisateur
+			$optionsGroupe = $this->sondage->getOptions($id_s); // on recupere les options du sondage
+
 			$id=$_SESSION['id'];
+
+
 			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
-			//$isAccessible = 
-			$infosUser = $this->sondage->getUserInfosSondagePrive($id_s);
+
+			$isPrivate = $this->sondage->checkSondagePrivate($id_s); // on check si le sondage est privee
+
+			$isInSondagePrivate = $this->sondage->checkDroitAccesSondagePrivee($_SESSION['pseudo']);
+			$isSondageGroupe = $this->sondage->checkSondageGroupe($id_s);
+			$isInGroupe = $this->sondage->checkAppartientGroupe($id_s,$id);
+
+
+			//echo ($sondageInfos[0]['groupe_id']);
+			$groupeInstance = new Groupe($sondageInfos[0]['groupe_id']);
+			
+			$infosGroupe = $groupeInstance->getInfosGroupe($sondageInfos[0]['groupe_id']); // on recupere les infos du groupe du sondage
+			print_r($infosGroupe);
 			print_r($sondageInfos);
+
+
 			if($admin==true)
 			{
 				$this->vue = new VueConnecter("InfosSondage");
-				$this->vue->generer(array("sondage"=>$sondageInfos,"infosUser"=>$infosUser));
+				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe));
 			}
 			else
 			{
-				$this->erreur("Vous ne pouvez acceder a cette page");
+				if($isPrivate == true)
+				{
+					if($isInSondagePrivate == true)
+					{
+						$this->vue = new VueConnecter("InfosSondage");
+						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe));
+					}
+					else
+						$this->erreur("Vous ne pouvez acceder a cette page");
+				}
+				else if($isSondageGroupe == true)
+				{
+					if($isInGroupe == true)
+					{
+						$this->vue = new VueConnecter("InfosSondage");
+						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe));
+					}
+					else
+					{
+						$this->erreur("Vous ne pouvez acceder a cette page");
+					}
+				}
+				else
+					$this->erreur("Vous ne pouvez acceder a cette page");
 			}
 
 		}
 		else
 		{	
-			$this->erreur("Vous ne pouvez acceder a cette page");
+			if($this->sondage->checkPublic($id_s) == true)
+			{
+				$sondageInfos = $this->sondage->getInfosSondage($id_s); // on recupere les infos du sondage
+				//$groupes=$this->sondage->getGroupe($_SESSION['id']); // on recupere les groupes crees par lutilisateur
+				$this->vue = new VueNonConnecter("InfosSondage");
+				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe));
+			}
+			else
+				$this->erreur("Vous ne pouvez acceder a cette page");
 		}
 	}
 

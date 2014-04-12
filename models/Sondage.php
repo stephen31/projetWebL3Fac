@@ -326,170 +326,179 @@ class Sondage extends Model
         }
         else
         {
-             $sql = 'UPDATE sondage SET
-            ut_id=?,
-            titre=?,
-            texte_desc=?,
-            sondage_droit=?,
-            date_fin=?,
-            type_methode=?,
-            visibilite=?,
-            groupe_id=?
-            WHERE sondage_id = ?';
+           $sql = 'UPDATE sondage SET
+           ut_id=?,
+           titre=?,
+           texte_desc=?,
+           sondage_droit=?,
+           date_fin=?,
+           type_methode=?,
+           visibilite=?,
+           groupe_id=?
+           WHERE sondage_id = ?';
 
-            $res = $this->executerRequete($sql,array($this->ut_id,$this->titre,
-                $this->texte_desc,$this->sondage_droit,$this->date_fin,
-                $this->type_methode,$this->visibilite,$this->groupe_id,$this->sondage_id));
+           $res = $this->executerRequete($sql,array($this->ut_id,$this->titre,
+            $this->texte_desc,$this->sondage_droit,$this->date_fin,
+            $this->type_methode,$this->visibilite,$this->groupe_id,$this->sondage_id));
 
-            return ($res->rowCount() == 1);
-        }
-    }
+           return ($res->rowCount() == 1);
+       }
+   }
 
 
-    public function addOption($opt)
-    {
-        $sql ='INSERT INTO sondagax.option SET
-        sondage_id =?,
-        titre=?';
+   public function addOption($opt)
+   {
+    $sql ='INSERT INTO sondagax.option SET
+    sondage_id =?,
+    titre=?';
 
-        $res = $this->executerRequete($sql,array($this->sondage_id,$opt));
+    $res = $this->executerRequete($sql,array($this->sondage_id,$opt));
         //echo $this->sondage_id,$opt;
 
-        if($res->rowCount()==1)
-        {
+    if($res->rowCount()==1)
+    {
 
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return true;
     }
+    else
+    {
+        return false;
+    }
+}
 
 
     // ajoute un votant a la table votant
-    public function addVotant($idV)
-    {
-        $sql ='INSERT INTO votant SET
-        sondage_id =?,
-        ut_id=?';
+public function addVotant($idV)
+{
+    $sql ='INSERT INTO votant SET
+    sondage_id =?,
+    ut_id=?';
 
-        $res = $this->executerRequete($sql,array($this->sondage_id,$idV));
+    $res = $this->executerRequete($sql,array($this->sondage_id,$idV));
         //echo $this->sondage_id,$opt;
 
-        if($res->rowCount()==1)
-        {
+    if($res->rowCount()==1)
+    {
 
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return true;
     }
+    else
+    {
+        return false;
+    }
+}
 
     // methode qui ajoute un moderateur au sondage
-    public function addModerateur($id_u)
+public function addModerateur($id_u)
+{
+    $sql='INSERT INTO moderateur_sondage SET
+    ut_id=?,
+    sondage_id=?';
+
+    $res= $this->executerRequete($sql,array($id_u,$this->sondage_id));
+    if($res->rowCount()==1)
     {
-        $sql='INSERT INTO moderateur_sondage SET
-        ut_id=?,
-        sondage_id=?';
 
-        $res= $this->executerRequete($sql,array($id_u,$this->sondage_id));
-        if($res->rowCount()==1)
-        {
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return true;
     }
+    else
+    {
+        return false;
+    }
+}
     // methode qui check si un utilisateur est moderateur d'un sondage
-    public function checkIsModerateur($id_u)
-    {   
-        $sql="SELECT ut_id FROM moderateur_sondage WHERE ut_id=? and sondage_id=?";
-        $tuple = $this->executerRequete($sql,array($id_u,$this->sondage_id));
+public function checkIsModerateur($id_u)
+{   
+    $sql="SELECT ut_id FROM moderateur_sondage WHERE ut_id=? and sondage_id=?";
+    $tuple = $this->executerRequete($sql,array($id_u,$this->sondage_id));
 
-        $result = $tuple->fetchAll();
-        if(count($result)>0)
-        {
-            return 1;
-        }
-        return 0;
+    $result = $tuple->fetchAll();
+    if(count($result)>0)
+    {
+        return 1;
     }
+    return 0;
+}
 
     // check si un moderateur a été definit pour le sondage
 
-    public function checkHaveModerateur($id_u)
-    {   
-        $sql="SELECT * FROM moderateur_sondage WHERE sondage_id=?";
-        $tuple = $this->executerRequete($sql,array($this->sondage_id));
+public function checkHaveModerateur($id_u)
+{   
+    $sql="SELECT * FROM moderateur_sondage WHERE sondage_id=?";
+    $tuple = $this->executerRequete($sql,array($this->sondage_id));
 
-        $result = $tuple->fetchAll();
-        if(count($result)>0)
-        {
-            return true;
-        }
-        return false;
+    $result = $tuple->fetchAll();
+    if(count($result)>0)
+    {
+        return true;
     }
+    return false;
+}
 
     // retire un votant a la table votant
-    public function deleteVotant($idV)
-    {
-        $sql ='DELETE FROM votant WHERE
-        sondage_id =? and
-        ut_id=?';
+public function deleteVotant($idV)
+{
+    $sql ='DELETE FROM votant WHERE
+    sondage_id =? and
+    ut_id=?';
 
-        $res = $this->executerRequete($sql,array($this->sondage_id,$idV));
+    $res = $this->executerRequete($sql,array($this->sondage_id,$idV));
         //echo $this->sondage_id,$opt;
-        if($res->rowCount()==1)
-        {
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    // retire un mdoerateur a la table votant
-    public function deleteModerateur($idM)
+    if($res->rowCount()==1)
     {
-        $sql ='DELETE FROM moderateur_sondage WHERE
-        sondage_id =? and
-        ut_id=?';
 
-        $res = $this->executerRequete($sql,array($this->sondage_id,$idM));
-        //echo $this->sondage_id,$opt;
-        if($res->rowCount()==1)
-        {
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return true;
     }
-
-    //check si deja dans la liste des personnes pouvant voter au sondage // retourne vrai si present dans votant , faux sinon
-    public function checkPseudoVotant($pseudo,$id_s)
+    else
     {
-        //echo $this->getSondageId();
-        $sql="SELECT u.ut_id FROM votant v,utilisateur u WHERE u.ut_id=v.ut_id and u.ut_pseudo=? and v.sondage_id=?";
-        $tuple = $this->executerRequete($sql,array($pseudo,$id_s));
-
-        $result = $tuple->fetchAll();
-        if(count($result)>0)
-        {
-            return true;
-        }
         return false;
     }
+}
 
+    // retire un mdoerateur a la table votant
+public function deleteModerateur($idM)
+{
+    $sql ='DELETE FROM moderateur_sondage WHERE
+    sondage_id =? and
+    ut_id=?';
+
+    $res = $this->executerRequete($sql,array($this->sondage_id,$idM));
+        //echo $this->sondage_id,$opt;
+    if($res->rowCount()==1)
+    {
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+    //check si deja dans la liste des personnes pouvant voter au sondage // retourne vrai si present dans votant , faux sinon
+public function checkPseudoVotant($pseudo,$id_s)
+{
+        //echo $this->getSondageId();
+    $sql="SELECT u.ut_id FROM votant v,utilisateur u WHERE u.ut_id=v.ut_id and u.ut_pseudo=? and v.sondage_id=?";
+    $tuple = $this->executerRequete($sql,array($pseudo,$id_s));
+
+    $result = $tuple->fetchAll();
+    if(count($result)>0)
+    {
+        return true;
+    }
+    return false;
+}
+
+
+    // recupere les infos d'un utilisateur
+    /*public function getUserInfosSondage($pseudo)
+    {
+        $sql="SELECT ut_id,ut_pseudo,ut_mail FROM utilisateur WHERE pseudo=?";
+        $tuple = $this->executerRequete($sql,array($pseudo));
+        return $tuple->fetchAll();
+
+    }*/
 
     // recupere les infos d'un utilisateur participant a un sondage privé
     public function getUserInfosSondagePrive($id_s)
@@ -540,138 +549,151 @@ class Sondage extends Model
 	//fonstion qui renvoie vrai si le sondage appartient à un groupe
     public function checkSondageGroupe($id_s)
     {
-      $sql='SELECT * FROM sondage
-      WHERE sondage.groupe_id IS NOT NULL and sondage.sondage_id=?';
+        $sql='SELECT * FROM sondage
+        WHERE sondage.groupe_id IS NOT NULL and sondage.sondage_id=?';
 
-      $res = $this->executerRequete($sql,array($id_s));
-      if(count($res->fetchAll())>0)
-      {
-        return true;
+        $res = $this->executerRequete($sql,array($id_s));
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }
+        else
+            return false;
     }
-    else
-        return false;
-}
     //teste si le mec appartient au groupe
-public function checkAppartientGroupe($id_s,$id_u)
-{
-  $sql='SELECT * FROM sondage s,groupe g,inscrit i 
-  WHERE s.groupe_id=g.groupe_id and g.groupe_id=i.groupe_id and s.sondage_id=? and (i.ut_id=? or g.ut_id=?)';
-
-  $res = $this->executerRequete($sql,array($id_s,$id_u,$id_u));
-
-      //print_r($res->fetchAll());
-  if(count($res->fetchAll())>0)
-  {
-    return true;
-}
-else
-    return false;
-}
-    // fonction qui check si l'utilisateur est admin du sondage
-public function checkSondageAdmin($idS,$utId)
-{
-    $sql='SELECT * FROM sondage
-    WHERE sondage.ut_id=? and sondage.sondage_id=?';
-
-    $res = $this->executerRequete($sql,array($utId,$idS));
-    if(count($res->fetchAll())>0)
+    public function checkAppartientGroupe($id_s,$id_u)
     {
-        return true;
-    }       
-    else
-        return false;
-}
+        $sql='SELECT * FROM sondage s,groupe g,inscrit i 
+        WHERE s.groupe_id=g.groupe_id and g.groupe_id=i.groupe_id and s.sondage_id=? and (i.ut_id=? or g.ut_id=?)';
 
-	//check si le sondage est plublic
-public function checkPublic($id_s)
-{
-  $sql='SELECT * FROM sondage
-  WHERE sondage.sondage_id=? and sondage_droit=0';
-  
-  $res = $this->executerRequete($sql,array($id_s));
+        $res = $this->executerRequete($sql,array($id_s,$id_u,$id_u));
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+    // fonction qui check si l'utilisateur est admin du sondage
+    public function checkSondageAdmin($idS,$utId)
+    {
+        $sql='SELECT * FROM sondage
+        WHERE sondage.ut_id=? and sondage.sondage_id=?';
 
-        //print_r($res->fetchAll());
-  if(count($res->fetchAll())>0)
-  {
-    return true;
-}
-else
-    return false;
-}
+        $res = $this->executerRequete($sql,array($utId,$idS));
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }       
+        else
+            return false;
+    }
+
     // fonction qui check si le sondage est privé
 
-public function checkSondagePrivate($id_s)
-{
+    public function checkSondagePrivate($id_s)
+    {
 
-    $sql='SELECT * FROM sondage
-    WHERE sondage.sondage_id=? and sondage_droit=2';
+        $sql='SELECT * FROM sondage
+        WHERE sondage.sondage_id=? and sondage_droit=2';
 
-    $res = $this->executerRequete($sql,array($id_s));
+        $res = $this->executerRequete($sql,array($id_s));
 
         //print_r($res->fetchAll());
-    if(count($res->fetchAll())>0)
-    {
-        return true;
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }
+        else
+            return false;
     }
-    else
-        return false;
-}
 
+
+    public function checkDroitAccesSondagePrivee($id_u)
+    {
+        $sql='SELECT * FROM sondage,utilisateur
+        WHERE sondage.ut_id=? and sondage.sondage_id=?';
+
+        $res = $this->executerRequete($sql,array($id_u,$this->sondage_id));
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }       
+        else
+            return false;
+    }
+
+	//check si le sondage est plublic
+    public function checkPublic($id_s)
+    {
+        $sql='SELECT * FROM sondage
+        WHERE sondage.sondage_id=? and sondage_droit=0';
+
+        $res = $this->executerRequete($sql,array($id_s));
+
+        //print_r($res->fetchAll());
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
 
     // fonction qui recupere les options du sondage
-public function getOptions($idS)
-{
-    $sql='SELECT * FROM `option` WHERE sondage_id=? ORDER BY `option`.option_id';
+    public function getOptions($idS)
+    {
+        $sql='SELECT * FROM `option` WHERE sondage_id=? ORDER BY `option`.option_id';
 
-    $res = $this->executerRequete($sql,array($idS));
-    return $res->fetchAll();
-}
+        $res = $this->executerRequete($sql,array($idS));
+        return $res->fetchAll();
+    }
 
 
     // fonctions qui recupere les infos d'un sondage
-public function getInfosSondage($idS)
-{
-    $sql='SELECT * FROM sondage
-    WHERE sondage_id =?';
+    public function getInfosSondage($idS)
+    {
+        $sql='SELECT * FROM sondage
+        WHERE sondage_id =?';
 
-    $res = $this->executerRequete($sql,array($idS));
-    return $res->fetchAll();
-}
+        $res = $this->executerRequete($sql,array($idS));
+        return $res->fetchAll();
+    }
 
     // fonctions qui recupere les sondages au quel un utilisateur a deja voter
-public function getSondagesRepondus($utId)
-{
-    $sql='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
-    FROM reponse r,sondage s,utilisateur u
-    WHERE s.sondage_id=r.sondage_id and u.ut_id=r.ut_id and u.ut_id =?';
+    public function getSondagesRepondus($utId)
+    {
+        $sql='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
+        FROM reponse r,sondage s,utilisateur u
+        WHERE s.sondage_id=r.sondage_id and u.ut_id=r.ut_id and u.ut_id =?';
 
-    $res = $this->executerRequete($sql,array($utId));
-    return $res->fetchAll();
-}
+        $res = $this->executerRequete($sql,array($utId));
+        return $res->fetchAll();
+    }
 
 	// methode qui renvoie les sondages public
-public function getSondagesPublic()
-{
-    $sql ='SELECT * FROM
-    sondage 
-    natural join utilisateur 
-    WHERE sondage_droit=0 and groupe_id IS NULL ORDER BY sondage_id desc';
+    public function getSondagesPublic()
+    {
+        $sql ='SELECT * FROM
+        sondage 
+        natural join utilisateur 
+        WHERE sondage_droit=0 and groupe_id IS NULL ORDER BY sondage_id desc';
 
 
-    $sondage_pub=$this->executerRequete($sql,array());
-    return ($sondage_pub->fetchAll());
-}
+        $sondage_pub=$this->executerRequete($sql,array());
+        return ($sondage_pub->fetchAll());
+    }
 
 
     // methode qui renvoie les sondages auquel l'utilisateur peut participer ordonner par ordre d'insertion (dont la date de fin n'est pas depassée et oter de ce qu'il a crée lui même
     //et ceux qu'il n'a pas repondu)
-public function getSondagesUserConnect($id_ut)
-{
-    $sql ='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
-    FROM sondage s natural join utilisateur u
-    WHERE s.date_fin >= NOW() AND s.ut_id<>? AND (((s.sondage_droit=0 AND s.groupe_id IS NULL) OR (s.sondage_droit=1 AND s.groupe_id IS NULL)
-        OR EXISTS(SELECT * FROM votant v WHERE s.sondage_id=v.sondage_id AND v.ut_id=? ) 
-        OR EXISTS(SELECT * FROM groupe g WHERE s.groupe_id=g.groupe_id AND(g.ut_id=? OR EXISTS( SELECT * FROM inscrit i WHERE g.groupe_id=i.groupe_id AND i.ut_id=?))) ) 
+    public function getSondagesUserConnect($id_ut)
+    {
+        $sql ='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
+        FROM sondage s natural join utilisateur u
+        WHERE s.date_fin >= NOW() AND s.ut_id<>? AND (((s.sondage_droit=0 AND s.groupe_id IS NULL) OR (s.sondage_droit=1 AND s.groupe_id IS NULL)
+            OR EXISTS(SELECT * FROM votant v WHERE s.sondage_id=v.sondage_id AND v.ut_id=? ) 
+            OR EXISTS(SELECT * FROM groupe g WHERE s.groupe_id=g.groupe_id AND(g.ut_id=? OR EXISTS( SELECT * FROM inscrit i WHERE g.groupe_id=i.groupe_id AND i.ut_id=?))) ) 
 AND NOT EXISTS ( SELECT * FROM reponse r WHERE r.ut_id=? AND r.sondage_id=s.sondage_id))
 ORDER BY s.sondage_date_create desc';
 

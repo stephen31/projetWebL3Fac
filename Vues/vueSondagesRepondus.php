@@ -38,7 +38,7 @@
 			<div id="blocBouton">
 				<a>
 					<div class="btn_participer">
-						Voir<br/>Resultat du sondage
+						Voir<br/>Etat du sondage
 					</div>
 				</a>
 			</div>

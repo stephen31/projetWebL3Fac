@@ -23,12 +23,44 @@
 								</div>
 								<!--type sondage -->
 								<div class="control-group">
-										Type: <?php echo "".$sondage[0]['sondage_droit'];?>
+										Accessibilité du sondage:
+										<?php
+	
+											if($sondage[0]['sondage_droit'] == 0)
+											{
+												echo " Public";
+											}
+											else if($sondage[0]['sondage_droit'] == 1)
+											{
+												echo " Public Inscrit";
+											}
+											else if($sondage[0]['sondage_droit'] == 2)
+											{
+												echo " Prive";
+											}
+											else
+											{
+												echo "Prive Groupe";
+											}
+										?>
 								</div>
 
-								<!--Option sondage -->
-								<div class="control-group" id="groupeSondageListe" style="display:none;">
-										Groupe: <?php echo $groupe['groupe_nom'];?></OPTION>
+								<!--Groupe sondage -->
+								<div class="control-group" id="groupeSondageListe">
+
+										Groupe: 
+										<?php 
+										echo $groupe[0]['groupe_nom'];
+										if(isset($groupe[0]['groupe_nom']))
+										{
+
+											echo $groupe[0]['groupe_nom'];
+										}
+										else
+										{
+											echo " Pas de Groupe pour ce sondage";
+										}
+										?>
 								</div>
 
 								<!--type Methode-->
@@ -57,33 +89,40 @@
 
 
 								<div class="control-group">
+										Date Creation: <?php echo "".$sondage[0]['sondage_date_create'];?>
+								</div>
+
+								<div class="control-group">
 										Date Fin: <?php echo "".$sondage[0]['date_fin'];?>
 								</div>
 
 								<div class="control-group">
-										Visibilité:
+										Visibilité Des votes:
 										<?php
-											switch($sondage[0]['visibilite'])
+	
+											if($sondage[0]['visibilite'] == 0)
 											{
-												case O:
-													echo " Secret";
-													break;
-												case 1:
-													echo " Secret durant Scrutin";
-													break;
-												case 2:
-													echo " Non Secret";
-													break;
+												echo " Secret";
+											}
+											else if($sondage[0]['visibilite'] == 1)
+											{
+												echo " Secret durant Scrutin";
+											}
+											else 
+											{
+												echo " Non Secret";
 											}
 										?>
 								</div>
 
-
-
-								<!-- option 1 -->
+								<!-- options-->
 
 								<div class="control-group">
-										Option 1:
+										Liste des options:
+
+										<?php foreach($options as $option): ?>
+											<span>,<?php echo $option['titre']; ?></span>
+										<?php endforeach; ?>
 								</div>
 						</div>
 					</fieldset>
@@ -102,24 +141,7 @@
 	<script type="text/javascript">
 //window.onload = function () // Javascript version 
 $(document).ready(function(){
-
-
-	$("#sondage_type").change(function(){
-		if($(this).val()=="3")
-			{$("#groupeSondageListe").fadeIn(400);}
-		else
-			{$("#groupeSondageListe").fadeOut(400);}
-	});
 	
-	/*$("#NonBtn").click(function(){
-		//$("#groupeSondageListe").hide();
-		$("#groupeSondageListe").fadeOut(400);
-	});*/
-
-	$("input").focus(function(){
-		$(".checkSubmit").fadeOut(800);
-	});
-
 	// FONCTION DE VERIFIACTION DE LA DATE
 
 
