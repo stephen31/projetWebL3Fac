@@ -308,9 +308,6 @@ $(document).ready(function(){
 
 
 
-
-
-
 	$('.repondre').click(function()
 	{
 		$(this).parent().parent().next().next().fadeIn(600);
@@ -375,7 +372,8 @@ $(document).ready(function(){
 		});
 
 
-	$(".like-button").click(function(){
+	$(".like-button").one("click",function(){
+		//$(this).OnClientClick.disabled = true;
 		var status =$(this).parent().find(".checkComment");
 		var comId = $(this).parent().find("#comId").html();
 		var nbSoutient = $(this).find(".nbS").html();
