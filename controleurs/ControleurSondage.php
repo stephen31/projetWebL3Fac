@@ -282,7 +282,7 @@ class ControleurSondage extends Controleur
 					if($isInSondagePrivate == true)
 					{
 						$this->vue = new VueConnecter("InfosSondage");
-						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire));
+						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda));
 					}
 					else
 						$this->erreur("Vous ne pouvez acceder a cette page");
@@ -292,7 +292,7 @@ class ControleurSondage extends Controleur
 					if($isInGroupe == true)
 					{
 						$this->vue = new VueConnecter("InfosSondage");
-						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire));
+						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda));
 					}
 					else
 					{
@@ -302,7 +302,7 @@ class ControleurSondage extends Controleur
 				else
 				{
 					$this->vue = new VueConnecter("InfosSondage");
-					$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire));
+					$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda));
 				}
 				
 			}
@@ -319,7 +319,7 @@ class ControleurSondage extends Controleur
 				$allSousCommentaire = $this->sondage->getAllSousCommentaire();
 				$infosGroupe = $groupeInstance->getInfosGroupe($sondageInfos[0]['groupe_id']); // on recupere les infos du groupe du sondage
 				$this->vue = new VueNonConnecter("InfosSondage");
-				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments));
+				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"borda"=>$resBorda));
 			}
 			else
 				$this->erreur("Vous ne pouvez acceder a cette page");

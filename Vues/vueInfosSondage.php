@@ -64,7 +64,7 @@
 
 						<!--type Methode-->
 						<div class="control-group">
-							Type Mythode:
+							Type Methode:
 							<?php
 
 							if($sondage[0]['type_methode'] == 0)
@@ -144,18 +144,23 @@
 						<div class="control-group">
 							<?php 
 							
-							if($sondage[0]['date_fin']>$sondage[0]['sondage_date_create'])
+							
+							$date= date("Y-m-d");
+							if($sondage[0]['date_fin']>$date)
 							{
 								echo " Le sondage n'est pas encore terminer";
 							}
 							else
-							{
+							{	
 								echo " Choix de la methode de resolution: 
 								<SELECT id='sondage_typeMethode' name='sondage_typeMethode' required='required'>
 									<OPTION VALUE='0'>Borda</OPTION>
 									<OPTION VALUE='1'>Condorcet</OPTION>
 									<OPTION VALUE='2'>Vote Alternatif</OPTION>
 								</SELECT>";
+								if(sizeof($options))
+								{
+								
 								//affichage du resultat de borda
 								$tabOpt=array();
 								$k=0;
@@ -191,6 +196,11 @@
 								}
 								echo '</table>';
 								//fin affichage
+								}
+								else
+								{
+									echo '<strong>'.'LA LISTE DES OPTIONS EST VIDE'.'</strong>';
+								}
 							}
 							?>
 						</div>
