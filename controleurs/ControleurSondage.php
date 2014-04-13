@@ -238,6 +238,7 @@ class ControleurSondage extends Controleur
 
 	public function afficherInfosSondage($id_s)
 	{
+		$resBorda=$this->sondage->borda($id_s);
 		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
 		{
 			//$sondageInstance = new Sondage($id_s);
@@ -272,7 +273,7 @@ class ControleurSondage extends Controleur
 			if($admin==true)
 			{
 				$this->vue = new VueConnecter("InfosSondage");
-				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire));
+				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda));
 			}
 			else
 			{
@@ -769,6 +770,23 @@ class ControleurSondage extends Controleur
 			}
 		}
 
+	}
+	public function afficherSondagesFinis()
+	{
+		if(isset($_SESSION['pseudo']) && isset($_SESSION['email']))
+		{
+			$id=$_SESSION['id'];
+			$sondages=$this->sondage->getSondagesFinisConnect($id);
+			$this->vue = new VueConnecter("SondagesFinis");
+			$this->vue->generer(array("sondages"=>$sondages));
+		}
+		else
+		{	
+			$sondages=$this->sondage->getSondagesFinisNonConnect();
+			$vue = new VueNonConnecter("SondagesFinis");
+			$vue->generer(array("sondages"=>$sondages));
+		}
+		
 	}
 
 	// Fonction de validation du formulaire et creation

@@ -22,7 +22,6 @@ class ControleurUser extends Controleur
 	{
 		$sondage=new Sondage();
 		
-        //print_r($sondages);
 		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
 		{
 			$id=$_SESSION['id'];

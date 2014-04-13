@@ -716,9 +716,9 @@ $sondage_pub=$this->executerRequete($sql,array($id_ut,$id_ut,$id_ut,$id_ut,$id_u
 return ($sondage_pub->fetchAll());
 } 
     //methode qui renvoie les sondages dont la date de fin est depassée afin de connaitre le resultat (pas encore utilisée)
-public function getSondagesFini($id_ut)
+public function getSondagesFinisConnect($id_ut)
 {
-    $sql ='SELECT DISTINCT  s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
+    $sql ='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
     FROM sondage s natural join utilisateur u
     WHERE s.date_fin < NOW() AND ((s.ut_id=? OR s.sondage_droit=0 OR s.sondage_droit=1 
         OR EXISTS(SELECT * FROM votant v WHERE s.sondage_id=v.sondage_id AND v.ut_id=? ) 
@@ -730,6 +730,15 @@ ORDER BY s.sondage_id desc';
 $sondage_pub=$this->executerRequete($sql,array($id_ut,$id_ut,$id_ut,$id_ut,$id_ut));
 return ($sondage_pub->fetchAll());
 } 
+public function getSondagesFinisNonConnect()
+{
+	$sql='SELECT s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom 
+	FROM sondage s natural join utilisateur u WHERE s.sondage_droit=0 and s.date_fin<NOW()';
+	
+	$sondage_pub=$this->executerRequete($sql,array());
+	return ($sondage_pub->fetchAll());
+}
+
 
     //methode qui renvoie les sondages crees par un utilisateur
 public function getSondagesCres($id)
@@ -835,7 +844,7 @@ public function addReponse($id_s,$id_ut,$array)
 
 
 
-    /*public function borda($id_s)
+    public function borda($id_s)
     {
         $sond=new Sondage();
         $sond->constructeurParametre($id_s);
@@ -843,6 +852,7 @@ public function addReponse($id_s,$id_ut,$array)
         $tab=array(array());;
         $k=1;
         $id;
+		$mafonction;
         foreach($opts as $opt)
         {
             $mafonction="setOption".$k;
@@ -851,44 +861,45 @@ public function addReponse($id_s,$id_ut,$array)
         }
         for($i=0 ; $i<sizeof($opts) ; $i++)
         {
-          $tab[i][sizeof(opts)]=0;
+          $tab[$i][sizeof($opts)]=0;
           for($j=0 ; $j<=sizeof($opts) ; $j++)
           {
             $k=$i+1;
             $mafonction="getOption".$k;
             foreach($opts as $opt)
             {
-                if($opt['titre']===$sond->mafonction())
+                if($opt['titre']===$sond->$mafonction())
                 {
                     $id=$opt['option_id'];
                 }
             }           
-            $sql1="SELECT COUNT(*) as nb FROM reponse WHERE rang=".($j+1)."and".$id."=option_id";
-            $res1=$this->executerRequete($sql1,array());
+            $sql1="SELECT COUNT(*) as nb FROM reponse WHERE rang= ($j+1) and option_id=$id and sondage_id=?";
+            $res1=$this->executerRequete($sql1,array($id_s));
             $resul1=$res1->fetch();
             $resultat1=$resul1['nb'];
             
-            $sql2="SELECT COUNT(*) as nb FROM reponseanonyme WHERE rang=".($j+1)."and".$id."=option_id";
-            $res2=$this->executerRequete($sql2,array());
+            $sql2="SELECT COUNT(*) as nb FROM reponseanonyme WHERE rang= ($j+1) and option_id=$id and sondage_id=?";
+            $res2=$this->executerRequete($sql2,array($id_s));
             $resul2=$res2->fetch();
             $resultat2=$resul2['nb'];
             
             $resultat=$resultat1+$resultat2;    
 
             $tab[$i][$j]=$resultat;
+			}
         }
         for($i=0 ; $i<sizeof($opts) ; $i++)
         {
             $k=sizeof($opts);
             for($j=0 ; $j<=sizeof($opts) ; $j++)
             {
-                $tab[i][sizeof(opts)]+=$tab[i][j] * $k;
+                $tab[$i][sizeof($opts)]+=$tab[$i][$j] * $k;
                 $k--;
             }
             
         }
         return $tab;
-    }*/
+    }
 
 }
 

@@ -143,7 +143,7 @@
 					<div class="form registration">
 						<div class="control-group">
 							<?php 
-
+							
 							if($sondage[0]['date_fin']>$sondage[0]['sondage_date_create'])
 							{
 								echo " Le sondage n'est pas encore terminer";
@@ -156,6 +156,41 @@
 									<OPTION VALUE='1'>Condorcet</OPTION>
 									<OPTION VALUE='2'>Vote Alternatif</OPTION>
 								</SELECT>";
+								//affichage du resultat de borda
+								$tabOpt=array();
+								$k=0;
+								foreach($options as $option)
+								{
+									$tabOpt[$k]=$option['titre'];
+									$k++;
+								}
+								echo '<br>';
+								echo '<table>';
+								
+								echo '<tr>';
+								echo '<td></td>';
+								for($k=0;$k<count($borda);$k++)
+								{
+									echo '<td>'.($k+1).'e</td>';
+								}
+								echo '<td>Points</td>';
+								echo '</tr>';
+								for($i=0; $i<count($borda); $i++)
+								{
+									echo '<tr>';
+									echo '<td>';
+									echo $tabOpt[$i];
+									echo '</td>';
+									for($j=0; $j<count($borda[$i]);$j++)
+									{
+										echo '<td>';
+										echo $borda[$i][$j];
+										echo '</td>';
+									}
+									echo '</tr>';
+								}
+								echo '</table>';
+								//fin affichage
 							}
 							?>
 						</div>

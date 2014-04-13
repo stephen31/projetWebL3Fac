@@ -36,6 +36,9 @@
 							<a href="<?php echo ABSOLUTE_ROOT . '/controleurs/ControleurSondage.php?action=afficherSondages'; ?>" class="btn">Sondages</a>
 						</li>
 						<li>
+							<a href="<?php echo ABSOLUTE_ROOT . '/controleurs/ControleurSondage.php?action=afficherSondagesFinis'; ?>" class="btn">Sondages finis</a>
+						</li>
+						<li>
 							<a href="<?php echo ABSOLUTE_ROOT . '/controleurs/ControleurGroupe.php?action=afficherGroupes'; ?>" class="btn">Groupes</a>
 						</li>
 						<li>
