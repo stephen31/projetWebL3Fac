@@ -7,12 +7,11 @@ class Groupe extends Model
 
     // attributs
     private $groupe_id;
+    private $groupe_desc;
     private $groupe_nom;
     private $groupe_date_creation;
     private $groupe_droit;
     private $ut_id;
-    private $groupe_visibilite;
-
     // constructeur
 
     public function __construct()
@@ -31,11 +30,11 @@ class Groupe extends Model
     public function constructeurVide()
     {
         $this->groupe_id = -1;
+        $this->groupe_desc="";
         $this->ut_id =-1;
         $this->groupe_nom='';
         $this->groupe_droit=0;
         $this->groupe_date_creation='0000-00-00';
-        $this->groupe_visibilite=0;
     }
 
 
@@ -47,20 +46,20 @@ class Groupe extends Model
         if($res->rowCount()==1)
         {
             $this->groupe_id = $result['groupe_id'];
+            $this->groupe_desc=$result['groupe_desc'];
             $this->ut_id =$result['ut_id'];
             $this->groupe_nom=$result['groupe_nom'];
             $this->groupe_droit=$result['groupe_droit'];
             $this->groupe_date_creation=$result['groupe_date_creation'];
-            $this->groupe_visibilite=$result['groupe_visibilite'];
         }
         else
         {
             $this->groupe_id = -1;
+            $this->groupe_desc="";
             $this->ut_id =-1;
             $this->groupe_nom='';
             $this->groupe_droit=0;
             $this->groupe_date_creation='0000-00-00';
-            $this->groupe_visibilite=0;
         }
     }
 
@@ -69,6 +68,10 @@ class Groupe extends Model
     public function getGroupeId()
     {
         return $this->groupe_id;
+    }
+    public function getGroupeDesc()
+    {
+        return $this->groupe_desc;
     }
     public function getUtid()
     {
@@ -86,10 +89,6 @@ class Groupe extends Model
     {
         return $this->groupe_date_creation;
     }
-    public function getVisibilite()
-    {
-        return $this->groupe_visibilite;
-    }
 
     /*************************/
 
@@ -97,6 +96,10 @@ class Groupe extends Model
     public function setGroupeId($g_id)
     {
         $this->groupe_id=$g_id;
+    }
+    public function setGroupeDesc($g_desc)
+    {
+        $this->groupe_id=$g_desc;
     }
     public function setUtid($gutId)
     {
@@ -114,10 +117,7 @@ class Groupe extends Model
     {
         $this->groupe_date_creation=$g_date;
     }
-    public function setVisibilite($g_visi)
-    {
-        $this->groupe_visibilite=$g_visi;
-    }
+
 
 
     /*************************/
@@ -135,13 +135,98 @@ class Groupe extends Model
     }
 
 
-    /* Renvoie les infos d'un sondage en fonction de son id*/
+    /* Renvoie les infos d'un groupe en fonction de son id*/
 
     public function getInfosGroupe($id_g)
     {
         $sql="SELECT * FROM groupe WHERE groupe_id=?";
         $tuple = $this->executerRequete($sql,array($id_g));
         return $tuple->fetchAll();
+    }
+
+
+    /* fonction dajout d'un groupe */
+
+    public function addGroupe()
+    {
+        $sql ='INSERT INTO groupe SET
+        groupe_desc=?,
+        groupe_nom=?,
+        groupe_droit=?,
+        ut_id=?';
+
+        $res = $this->executerRequete($sql,array($this->groupe_desc,$this->groupe_nom,$this->groupe_droit,$this->ut_id));
+        if($res->rowCount() == 1)
+        {
+            return $this->getBdd()->lastInsertId();
+        }
+        else
+        {
+            return false;  
+        }
+
+    }
+
+
+    /* verifie si un nom de groupe est deja present en base */
+
+    public function is_dispo_groupe($groupeN)
+    {
+        $sql="SELECT groupe_id FROM groupe WHERE groupe_nom=?";
+        $tuple = $this->executerRequete($sql,array($groupeN));
+        $numRows = $tuple->rowCount();
+        if($numRows>0)
+        {
+            return false;
+        }
+        return true;
+    }
+
+
+    /* accesseurs aux groupes public */
+
+    public function getGroupePublic()
+    {
+        $sql='SELECT * from groupe
+        WHERE groupe_droit=0';
+
+        $res = $this->executerRequete($sql,array());
+
+        return $res->fetchAll();
+    }
+
+    /* accesseurs a tous les groupes ou l'utilisateur connecter n'y est pas inscrit*/
+    public function getGroupePublicNotIn($idU)
+    {
+        $sql='SELECT * from groupe,inscrit
+        WHERE groupe_droit=0 and NOT EXISTS(SELECT * FROM groupe natural join inscrit WHERE ut_id=?)';
+
+        $res = $this->executerRequete($sql,array($idU));
+
+        return $res->fetchAll();
+    }
+
+
+    /* ajout d'un inscrit au groupe */
+
+    public function addInscrit($idU)
+    {
+        $sql ='INSERT INTO inscrit SET
+        groupe_id=?,
+        ut_id=?';
+        
+
+        $res = $this->executerRequete($sql,array($this->groupe_id,$idU));
+
+        if($res->rowCount() == 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;  
+        }
+
     }
 
 

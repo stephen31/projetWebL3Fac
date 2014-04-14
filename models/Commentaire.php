@@ -216,8 +216,8 @@ class Commentaire extends Model
         $nbSoutient = $infosCom[0]['soutien'];
         $this->beginTransaction(); // demarrage d'une transaction
         $sql = 'UPDATE commentaire SET
-            soutien=?
-            WHERE com_id = ?';
+        soutien=?
+        WHERE com_id = ?';
 
         $sql2 = 'INSERT INTO soutien SET utilisateur_id=?,commentaire_id=?';
 
@@ -251,6 +251,8 @@ class Commentaire extends Model
         else
             return false;
     }
+
+
 
 
 

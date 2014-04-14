@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: 127.0.0.1
--- Généré le: Lun 14 Avril 2014 à 18:43
+-- Généré le: Mar 15 Avril 2014 à 00:31
 -- Version du serveur: 5.6.14
 -- Version de PHP: 5.5.6
 
@@ -46,9 +46,9 @@ CREATE TABLE IF NOT EXISTS `commentaire` (
 --
 
 INSERT INTO `commentaire` (`com_id`, `com_parent_id`, `ut_id`, `sondage_id`, `soutien`, `texte`, `commentaire_date`) VALUES
-(55, NULL, 42, 36, 1, 'Poauzoz', '2014-04-14 16:41:31'),
-(56, NULL, 42, 36, 1, 'jjyjujyuj', '2014-04-14 16:41:56'),
-(57, 55, 42, 36, 1, 'tyhtyht', '2014-04-14 16:42:22');
+(55, NULL, 42, 36, 2, 'Poauzoz', '2014-04-14 16:41:31'),
+(56, NULL, 42, 36, 2, 'jjyjujyuj', '2014-04-14 16:41:56'),
+(57, 55, 42, 36, 2, 'tyhtyht', '2014-04-14 16:42:22');
 
 -- --------------------------------------------------------
 
@@ -62,19 +62,22 @@ CREATE TABLE IF NOT EXISTS `groupe` (
   `groupe_date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `groupe_droit` tinyint(4) NOT NULL DEFAULT '0',
   `ut_id` int(10) unsigned NOT NULL,
-  `groupe_visibilite` tinyint(1) NOT NULL DEFAULT '0',
+  `groupe_desc` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`groupe_id`),
   KEY `ut_id` (`ut_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=20 ;
 
 --
 -- Contenu de la table `groupe`
 --
 
-INSERT INTO `groupe` (`groupe_id`, `groupe_nom`, `groupe_date_creation`, `groupe_droit`, `ut_id`, `groupe_visibilite`) VALUES
-(1, 'LEZY', '2014-03-29 13:47:31', 0, 44, 0),
-(2, 'LEZY2', '2014-03-29 20:28:33', 0, 42, 0),
-(3, 'GROUPETEST1', '2014-04-01 12:35:15', 1, 46, 0);
+INSERT INTO `groupe` (`groupe_id`, `groupe_nom`, `groupe_date_creation`, `groupe_droit`, `ut_id`, `groupe_desc`) VALUES
+(1, 'LEZY', '2014-03-29 13:47:31', 0, 44, ''),
+(2, 'LEZY2', '2014-03-29 20:28:33', 0, 42, ''),
+(3, 'GROUPETEST1', '2014-04-01 12:35:15', 1, 46, ''),
+(17, 'Habon', '2014-04-14 22:21:31', 0, 42, 'zidzldjazlj'),
+(18, 'Tieee', '2014-04-14 22:22:15', 1, 42, 'saalzaùzaz'),
+(19, 'habon2', '2014-04-14 22:28:25', 0, 42, 'zdedzedze');
 
 -- --------------------------------------------------------
 
@@ -95,6 +98,9 @@ CREATE TABLE IF NOT EXISTS `inscrit` (
 --
 
 INSERT INTO `inscrit` (`ut_id`, `groupe_id`, `date_inscription`) VALUES
+(42, 17, '2014-04-14 22:21:31'),
+(42, 18, '2014-04-14 22:22:15'),
+(42, 19, '2014-04-14 22:28:25'),
 (43, 2, '2014-03-29 20:33:07');
 
 -- --------------------------------------------------------
@@ -519,7 +525,7 @@ CREATE TABLE IF NOT EXISTS `soutien` (
   PRIMARY KEY (`soutien_id`),
   KEY `utilisateur_id` (`utilisateur_id`),
   KEY `commentaire_id` (`commentaire_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=56 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=59 ;
 
 --
 -- Contenu de la table `soutien`
@@ -528,7 +534,10 @@ CREATE TABLE IF NOT EXISTS `soutien` (
 INSERT INTO `soutien` (`soutien_id`, `utilisateur_id`, `commentaire_id`) VALUES
 (53, 42, 55),
 (54, 42, 56),
-(55, 42, 57);
+(55, 42, 57),
+(56, 46, 55),
+(57, 46, 57),
+(58, 46, 56);
 
 -- --------------------------------------------------------
 
@@ -604,8 +613,8 @@ INSERT INTO `votant` (`ut_id`, `sondage_id`) VALUES
 -- Contraintes pour la table `commentaire`
 --
 ALTER TABLE `commentaire`
-  ADD CONSTRAINT `commentaire_ibfk_2` FOREIGN KEY (`sondage_id`) REFERENCES `sondage` (`sondage_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `commentaire_ibfk_1` FOREIGN KEY (`ut_id`) REFERENCES `utilisateur` (`ut_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `commentaire_ibfk_1` FOREIGN KEY (`ut_id`) REFERENCES `utilisateur` (`ut_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `commentaire_ibfk_2` FOREIGN KEY (`sondage_id`) REFERENCES `sondage` (`sondage_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `groupe`
