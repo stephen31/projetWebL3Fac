@@ -209,16 +209,47 @@ class Commentaire extends Model
     }
 
     /* incremente le nombre de soutient d'un comentaire */
-    public function addSoutien()
+    public function addSoutien($comid,$utid)
     {
         $infosCom = $this->getInfosCommentaire($this->com_id);
+
         $nbSoutient = $infosCom[0]['soutien'];
+        $this->beginTransaction(); // demarrage d'une transaction
         $sql = 'UPDATE commentaire SET
             soutien=?
             WHERE com_id = ?';
 
-            $res = $this->executerRequete($sql,array($nbSoutient+1,$this->com_id));
-            return ($res->rowCount() == 1);
+        $sql2 = 'INSERT INTO soutien SET utilisateur_id=?,commentaire_id=?';
+
+        $res1 = $this->executerRequete($sql,array($nbSoutient+1,$this->com_id));
+        $res2 = $this->executerRequete($sql2,array($utid,$this->com_id));
+        if ($res1->rowCount() == 1 && $res2->rowCount()==1)
+        {
+            $this->commit();
+            return true;
+        }
+        else
+        {
+            $this->rollback();
+            return false;
+        }
+    }
+
+    /*verifie si une personne a deja voter */
+    public function checkDejaSoutenu($utid)
+    {
+        $sql='SELECT * FROM soutien
+        WHERE soutien.commentaire_id=? and soutien.utilisateur_id=?';
+
+        $res = $this->executerRequete($sql,array($this->com_id,$utid));
+        //echo count($res->fetchAll());
+        //print_r($res->fetchAll());
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }
+        else
+            return false;
     }
 
 

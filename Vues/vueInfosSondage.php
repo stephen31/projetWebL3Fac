@@ -372,10 +372,10 @@ $(document).ready(function(){
 		});
 
 
-	$(".like-button").one("click",function(){
+	$(".like-button").click(function(){
 		//$(this).OnClientClick.disabled = true;
-		var status =$(this).parent().find(".checkComment");
-		var comId = $(this).parent().find("#comId").html();
+		var status =$(this).parent().parent().parent().parent().find("#textCommentInput").find(".checkComment");
+		var comId = $(this).parent().parent().find("#comId").html();
 		var nbSoutient = $(this).find(".nbS").html();
 		var $this = this;
 		$.ajax({
@@ -388,7 +388,7 @@ $(document).ready(function(){
 			success:function(result){
 				if($.trim(result) != "success")
 				{
-					status.html(result).fadeIn(400); // on fadeIn les echo renvoyer par la fonction inscription
+					alert(result); // on fadeIn les echo renvoyer par la fonction inscription
 				}
 				else
 				{

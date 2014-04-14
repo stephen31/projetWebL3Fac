@@ -1072,14 +1072,25 @@ class ControleurSondage extends Controleur
 	{
 		$res=$this->sondage->getInfosSondage($idS);
 		$comInstance = new Commentaire();
-		$res2 = $comInstance->getInfosCommentaire($_POST['com_id']); 
+		$res2 = $comInstance->getInfosCommentaire(intval($_POST['com_id']));
+
 		if($res>0  && $res2 >0)
 		{
 			if(isset($_SESSION['pseudo']) && isset($_SESSION['email']))
 			{
+				//echo $comInstance->getComId();
+
 				$comInstance->POSTToVar($_POST);
 				$comInstance->setSondageId($idS);
 				$comInstance->setUtId($_SESSION['id']);
+
+
+				$res3 = $comInstance->checkDejaSoutenu($_SESSION['id']) ;
+				if($res3==true)
+				{
+					echo " Vous avez deja voter";
+					exit();
+				}
 			// on verifie si le commentaire contient du texte
 				if($comInstance->getSoutien()=="")
 				{
@@ -1089,9 +1100,10 @@ class ControleurSondage extends Controleur
 
 				else
 				{
+
 					$comInstance->setSondageId($idS);
-					$idCom = $comInstance->addSoutien();
-					if($idCom)
+					$rep = $comInstance->addSoutien($comInstance->getComId(),$_SESSION['id']);
+					if($rep==true)
 					{
 						echo "success";
 						exit();
