@@ -450,6 +450,16 @@ class ControleurGroupe extends Controleur
 				exit();
 
 			}
+			else if(($admin == true || $isModerateur == true) && ($isPrivate == true ))
+			{
+				$resultatDeleteInscrit = $this->groupe->deleteInscrit($ut_id);
+				if(!$resultatDeleteInscrit)
+				{
+					$this->erreur("Erreur lors de la suppression de l'inscrit");
+				}
+				Header('Location: '.ABSOLUTE_ROOT.'/controleurs/ControleurGroupe.php?action=afficherInfosGroupe&donnee='.$id_g);
+				exit();
+			}
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
@@ -708,6 +718,109 @@ class ControleurGroupe extends Controleur
 	}
 
 
+	//fonction qui verifie si un pseudo peut etre ajouter a un sondage prive
+	public function verifPseudoUtilisateurG($id_g)
+	{
+		if(isset($_SESSION['id']) && isset($_SESSION['email']) )
+		{
+			$user = new Utilisateur();
+			$user->POSTToVar($_POST);// on echappe le code html des possible donnees recues et on initialise les attributs de l'instance avec les donnees!!
+			//print_r($user->getPseudo());
+			$this->groupe->setGroupeId($id_g);
+			$infosUser = $user->getInfosUser2($user->getPseudo()); // on recupere els infos du nom envoyer
+			if($user->is_dispo_pseudo($user->getPseudo()) == false) // si le pseudo est dispo 
+			{
+				if($this->groupe->checkIsInGroupe($infosUser['ut_id'])==false)
+				{
+					echo "dispo";
+					return 0;
+				}
+				else
+				{
+					echo "Cette personne a deja été ajouter a ce groupe!!";
+					return 1;
+				}
+			}
+			else
+			{
+				echo "pseudo inconnu";
+				return 2;
+			}
+		}
+		else
+		{	
+			echo ("Vous ne pouvez acceder a cette page");
+			return 3;
+		}
+
+	}
+
+
+
+	public function validerAjoutUtilisateurGroupe($id_g)
+	{
+		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
+		{
+			$this->groupe->setGroupeId($id_g);
+			$groupeInfos = $this->groupe->getInfosGroupe($id_g); // on recupere les infos du groupe
+			$id=$_SESSION['id'];
+			$admin =$this->groupe->checkGroupeAdmin($id); // on check s'il est admin du groupe (c.a.d) que c'est lui qui l'a cree
+
+
+			if($admin == true)
+			{
+				$user = new Utilisateur();
+				$user->POSTToVar($_POST);// on echappe le code html des possible donnees recues et on initialise les attributs de l'instance avec les donnees!!
+				if($user->getPseudo()=="")
+				{
+					echo "Veuillez precisez le pseudo";
+					exit();
+				}
+				else if($res=($this->verifPseudoUtilisateurG($id_g))==1)
+				{
+					//echo "Cette personne a deja été ajouter a ce groupe!!";
+					exit();
+				}
+				else if($res=($this->verifPseudoUtilisateurG($id_g))==2)
+				{
+					//echo "pseudo inconnu";
+					exit();
+				}
+				else if($res=($this->verifPseudoUtilisateurG($id_g))==3)
+				{
+					//echo ("Vous ne pouvez acceder a cette page");
+					exit();
+				}
+				else // pas d'erreur on peut inserer en base
+				{
+					$info = $user->getInfosUser2($user->getPseudo()); // recupere les infos par rapport au pseudo
+
+					$resultatAddU = $this->groupe->addInscrit2($info['ut_id']);
+					if($resultatAddU)
+					{
+						echo "UpdateSuccess";
+						exit();
+					}
+					else
+					{
+						echo "Erreur Ajout Utilisateur";
+						exit();
+					}
+				}
+			}
+			else
+			{
+				echo ("Vous ne pouvez acceder a cette page");
+				exit();
+			}
+
+		}
+		else
+		{	
+			echo ("Vous ne pouvez acceder a cette page");
+			exit();
+		}
+	}
 
 
 
