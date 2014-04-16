@@ -163,41 +163,41 @@
 								echo '<div id="borda" style="display:none;">';
 								if(sizeof($options))
 								{
-								
+
 								//affichage du resultat de borda
-								$tabOpt=array();
-								$k=0;
-								foreach($options as $option)
-								{
-									$tabOpt[$k]=$option['titre'];
-									$k++;
-								}
-								echo '<br>';
-								echo '<table>';
-								
-								echo '<tr>';
-								echo '<td></td>';
-								for($k=0;$k<count($borda);$k++)
-								{
-									echo '<td>'.($k+1).'e</td>';
-								}
-								echo '<td>Points</td>';
-								echo '</tr>';
-								for($i=0; $i<count($borda); $i++)
-								{
-									echo '<tr>';
-									echo '<td>';
-									echo $tabOpt[$i];
-									echo '</td>';
-									for($j=0; $j<count($borda[$i]);$j++)
+									$tabOpt=array();
+									$k=0;
+									foreach($options as $option)
 									{
-										echo '<td>';
-										echo $borda[$i][$j];
-										echo '</td>';
+										$tabOpt[$k]=$option['titre'];
+										$k++;
 									}
+									echo '<br>';
+									echo '<table>';
+
+									echo '<tr>';
+									echo '<td></td>';
+									for($k=0;$k<count($borda);$k++)
+									{
+										echo '<td>'.($k+1).'e</td>';
+									}
+									echo '<td>Points</td>';
 									echo '</tr>';
-								}
-								echo '</table>';
+									for($i=0; $i<count($borda); $i++)
+									{
+										echo '<tr>';
+										echo '<td>';
+										echo $tabOpt[$i];
+										echo '</td>';
+										for($j=0; $j<count($borda[$i]);$j++)
+										{
+											echo '<td>';
+											echo $borda[$i][$j];
+											echo '</td>';
+										}
+										echo '</tr>';
+									}
+									echo '</table>';
 								//fin affichage
 								}
 								else
@@ -307,38 +307,137 @@
 
 
 
+
 <script type="text/javascript">
-//window.onload = function () // Javascript version 
-$(document).ready(function(){
+ //window.onload = function () // Javascript version 
+ $(document).ready(function(){
 
-$('#sondage_typeMethode').change(function() {
-	if($(this).val()==-1)
-	{
-		$("#borda").fadeOut(400);
-		$("#concordet").fadeOut(400);
-		$("#alternatif").fadeOut(400);
-	}
-	else if($(this).val()==0)
-	{
-		$("#borda").fadeIn(400);
-		$("#concordet").fadeOut(400);
-		$("#alternatif").fadeOut(400);
-	}
-	else if($(this).val()==1)
-	{
-		$("#borda").fadeOut(400);
-		$("#concordet").fadeIn(400);
-		$("#alternatif").fadeOut(400);
-	}
-	else
-	{
-		$("#borda").fadeOut(400);
-		$("#concordet").fadeOut(400);
-		$("#alternatif").fadeIn(400);
-	}
+
+ 		$('#sondage_typeMethode').change(function() {
+		if($(this).val()==-1)
+		{
+			$("#borda").fadeOut(400);
+			$("#concordet").fadeOut(400);
+			$("#alternatif").fadeOut(400);
+		}
+		else if($(this).val()==0)
+		{
+			$("#borda").fadeIn(400);
+			$("#concordet").fadeOut(400);
+			$("#alternatif").fadeOut(400);
+		}
+		else if($(this).val()==1)
+		{
+			$("#borda").fadeOut(400);
+			$("#concordet").fadeIn(400);
+			$("#alternatif").fadeOut(400);
+		}
+		else
+		{
+			$("#borda").fadeOut(400);
+			$("#concordet").fadeOut(400);
+			$("#alternatif").fadeIn(400);
+		}
+	});
+
+ 	$('.repondre').click(function()
+ 	{
+ 		$(this).parent().parent().next().next().fadeIn(600);
+ 	});
+
+
+ 	$('.closeBtn').click(function()
+ 	{
+ 		$(this).parent().parent().find('#textCommentInput').fadeOut(600);
+ 	});
+
+
+ 	$("textarea").focus(function(){
+ 		$(this).parent().find(".checkComment").fadeOut(800);
+ 	});
+
+
+
+
+
+ 	$(".ajoutComment").click(function(){
+ 			// on definit nos variables
+
+ 			var status =$(this).parent().find(".checkComment");
+ 			var texte = $(this).parent().find("textarea").val();
+ 			var comId = $(this).parent().find("#comId").html();
+ 			var utId = $(this).parent().find("#utId").html();
+ 			
+ 			if(texte=="")
+ 			{
+ 				status.html("Le Champ commentaire est vide !!!").fadeIn(400);
+ 			}
+ 			else // on traite l'envoie du commentaire avec AJAX
+ 			{
+
+ 				$.ajax({
+ 					type:"post",
+ 					url:$(this).attr('value'),
+ 					data: {
+ 						'texte' :texte,
+ 						'com_parent_id':comId,
+ 					},
+ 					success:function(result){
+ 						if($.trim(result) != "success"){
+ 							status.html(result).fadeIn(400); // on fadeIn les echo renvoyer par la fonction inscription
+ 						}
+ 						else
+ 						{
+ 							//$("#table_connexion").replaceWith('<p>Vous venez d\'effectuer votre inscription sur Sondagax<br/>Un lien d\'activation de votre vient de vous etre envoyer</p>');
+ 							alert("Vous venez de poster un comentaire");
+ 							window.location = self.location;
+ 							//$("#bloc_global").replaceWith('<div id="bloc_contents"><p style="text-align:center;color:red"> Bravo Bravo Bravo </br> Vous venez de creer un sondage sur Sondagax</div>');
+ 						}
+ 					},
+ 					error:function(result)
+ 					{
+ 						alert("ERROR");
+ 					}
+ 				});
+ 			}
+ 			return false;
+ 		});
+
+$(".like-button").click(function(){
+	var status =$(this).parent().find(".checkComment");
+	var comId = $(this).parent().find("#comId").html();
+	var nbSoutient = $(this).find(".nbS").html();
+	var $this = this;
+	$.ajax({
+		type:"post",
+		url:$(this).attr('href'),
+		data: {
+			'soutien' :1,
+			'com_id':comId,
+		},
+		success:function(result){
+			if($.trim(result) != "success")
+			{
+ 					status.html(result).fadeIn(400); // on fadeIn les echo renvoyer par la fonction inscription
+ 				}
+ 				else
+ 				{
+
+ 					//$("#table_connexion").replaceWith('<p>Vous venez d\'effectuer votre inscription sur Sondagax<br/>Un lien d\'activation de votre vient de vous etre envoyer</p>');
+ 					$($this).find(".nbS").hide().html(parseInt(nbSoutient)+1).fadeIn(400);
+ 					//$("#bloc_global").replaceWith('<div id="bloc_contents"><p style="text-align:center;color:red"> Bravo Bravo Bravo </br> Vous venez de creer un sondage sur Sondagax</div>');
+ 				}
+ 			},
+ 			error:function(result)
+ 			{
+ 				alert("ERROR");
+ 			}
+ 		});
+
+});
+
 });
 
 
-});
-	
+
 </script>
