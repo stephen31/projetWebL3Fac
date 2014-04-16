@@ -25,7 +25,7 @@ class ControleurUser extends Controleur
 		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
 		{
 			$id=$_SESSION['id'];
-			echo $id;
+			//echo $id;
 			$sondages=$sondage->getSondagesUserConnectAccueuil($id);
 			$this->vue = new VueConnecter("Accueil");
 			$this->vue->generer(array("sondages"=>$sondages));

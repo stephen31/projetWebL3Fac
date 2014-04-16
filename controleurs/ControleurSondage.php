@@ -239,6 +239,7 @@ class ControleurSondage extends Controleur
 	public function afficherInfosSondage($id_s)
 	{
 		$resBorda=$this->sondage->borda($id_s);
+		$resCondorcet=$this->sondage->condorcet($id_s);
 		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
 		{
 			//$sondageInstance = new Sondage($id_s);

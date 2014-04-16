@@ -118,7 +118,6 @@
 
 						<div class="control-group">
 							Liste des options:
-
 							<?php foreach($options as $option): ?>
 								<span>,<?php echo $option['titre']; ?></span>
 							<?php endforeach; ?>

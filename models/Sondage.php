@@ -787,6 +787,19 @@ public function addReponse($id_s,$id_ut,$array)
 
     public function addReponseAnonyme($id_s,$array)
     {
+		$id_vote;
+		$sql='select vote_id as id from reponseanonyme where vote_id >= all(select vote_id from reponseanonyme)';
+		$res = $this->executerRequete($sql,array());
+		if($res->rowcount()==0)
+			$id_vote=1;
+		else
+		{
+			$resul=$res->fetch();
+			$resultat=$resul['id'];
+			$id_vote=$resultat+1;
+		}
+		//echo $id_vote;
+		$k=1;
         $opts=$this->getOptions($id_s);
         $this->beginTransaction(); // demarrage d'une transaction
         foreach ($array as $key => $value)
@@ -800,12 +813,14 @@ public function addReponse($id_s,$id_ut,$array)
                     $id_opt=$opt['option_id'];
                 }
             }
-            $sql ='INSERT INTO reponseanonyme SET
+			
+            $sql1 ="INSERT INTO reponseanonyme SET
+			vote_id=?,
             sondage_id =?,
             option_id=?,
-            rang=?';
-            $res = $this->executerRequete($sql,array($id_s,$id_opt,$value));
-            if($res->rowcount()==0) // si aucune ligne affecter par la requete alors on rollback et on return faux
+            rang=?";
+            $res1 = $this->executerRequete($sql1,array($id_vote,$id_s,$id_opt,$value));
+            if($res1->rowcount()==0) // si aucune ligne affecter par la requete alors on rollback et on return faux
             {
                 $this->rollback();
                 return false;
@@ -900,6 +915,87 @@ public function addReponse($id_s,$id_ut,$array)
         }
         return $tab;
     }
+	//voir renvoie l'indice du gagnant s'il en existe sinon renvoie false
+	public function checkGagnant($tab,$sond)
+	{
+		$bool=false;
+
+		$cpt=0;
+		for($i=0;$i<count($tab);$i++)
+		{
+			$cpt=0;
+			for($j=0;$j<count($tab);$j++)
+			{
+				if($i!=$j)
+				{
+					if($tab[$i][$j]>$tab[$j][$i])
+						$cpt++;
+				}
+				if( $cpt == (count($tab)-1))
+				{
+					return $i+1;
+				}
+			}
+		}
+		return $bool;
+	}
+	
+	public function condorcet($id_s)
+	{
+		$sond=new Sondage();
+        $sond->constructeurParametre($id_s);
+        $opts=$this->getOptions($id_s);
+        $tab=array(array());;
+        $k=1;
+		$l;
+        $id;
+		$id2;
+		$mafonction;
+		$mafonction2;
+        foreach($opts as $opt)
+        {
+            $mafonction="setOption".$k;
+            $sond->$mafonction($opt['titre']);
+            $k++;
+        }
+		for($i=0 ; $i<sizeof($opts) ; $i++)
+        {
+			$tab[$i][$i]=0;
+			for($j=0 ; $j<sizeof($opts) ; $j++)
+			{
+				if($i!=$j)
+				{
+					$k=$i+1;
+					$l=$j+1;
+					$mafonction="getOption".$k;
+					$mafonction2="getOption".$l;
+					foreach($opts as $opt)
+					{
+						if($opt['titre']===$sond->$mafonction())
+						{
+							$id=$opt['option_id'];
+						}
+						if($opt['titre']===$sond->$mafonction2())
+						{
+							$id2=$opt['option_id'];
+						}
+					}
+					$sql1='SELECT count(*) as nb FROM `reponseanonyme` r1,`reponseanonyme` r2 WHERE r1.option_id=? and r2.option_id=? and r1.rang<r2.rang and r1.vote_id=r2.vote_id';
+					$res1=$this->executerRequete($sql1,array($id,$id2));
+					$resul1=$res1->fetch();
+					$resultat1=$resul1['nb'];
+					
+					$sql2='SELECT count(*) as nb FROM `reponse` r1,`reponse` r2 WHERE r1.option_id=? and r2.option_id=? 
+					and r1.rang<r2.rang and r1.ut_id=r2.ut_id and r1.sondage_id=r2.sondage_id';
+					$res2=$this->executerRequete($sql2,array($id,$id2));
+					$resul2=$res2->fetch();
+					$resultat2=$resul2['nb'];
+					$tab[$i][$j]=$resultat1+$resultat2;
+				}
+			}
+		}
+		return $tab;
+	}
 
 }
 
