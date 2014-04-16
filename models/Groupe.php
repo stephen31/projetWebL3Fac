@@ -195,11 +195,21 @@ class Groupe extends Model
         return $res->fetchAll();
     }
 
-    /* accesseurs a tous les groupes ou l'utilisateur connecter n'y est pas inscrit*/
-    public function getGroupePublicNotIn($idU)
+    public function getGroupePublicAndPrive()
     {
-        $sql='SELECT * from groupe,inscrit
-        WHERE groupe_droit=0 and NOT EXISTS(SELECT * FROM groupe natural join inscrit WHERE ut_id=?)';
+        $sql='SELECT * from groupe
+        WHERE groupe_droit=0 or groupe_droit=1';
+
+        $res = $this->executerRequete($sql,array());
+
+        return $res->fetchAll();
+    }
+
+    /* accesseurs a tous les groupes ou l'utilisateur connecter n'y est pas inscrit*/
+    public function getGroupePublicAndPriveNotIn($idU)
+    {
+        $sql='SELECT DISTINCT groupe.groupe_id,groupe_nom,groupe_desc,groupe_droit,groupe_date_creation from groupe
+        WHERE groupe.groupe_id NOT IN (SELECT groupe_id FROM inscrit WHERE inscrit.ut_id=?) and groupe_droit <>2;';
 
         $res = $this->executerRequete($sql,array($idU));
 
@@ -207,7 +217,30 @@ class Groupe extends Model
     }
 
 
-    /* ajout d'un inscrit au groupe */
+    /* get groupe privee */
+    public function getGroupesCrees($idU)
+    {
+        $sql='SELECT * from groupe
+        WHERE ut_id=?';
+
+        $res = $this->executerRequete($sql,array($idU));
+
+        return $res->fetchAll();
+    }
+
+    /* get groupe privee */
+    public function getGroupesActifs($idU)
+    {
+        $sql='SELECT * from groupe,inscrit
+        WHERE groupe.groupe_id = inscrit.groupe_id and inscrit.ut_id=?';
+
+        $res = $this->executerRequete($sql,array($idU));
+
+        return $res->fetchAll();
+    }
+
+
+    /* ajout d'un inscrit au groupe public inscrit  */
 
     public function addInscrit($idU)
     {
@@ -228,6 +261,295 @@ class Groupe extends Model
         }
 
     }
+
+    /* ajout d'un inscrit au groupe public et privee */
+
+    public function addInscrit2($idU)
+    {
+        $sql ='INSERT INTO inscrit SET
+        groupe_id=?,
+        ut_id=?,
+        inscrit_valide=1';
+        
+
+        $res = $this->executerRequete($sql,array($this->groupe_id,$idU));
+
+        if($res->rowCount() == 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;  
+        }
+
+    }
+
+    // fonction qui check si l'utilisateur est admin du groupe
+    public function checkGroupeAdmin($utId)
+    {
+        $sql='SELECT * FROM groupe
+        WHERE groupe.ut_id=? and groupe.groupe_id=?';
+
+        $res = $this->executerRequete($sql,array($utId,$this->groupe_id));
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }       
+        else
+            return false;
+    }
+
+    // check si un groupe est public inscrit
+    public function checkGroupePublic()
+    {
+
+        $sql='SELECT * FROM groupe
+        WHERE groupe.groupe_id=? and groupe_droit=0';
+
+        $res = $this->executerRequete($sql,array($this->groupe_id));
+
+        //print_r($res->fetchAll());
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    // check si un groupe est privee
+    public function checkGroupePrivate()
+    {
+
+        $sql='SELECT * FROM groupe
+        WHERE groupe.groupe_id=? and groupe_droit=2';
+
+        $res = $this->executerRequete($sql,array($this->groupe_id));
+
+        //print_r($res->fetchAll());
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    // check si un groupe est public inscrit
+    public function checkGroupePublicInscrit()
+    {
+
+        $sql='SELECT * FROM groupe
+        WHERE groupe.groupe_id=? and groupe_droit=1';
+
+        $res = $this->executerRequete($sql,array($this->groupe_id));
+
+        //print_r($res->fetchAll());
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    // fonction qui check si le groupe a des moderateur
+    public function checkHaveModerateur()
+    {
+        $sql='SELECT * FROM groupe,moderateur_groupe
+        WHERE groupe.groupe_id=moderateur_groupe.groupe_id and groupe.groupe_id=?';
+
+        $res = $this->executerRequete($sql,array($this->groupe_id));
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }       
+        else
+            return false;
+    }
+
+    // check si un utilisateur est dans un groupe privee
+    public function isInGroupePrivate($id_u)
+    {
+        $sql='SELECT * FROM inscrit,groupe
+        WHERE inscrit.groupe_id = groupe.groupe_id and inscrit.ut_id=? and inscrit.groupe_id=? and groupe.groupe_droit=2';
+
+        $res = $this->executerRequete($sql,array($id_u,$this->groupe_id));
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }       
+        else
+            return false;
+    }
+
+
+    /* tous les sondages d'un groupe*/
+    public function getAllSondagesGroupe()
+    {
+        $sql='SELECT * from groupe natural join sondage WHERE groupe.groupe_id=?';
+
+        $res = $this->executerRequete($sql,array($this->groupe_id));
+
+        return $res->fetchAll();
+    }
+
+
+    /* tous les utilisateurs d'un groupe*/
+    public function getUserInscrit()
+    {
+        $sql='SELECT DISTINCT utilisateur.ut_id,utilisateur.ut_id,utilisateur.ut_pseudo from inscrit natural join utilisateur WHERE inscrit.groupe_id=? and inscrit.inscrit_valide=1';
+
+        $res = $this->executerRequete($sql,array($this->groupe_id));
+
+        return $res->fetchAll();
+    }
+
+    /* toute les demandes utilisateurs d'un groupe*/
+    public function getUserDemande()
+    {
+        $sql='SELECT * from inscrit natural join utilisateur WHERE inscrit.groupe_id=? and inscrit_valide=0';
+
+        $res = $this->executerRequete($sql,array($this->groupe_id));
+
+        return $res->fetchAll();
+    }
+
+    /* createur d'un groupe*/
+    public function getCreateurGroupe()
+    {
+        $sql='SELECT utilisateur.ut_pseudo from groupe natural join utilisateur WHERE groupe.groupe_id=?';
+
+        $res = $this->executerRequete($sql,array($this->groupe_id));
+
+        return $res->fetchAll();
+    }
+
+    // check si un utilisateur est moderateur du groupe
+    public function checkModerateur($id_u)
+    {
+        $sql="SELECT ut_id FROM moderateur_groupe WHERE ut_id=? and groupe_id=?";
+        $tuple = $this->executerRequete($sql,array($id_u,$this->groupe_id));
+
+        $result = $tuple->fetchAll();
+        if(count($result)>0)
+        {
+            return 1;
+        }
+        return 0;
+    }
+
+
+    // check si un utilisateur est dans le groupe
+    public function checkIsInGroupe($id_u)
+    {
+        $sql='SELECT * FROM inscrit
+        WHERE groupe_id = ? and ut_id=? and inscrit_valide=1';
+
+        $res = $this->executerRequete($sql,array($this->groupe_id,$id_u));
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }       
+        else
+            return false;
+    }
+
+    // check si un utilisateur est dans le groupe
+    public function checkIsInGroupeAttente($id_u)
+    {
+        $sql='SELECT * FROM inscrit
+        WHERE groupe_id = ? and ut_id=? and inscrit_valide=0';
+
+        $res = $this->executerRequete($sql,array($this->groupe_id,$id_u));
+        if(count($res->fetchAll())>0)
+        {
+            return true;
+        }       
+        else
+            return false;
+    }
+
+
+    // retire un inscrit a la table inscrit
+    public function deleteInscrit($idU)
+    {
+        $sql ='DELETE FROM inscrit WHERE
+        groupe_id =? and
+        ut_id=?';
+
+        $res = $this->executerRequete($sql,array($this->groupe_id,$idU));
+        //echo $this->sondage_id,$opt;
+        if($res->rowCount()==1)
+        {
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    // retire un moderateur a la table moderateur
+    public function deleteModerateur($idU)
+    {
+        $sql ='DELETE FROM moderateur_groupe WHERE
+        groupe_id =? and
+        ut_id=?';
+
+        $res = $this->executerRequete($sql,array($this->groupe_id,$idU));
+        //echo $this->sondage_id,$opt;
+        if($res->rowCount()==1)
+        {
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function validationInscrit($idU)
+    {
+        $sql = 'UPDATE inscrit SET
+        inscrit_valide=1
+        WHERE groupe_id = ? and ut_id=?';
+
+        $res = $this->executerRequete($sql,array($this->groupe_id,$idU));
+        return $res;
+    }
+
+
+        // methode qui ajoute un moderateur au groupe
+    public function addModerateur($id_u)
+    {
+
+        $sql='INSERT INTO moderateur_groupe SET
+        ut_id=?,
+        groupe_id=?';
+
+        $res= $this->executerRequete($sql,array($id_u,$this->groupe_id));
+
+        if($res->rowCount()==1)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+    // recupere les infos d'un utilisateur participant a un sondage privé
+    public function getUserInfosModerateurGroupe($id_g)
+    {
+        $sql="SELECT ut_id,ut_pseudo,ut_mail,groupe_id FROM utilisateur natural join moderateur_groupe WHERE groupe_id=?";
+        $tuple = $this->executerRequete($sql,array($id_g));
+        return $tuple->fetchAll();
+
+    }
+
 
 
 

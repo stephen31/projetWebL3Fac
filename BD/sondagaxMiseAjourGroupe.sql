@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.1.6
+-- version 4.0.9
 -- http://www.phpmyadmin.net
 --
--- Client :  127.0.0.1
--- Généré le :  Ven 04 Avril 2014 à 17:44
--- Version du serveur :  5.6.16
--- Version de PHP :  5.5.9
+-- Client: localhost
+-- Généré le: Mer 16 Avril 2014 à 20:40
+-- Version du serveur: 5.6.14
+-- Version de PHP: 5.5.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Base de données :  `sondagax`
+-- Base de données: `sondagax`
 --
 
 -- --------------------------------------------------------
@@ -28,14 +28,18 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `commentaire` (
   `com_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `com_parent_id` int(10) DEFAULT NULL,
   `ut_id` int(10) unsigned NOT NULL,
   `sondage_id` int(10) unsigned NOT NULL,
   `soutien` int(11) NOT NULL DEFAULT '0',
   `texte` text COLLATE utf8_unicode_ci NOT NULL,
+  `commentaire_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`com_id`,`ut_id`,`sondage_id`),
   KEY `ut_id` (`ut_id`),
-  KEY `sondage_id` (`sondage_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+  KEY `sondage_id` (`sondage_id`),
+  KEY `com_parent_id` (`com_parent_id`),
+  KEY `com_parent_id_2` (`com_parent_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=58 ;
 
 -- --------------------------------------------------------
 
@@ -49,19 +53,19 @@ CREATE TABLE IF NOT EXISTS `groupe` (
   `groupe_date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `groupe_droit` tinyint(4) NOT NULL DEFAULT '0',
   `ut_id` int(10) unsigned NOT NULL,
-  `groupe_visibilite` tinyint(1) NOT NULL DEFAULT '0',
+  `groupe_desc` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`groupe_id`),
   KEY `ut_id` (`ut_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=27 ;
 
 --
 -- Contenu de la table `groupe`
 --
 
-INSERT INTO `groupe` (`groupe_id`, `groupe_nom`, `groupe_date_creation`, `groupe_droit`, `ut_id`, `groupe_visibilite`) VALUES
-(1, 'LEZY', '2014-03-29 13:47:31', 0, 44, 0),
-(2, 'LEZY2', '2014-03-29 20:28:33', 0, 42, 0),
-(3, 'GROUPETEST1', '2014-04-01 12:35:15', 1, 46, 0);
+INSERT INTO `groupe` (`groupe_id`, `groupe_nom`, `groupe_date_creation`, `groupe_droit`, `ut_id`, `groupe_desc`) VALUES
+(24, 'Groupe1', '2014-04-16 15:36:45', 1, 42, 'Ceci est un groupe test'),
+(25, 'Groupe2', '2014-04-16 18:30:21', 1, 43, 'Le groupe test 2'),
+(26, 'Groupe 3', '2014-04-16 18:30:55', 2, 43, 'Test Groupe 3');
 
 -- --------------------------------------------------------
 
@@ -72,6 +76,7 @@ INSERT INTO `groupe` (`groupe_id`, `groupe_nom`, `groupe_date_creation`, `groupe
 CREATE TABLE IF NOT EXISTS `inscrit` (
   `ut_id` int(10) unsigned NOT NULL,
   `groupe_id` int(10) unsigned NOT NULL,
+  `inscrit_valide` tinyint(1) NOT NULL DEFAULT '0',
   `date_inscription` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ut_id`,`groupe_id`),
   KEY `groupe_id` (`groupe_id`)
@@ -81,8 +86,12 @@ CREATE TABLE IF NOT EXISTS `inscrit` (
 -- Contenu de la table `inscrit`
 --
 
-INSERT INTO `inscrit` (`ut_id`, `groupe_id`, `date_inscription`) VALUES
-(43, 2, '2014-03-29 20:33:07');
+INSERT INTO `inscrit` (`ut_id`, `groupe_id`, `inscrit_valide`, `date_inscription`) VALUES
+(42, 24, 1, '2014-04-16 15:36:45'),
+(42, 25, 1, '2014-04-16 18:32:08'),
+(43, 24, 1, '2014-04-16 17:50:36'),
+(43, 25, 1, '2014-04-16 18:30:21'),
+(43, 26, 1, '2014-04-16 18:30:55');
 
 -- --------------------------------------------------------
 
@@ -97,6 +106,13 @@ CREATE TABLE IF NOT EXISTS `moderateur_groupe` (
   KEY `groupe_id` (`groupe_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Contenu de la table `moderateur_groupe`
+--
+
+INSERT INTO `moderateur_groupe` (`ut_id`, `groupe_id`) VALUES
+(43, 24);
+
 -- --------------------------------------------------------
 
 --
@@ -110,6 +126,13 @@ CREATE TABLE IF NOT EXISTS `moderateur_sondage` (
   KEY `moderateur_sondage_ibfk_2` (`sondage_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Contenu de la table `moderateur_sondage`
+--
+
+INSERT INTO `moderateur_sondage` (`ut_id`, `sondage_id`) VALUES
+(43, 42);
+
 -- --------------------------------------------------------
 
 --
@@ -122,15 +145,13 @@ CREATE TABLE IF NOT EXISTS `option` (
   `titre` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`option_id`),
   KEY `sondage_id` (`sondage_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=35 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=54 ;
 
 --
 -- Contenu de la table `option`
 --
 
 INSERT INTO `option` (`option_id`, `sondage_id`, `titre`) VALUES
-(2, 27, 'Apoepz'),
-(3, 27, 'ppoeozeoz'),
 (4, 28, 'Optea1'),
 (5, 28, 'Optoe2'),
 (9, 29, 'po1'),
@@ -145,16 +166,26 @@ INSERT INTO `option` (`option_id`, `sondage_id`, `titre`) VALUES
 (18, 31, 'i'),
 (19, 31, 'o'),
 (20, 31, 'a'),
-(21, 31, 'u'),
 (22, 35, 'LasauceMan'),
 (23, 35, 'LasauceMan2'),
 (24, 35, 'LasauceMan3'),
 (25, 35, 'LasauceMan4'),
 (26, 35, 'LasauceMan'),
-(31, 38, 'OZPOEIZOPEI'),
-(32, 38, 'zjdzoidjzioj'),
-(33, 38, 'izjdoeijzoejdzoe'),
-(34, 38, 'OZPOEIZOPEI');
+(35, 39, 'OOPt'),
+(36, 39, 'OOPt2'),
+(37, 39, 'OOPt3'),
+(38, 39, 'OOPt'),
+(43, 41, 'atye'),
+(44, 41, 'atye2'),
+(45, 41, 'Atye3'),
+(46, 41, 'atye'),
+(47, 42, 'haha1'),
+(48, 42, 'haha2'),
+(49, 42, 'haha3'),
+(50, 43, 'op1'),
+(51, 43, 'op2'),
+(52, 43, 'op3'),
+(53, 43, 'op4');
 
 -- --------------------------------------------------------
 
@@ -177,8 +208,20 @@ CREATE TABLE IF NOT EXISTS `reponse` (
 --
 
 INSERT INTO `reponse` (`ut_id`, `option_id`, `rang`, `sondage_id`) VALUES
-(42, 4, 2, 28),
-(44, 11, 2, 29);
+(42, 50, 1, 43),
+(42, 51, 2, 43),
+(42, 52, 3, 43),
+(42, 53, 4, 43),
+(46, 17, 1, 31),
+(46, 18, 1, 31),
+(46, 19, 1, 31),
+(46, 20, 1, 31),
+(46, 44, 1, 41),
+(46, 45, 1, 41),
+(46, 46, 1, 41),
+(46, 47, 1, 42),
+(46, 48, 1, 42),
+(46, 49, 1, 42);
 
 -- --------------------------------------------------------
 
@@ -193,6 +236,222 @@ CREATE TABLE IF NOT EXISTS `reponseanonyme` (
   KEY `sondage_id` (`sondage_id`,`option_id`),
   KEY `option_id` (`option_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `reponseanonyme`
+--
+
+INSERT INTO `reponseanonyme` (`sondage_id`, `option_id`, `rang`) VALUES
+(42, 47, 1),
+(42, 48, 1),
+(42, 49, 1),
+(41, 46, 1),
+(41, 44, 1),
+(41, 45, 1),
+(42, 47, 1),
+(42, 48, 3),
+(42, 49, 1),
+(41, 46, 1),
+(41, 44, 1),
+(41, 45, 1),
+(42, 47, 1),
+(42, 48, 1),
+(42, 49, 1),
+(41, 46, 1),
+(41, 44, 1),
+(41, 45, 1),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 1),
+(43, 51, 2),
+(43, 52, 3),
+(43, 53, 4),
+(43, 50, 4),
+(43, 51, 1),
+(43, 52, 2),
+(43, 53, 3),
+(43, 50, 4),
+(43, 51, 1),
+(43, 52, 2),
+(43, 53, 3),
+(43, 50, 4),
+(43, 51, 1),
+(43, 52, 2),
+(43, 53, 3),
+(43, 50, 4),
+(43, 51, 1),
+(43, 52, 2),
+(43, 53, 3),
+(43, 50, 4),
+(43, 51, 1),
+(43, 52, 2),
+(43, 53, 3),
+(43, 50, 4),
+(43, 51, 1),
+(43, 52, 2),
+(43, 53, 3),
+(43, 50, 4),
+(43, 51, 1),
+(43, 52, 2),
+(43, 53, 3),
+(43, 50, 4),
+(43, 51, 1),
+(43, 52, 2),
+(43, 53, 3),
+(43, 50, 4),
+(43, 51, 1),
+(43, 52, 2),
+(43, 53, 3),
+(43, 50, 4),
+(43, 51, 1),
+(43, 52, 2),
+(43, 53, 3),
+(43, 50, 4),
+(43, 51, 1),
+(43, 52, 2),
+(43, 53, 3),
+(43, 50, 4),
+(43, 51, 1),
+(43, 52, 2),
+(43, 53, 3),
+(43, 50, 4),
+(43, 51, 1),
+(43, 52, 2),
+(43, 53, 3),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 1),
+(43, 53, 2),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 1),
+(43, 53, 2),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 1),
+(43, 53, 2),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 1),
+(43, 53, 2),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 1),
+(43, 53, 2),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 1),
+(43, 53, 2),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 1),
+(43, 53, 2),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 2),
+(43, 53, 1),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 2),
+(43, 53, 1),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 2),
+(43, 53, 1),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 2),
+(43, 53, 1),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 2),
+(43, 53, 1),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 2),
+(43, 53, 1),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 2),
+(43, 53, 1),
+(43, 50, 4),
+(43, 51, 3),
+(43, 52, 2),
+(43, 53, 1);
 
 -- --------------------------------------------------------
 
@@ -214,40 +473,38 @@ CREATE TABLE IF NOT EXISTS `sondage` (
   PRIMARY KEY (`sondage_id`),
   KEY `ut_id` (`ut_id`),
   KEY `groupe_id` (`groupe_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=39 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=44 ;
 
 --
 -- Contenu de la table `sondage`
 --
 
 INSERT INTO `sondage` (`sondage_id`, `ut_id`, `titre`, `texte_desc`, `sondage_droit`, `date_fin`, `type_methode`, `visibilite`, `groupe_id`, `sondage_date_create`) VALUES
-(27, 42, 'n,vndndnf;', 'nbfsbfskfjskjehejkh', 0, '2093-12-22', 0, 0, 1, '2013-08-23 12:11:43'),
-(28, 42, 'la sauce mamane', 'oioiuzeiorueijkjejkf', 2, '2093-12-22', 0, 0, NULL, '2013-03-19 13:11:43'),
-(29, 42, 'Poomzlaoi', 'hkjehzelmkzjemlezlj', 1, '2093-12-22', 0, 0, NULL, '2013-08-29 00:11:43'),
+(28, 42, 'ModifSondage', 'oioiuzeiorueijkjejkf', 2, '2093-12-22', 0, 0, NULL, '2013-03-19 13:11:43'),
+(29, 44, 'Poomzlaoi', 'hkjehzelmkzjemlezlj', 1, '2093-12-22', 0, 0, NULL, '2013-08-29 00:11:43'),
 (30, 43, 'sarco ou holande', 'petit sondage', 2, '2014-11-01', 1, 1, NULL, '2014-04-01 12:11:43'),
 (31, 43, 'lool', 'dool', 1, '2015-04-15', 1, 1, NULL, '2014-02-01 13:11:43'),
-(32, 42, 'sondage_groupe', 'yeah', 0, '2014-03-31', 0, 0, 2, '2012-07-16 12:11:43'),
 (34, 44, 'cree', 'jejeje', 0, '2014-04-05', 0, 0, NULL, '2014-01-01 04:28:43'),
-(35, 42, 'Makiaveliche', 'lzjediznjbdjehgfzejgze ejfezjhfgzjhb', 0, '2015-05-23', 1, 1, NULL, '2014-04-01 12:11:43'),
-(36, 46, 'PKOAKZA', 'dajzdlakjdzke', 0, '2014-04-23', 0, 0, 2, '2014-04-01 13:01:51'),
-(38, 46, 'ManoloSondage', 'Lapeoa ;ldzedezdzed', 3, '2015-06-30', 0, 0, 3, '2014-04-01 13:13:24');
+(35, 42, 'Makiaveliche', 'lzjediznjbdjehgfzejgze ejfezjhfgzjhb', 2, '2015-05-23', 1, 1, NULL, '2014-04-01 12:11:43'),
+(39, 44, 'salut', 'ziduzodiuezo', 3, '2014-06-30', 0, 0, NULL, '2014-04-06 14:13:48'),
+(41, 42, 'djoblek23RRZZ', '111dzefefe dedzdzdezdede', 0, '2032-02-12', 0, 0, NULL, '2014-04-06 20:31:15'),
+(42, 42, 'Titre22144', 'descjfehfe', 1, '2014-12-02', 0, 0, NULL, '2014-04-06 20:40:10'),
+(43, 43, 'test borda', 'test test test', 0, '2014-04-12', 0, 0, NULL, '2014-04-13 16:51:39');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ss_commentaire`
+-- Structure de la table `soutien`
 --
 
-CREATE TABLE IF NOT EXISTS `ss_commentaire` (
-  `ss_com_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `com_id` int(10) unsigned NOT NULL,
-  `ut_id` int(10) unsigned NOT NULL,
-  `texte` text COLLATE utf8_unicode_ci NOT NULL,
-  `soutien` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ss_com_id`,`com_id`,`ut_id`),
-  KEY `ss_commentaire_ibfk_1` (`com_id`),
-  KEY `ss_commentaire_ibfk_2` (`ut_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `soutien` (
+  `soutien_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `utilisateur_id` int(10) unsigned NOT NULL,
+  `commentaire_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`soutien_id`),
+  KEY `utilisateur_id` (`utilisateur_id`),
+  KEY `commentaire_id` (`commentaire_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=59 ;
 
 -- --------------------------------------------------------
 
@@ -312,7 +569,6 @@ CREATE TABLE IF NOT EXISTS `votant` (
 --
 
 INSERT INTO `votant` (`ut_id`, `sondage_id`) VALUES
-(42, 28),
 (43, 28),
 (44, 30);
 
@@ -324,8 +580,8 @@ INSERT INTO `votant` (`ut_id`, `sondage_id`) VALUES
 -- Contraintes pour la table `commentaire`
 --
 ALTER TABLE `commentaire`
-  ADD CONSTRAINT `commentaire_ibfk_1` FOREIGN KEY (`ut_id`) REFERENCES `utilisateur` (`ut_id`),
-  ADD CONSTRAINT `commentaire_ibfk_2` FOREIGN KEY (`sondage_id`) REFERENCES `sondage` (`sondage_id`);
+  ADD CONSTRAINT `commentaire_ibfk_1` FOREIGN KEY (`ut_id`) REFERENCES `utilisateur` (`ut_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `commentaire_ibfk_2` FOREIGN KEY (`sondage_id`) REFERENCES `sondage` (`sondage_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `groupe`
@@ -372,8 +628,8 @@ ALTER TABLE `reponse`
 -- Contraintes pour la table `reponseanonyme`
 --
 ALTER TABLE `reponseanonyme`
-  ADD CONSTRAINT `reponseanonyme_ibfk_2` FOREIGN KEY (`option_id`) REFERENCES `option` (`option_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  ADD CONSTRAINT `reponseanonyme_ibfk_1` FOREIGN KEY (`sondage_id`) REFERENCES `sondage` (`sondage_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+  ADD CONSTRAINT `reponseanonyme_ibfk_1` FOREIGN KEY (`sondage_id`) REFERENCES `sondage` (`sondage_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `reponseanonyme_ibfk_2` FOREIGN KEY (`option_id`) REFERENCES `option` (`option_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 --
 -- Contraintes pour la table `sondage`
@@ -383,11 +639,11 @@ ALTER TABLE `sondage`
   ADD CONSTRAINT `sondage_ibfk_2` FOREIGN KEY (`groupe_id`) REFERENCES `groupe` (`groupe_id`) ON DELETE CASCADE;
 
 --
--- Contraintes pour la table `ss_commentaire`
+-- Contraintes pour la table `soutien`
 --
-ALTER TABLE `ss_commentaire`
-  ADD CONSTRAINT `ss_commentaire_ibfk_1` FOREIGN KEY (`com_id`) REFERENCES `commentaire` (`com_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  ADD CONSTRAINT `ss_commentaire_ibfk_2` FOREIGN KEY (`ut_id`) REFERENCES `utilisateur` (`ut_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `soutien`
+  ADD CONSTRAINT `soutien_ibfk_1` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`ut_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `soutien_ibfk_2` FOREIGN KEY (`commentaire_id`) REFERENCES `commentaire` (`com_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 --
 -- Contraintes pour la table `ss_groupe`

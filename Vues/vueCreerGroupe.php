@@ -181,7 +181,7 @@ $(document).ready(function(){
 						{
 							//$("#table_connexion").replaceWith('<p>Vous venez d\'effectuer votre inscription sur Sondagax<br/>Un lien d\'activation de votre vient de vous etre envoyer</p>');
 							alert("Vous venez de Creer un Groupe")
-							window.location.href="ControleurSondage.php?action=afficherMesGroupesCree";
+							window.location.href="ControleurGroupe.php?action=afficherMesGroupesCrees";
 						}
 					},
 					error:function(result)

@@ -36,7 +36,7 @@
 			}
 			?>
 			<div id="blocBouton">
-				<a>
+				<a href="<?php echo ABSOLUTE_ROOT . "/controleurs/ControleurSondage.php?action=afficherInfosSondage&donnee={$sondage['sondage_id']}"; ?>">
 					<div class="btn_participer">
 						Voir<br/>Etat du sondage
 					</div>

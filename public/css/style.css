@@ -864,6 +864,14 @@ input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
 	margin-right: 80px;
 }
 
+#contenu #bloc_principal #bloc_global #table_connexion table
+{
+	display:inline-block;
+	margin-right: 80px;
+	vertical-align: top;
+} 
+
+
 fieldset > legend {
 	font-size: 16px;
 	font-weight: 700;
@@ -876,6 +884,7 @@ fieldset > legend {
 fieldset .control-group {
 	margin: 0px auto;
 	padding-top: 14px;
+	
 }
 fieldset .checkSubmit{
 	display:block;
@@ -1045,6 +1054,17 @@ fieldset table tr:hover td {
 	border-collapse: separate;
 	border-spacing:6px 0;
 }
+#contenu #bloc_principal #bloc_contents #tab_groupes tbody tr
+{
+	position: relative;
+	height:380px;
+	margin-right:5px;
+	padding-top: 8px;
+	text-align: center;
+	border:1px solid black
+
+}
+
 
 #contenu #bloc_principal #bloc_contents #tab_groupes tbody tr td
 {
@@ -1070,14 +1090,14 @@ fieldset table tr:hover td {
 
 #contenu #bloc_principal #bloc_contents #infos_groupes #bloc_images .btn_etat
 {
-	position:absolute;
+	position:relative;
 	top:0px;
 	right: 60px;
 }
 
 #contenu #bloc_principal #bloc_contents #infos_groupes #bloc_images .btn_participer
 {
-	position:absolute;
+	position:relative;
 	top:40px;
 	right: 60px;
 }
@@ -1098,6 +1118,7 @@ fieldset table tr:hover td {
 	padding-top: 5px;
 	padding-left: 40px;
 	padding-right:40px;
+
 }
 
 #contenu #bloc_principal #bloc_contents #infos_groupes .desc_groupe .desc_titre
@@ -1108,6 +1129,7 @@ fieldset table tr:hover td {
 
 #contenu #bloc_principal #bloc_contents #infos_groupes .desc_groupe .desc_txt{
 	padding-top:2px;
+
 }
 
 #contenu #bloc_principal #bloc_contents #infos_groupes .desc_groupe .desc_nombres_user{
@@ -1122,6 +1144,7 @@ fieldset table tr:hover td {
 #contenu #bloc_principal #bloc_contents #tab_groupes tbody tr td #bloc_images 
 {
 	position:relative;
+	width:222px;
 }
 
 
@@ -1153,12 +1176,12 @@ fieldset table tr:hover td {
 	background-color:#7f7f7f;
 	font-size: 0.8em;
 	position:relative;
-	top:-5px;
 	border:1px solid #BCBBB9;
 	text-align: left;
 	padding-top: 5px;
 	padding-left: 10px;
 	padding-right:10px;
+	overflow: hidden;
 }
 
 #contenu #bloc_principal #bloc_contents #tab_groupes tbody tr td .desc_groupe .desc_titre

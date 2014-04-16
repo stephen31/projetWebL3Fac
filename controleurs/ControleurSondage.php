@@ -252,6 +252,7 @@ class ControleurSondage extends Controleur
 
 
 			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
+			$isModerateur=$this->sondage->checkIsModerateur($id);
 
 			$isPrivate = $this->sondage->checkSondagePrivate($id_s); // on check si le sondage est privee
 
@@ -274,7 +275,7 @@ class ControleurSondage extends Controleur
 			if($admin==true)
 			{
 				$this->vue = new VueConnecter("InfosSondage");
-				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda));
+				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
 			}
 			else
 			{
@@ -283,7 +284,7 @@ class ControleurSondage extends Controleur
 					if($isInSondagePrivate == true)
 					{
 						$this->vue = new VueConnecter("InfosSondage");
-						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda));
+						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
 					}
 					else
 						$this->erreur("Vous ne pouvez acceder a cette page");
@@ -293,7 +294,7 @@ class ControleurSondage extends Controleur
 					if($isInGroupe == true)
 					{
 						$this->vue = new VueConnecter("InfosSondage");
-						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda));
+						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
 					}
 					else
 					{
@@ -303,7 +304,7 @@ class ControleurSondage extends Controleur
 				else
 				{
 					$this->vue = new VueConnecter("InfosSondage");
-					$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda));
+					$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
 				}
 				
 			}
@@ -1131,7 +1132,41 @@ class ControleurSondage extends Controleur
 
 
 
+	public function supprimerCommentaire($id_s,$id_c)
+	{
+		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
+		{
+			$this->sondage->setSondageId($id_s);
+			$sondageInfos = $this->sondage->getInfosSondage($id_s); // on recupere les infos du sondage
+			//$groupes=$this->sondage->getGroupe($_SESSION['id']); // on recupere les groupes crees par lutilisateur
+			$id=$_SESSION['id'];
 
+			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
+			$moderateur = $this->sondage->checkIsModerateur($id);
+			if($admin == true || $moderateur == true )
+			{
+				$comInstance = new Commentaire();
+				$comInstance->setSondageId($id_s);
+				$comInstance->setUtId($_SESSION['id']);
+				$resultatDeleteCom = $comInstance->deleteCommentaire($id_c);
+				if(!$resultatDeleteCom)
+				{
+					$this->erreur("Erreur lors de la suppression");
+				}
+				Header('Location: '.ABSOLUTE_ROOT.'/controleurs/ControleurSondage.php?action=afficherInfosSondage&donnee='.$id_s);
+
+			}
+			else
+			{
+				$this->erreur("Vous ne pouvez acceder a cette page");
+			}
+
+		}
+		else
+		{	
+			$this->erreur("Vous ne pouvez acceder a cette page");
+		}
+	}
 
 
 
