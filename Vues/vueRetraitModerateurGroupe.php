@@ -1,4 +1,4 @@
-<?php $this->titre="Retrait Moderateur Sondage"; ?>
+<?php $this->titre="Retrait Moderateur Groupe"; ?>
 <section id="bloc_global">
 	<table id="table_connexion">
 		<tr>
@@ -8,8 +8,7 @@
 				<fieldset>
 					<legend>
 
-
-						RETIRER MODERATEUR DU SONDAGE : <?php echo "".$sondage[0]['titre'];?>
+						RETIRER MODERATEUR DU GROUPE : <?php echo "".$groupe[0]['groupe_nom'];?>
 
 					</legend>
 					<table cellspacing='0'> 
@@ -27,7 +26,7 @@
 							<?php foreach($infosUser as $info): ?>
 							<tr>
 								<td><?php echo $info['ut_pseudo'] ?></td>
-								<td class="deleteUser"><a href="<?php echo ABSOLUTE_ROOT ."/controleurs/ControleurSondage.php?action=validerRetraitModerateur&donnee={$sondage[0]['sondage_id']}&donnee2={$info['ut_id']}"; ?>"><img src="<?php echo ABSOLUTE_ROOT."/public/images/delete.png"?>"></a></td>
+								<td class="deleteUser"><a href="<?php echo ABSOLUTE_ROOT ."/controleurs/ControleurGroupe.php?action=validerRetraitModerateurGroupe&donnee={$groupe[0]['groupe_id']}&donnee2={$info['ut_id']}"; ?>"><img src="<?php echo ABSOLUTE_ROOT."/public/images/delete.png"?>"></a></td>
 							</tr><!-- Table Row -->
 							<?php endforeach; ?>
 						</tbody>
