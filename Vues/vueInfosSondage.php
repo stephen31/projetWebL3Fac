@@ -154,10 +154,13 @@
 							{	
 								echo " Choix de la methode de resolution: 
 								<SELECT id='sondage_typeMethode' name='sondage_typeMethode' required='required'>
+									<OPTION VALUE='-1'></OPTION>
 									<OPTION VALUE='0'>Borda</OPTION>
 									<OPTION VALUE='1'>Condorcet</OPTION>
 									<OPTION VALUE='2'>Vote Alternatif</OPTION>
 								</SELECT>";
+
+								echo '<div id="borda" style="display:none;">';
 								if(sizeof($options))
 								{
 								
@@ -201,6 +204,7 @@
 								{
 									echo '<strong>'.'LA LISTE DES OPTIONS EST VIDE'.'</strong>';
 								}
+								echo '</div>';
 							}
 							?>
 						</div>
@@ -300,3 +304,41 @@
 
 	</table>
 </section>
+
+
+
+<script type="text/javascript">
+//window.onload = function () // Javascript version 
+$(document).ready(function(){
+
+$('#sondage_typeMethode').change(function() {
+	if($(this).val()==-1)
+	{
+		$("#borda").fadeOut(400);
+		$("#concordet").fadeOut(400);
+		$("#alternatif").fadeOut(400);
+	}
+	else if($(this).val()==0)
+	{
+		$("#borda").fadeIn(400);
+		$("#concordet").fadeOut(400);
+		$("#alternatif").fadeOut(400);
+	}
+	else if($(this).val()==1)
+	{
+		$("#borda").fadeOut(400);
+		$("#concordet").fadeIn(400);
+		$("#alternatif").fadeOut(400);
+	}
+	else
+	{
+		$("#borda").fadeOut(400);
+		$("#concordet").fadeOut(400);
+		$("#alternatif").fadeIn(400);
+	}
+});
+
+
+});
+	
+</script>
