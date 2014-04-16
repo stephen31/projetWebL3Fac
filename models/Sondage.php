@@ -677,7 +677,7 @@ public function checkPseudoVotant($pseudo,$id_s)
         $sql ='SELECT * FROM
         sondage 
         natural join utilisateur 
-        WHERE sondage_droit=0 and groupe_id IS NULL ORDER BY sondage_id desc';
+        WHERE sondage_droit=0 and groupe_id IS NULL and date_fin>NOW() ORDER BY sondage_id desc';
 
 
         $sondage_pub=$this->executerRequete($sql,array());
@@ -916,7 +916,7 @@ public function addReponse($id_s,$id_ut,$array)
         return $tab;
     }
 	//voir renvoie l'indice du gagnant s'il en existe sinon renvoie false
-	public function checkGagnant($tab,$sond)
+	public function checkGagnant($tab)
 	{
 		$bool=false;
 
@@ -931,11 +931,11 @@ public function addReponse($id_s,$id_ut,$array)
 					if($tab[$i][$j]>$tab[$j][$i])
 						$cpt++;
 				}
-				if( $cpt == (count($tab)-1))
-				{
-					return $i+1;
-				}
 			}
+			if( $cpt == (count($tab)-1))
+				{
+					return $i;
+				}
 		}
 		return $bool;
 	}

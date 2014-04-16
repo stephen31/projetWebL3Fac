@@ -240,6 +240,7 @@ class ControleurSondage extends Controleur
 	{
 		$resBorda=$this->sondage->borda($id_s);
 		$resCondorcet=$this->sondage->condorcet($id_s);
+		$checkGagnant=$this->sondage->checkGagnant($resCondorcet);
 		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
 		{
 			//$sondageInstance = new Sondage($id_s);
@@ -275,7 +276,7 @@ class ControleurSondage extends Controleur
 			if($admin==true)
 			{
 				$this->vue = new VueConnecter("InfosSondage");
-				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
+				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"condorcet"=>$resCondorcet,"gagnant"=>$checkGagnant,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
 			}
 			else
 			{
@@ -284,7 +285,7 @@ class ControleurSondage extends Controleur
 					if($isInSondagePrivate == true)
 					{
 						$this->vue = new VueConnecter("InfosSondage");
-						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
+						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"condorcet"=>$resCondorcet,"gagnant"=>$checkGagnant,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
 					}
 					else
 						$this->erreur("Vous ne pouvez acceder a cette page");
@@ -294,7 +295,7 @@ class ControleurSondage extends Controleur
 					if($isInGroupe == true)
 					{
 						$this->vue = new VueConnecter("InfosSondage");
-						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
+						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"condorcet"=>$resCondorcet,"gagnant"=>$checkGagnant,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
 					}
 					else
 					{
@@ -304,7 +305,7 @@ class ControleurSondage extends Controleur
 				else
 				{
 					$this->vue = new VueConnecter("InfosSondage");
-					$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
+					$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"condorcet"=>$resCondorcet,"gagnant"=>$checkGagnant,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
 				}
 				
 			}
@@ -321,7 +322,7 @@ class ControleurSondage extends Controleur
 				$allSousCommentaire = $this->sondage->getAllSousCommentaire();
 				$infosGroupe = $groupeInstance->getInfosGroupe($sondageInfos[0]['groupe_id']); // on recupere les infos du groupe du sondage
 				$this->vue = new VueNonConnecter("InfosSondage");
-				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"borda"=>$resBorda));
+				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"borda"=>$resBorda,"condorcet"=>$resCondorcet,"gagnant"=>$checkGagnant));
 			}
 			else
 				$this->erreur("Vous ne pouvez acceder a cette page");

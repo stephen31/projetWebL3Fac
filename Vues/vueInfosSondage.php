@@ -204,6 +204,92 @@
 									echo '<strong>'.'LA LISTE DES OPTIONS EST VIDE'.'</strong>';
 								}
 								echo '</div>';
+								
+								echo '<div id="condorcet" style="display:none;">';
+								if(sizeof($options))
+								{
+									if($gagnant)
+									{
+										$tabOpt=array();
+										$k=0;
+										foreach($options as $option)
+										{
+											$tabOpt[$k]=$option['titre'];
+											$k++;
+										}
+										echo '<br>';
+										echo '<table>';
+
+										echo '<tr>';
+										echo '<td></td>';
+										for($k=0;$k<count($condorcet);$k++)
+										{
+											echo '<td>'.$tabOpt[$k].'</td>';
+										}
+										echo '</tr>';
+										for($i=0; $i<count($condorcet); $i++)
+										{
+											echo '<tr>';
+											echo '<td>';
+											echo $tabOpt[$i];
+											echo '</td>';
+											for($j=0; $j<count($condorcet[$i]);$j++)
+											{
+												echo '<td>';
+												echo $condorcet[$i][$j];
+												echo '</td>';
+											}
+											echo '</tr>';
+										}
+										echo '</table>';
+										//fin affichage
+										echo '<strong>'.'LE GAGNANT EST: '.$tabOpt[$gagnant].'</strong>';
+									}
+									else
+									{
+										echo '<strong>'.'PAS DE GAGNANT DE CONDORCET DONC LE RESULTAT EST DONNE PAR BORDA'.'</strong>';
+										//affichage du resultat de borda
+										$tabOpt=array();
+										$k=0;
+										foreach($options as $option)
+										{
+											$tabOpt[$k]=$option['titre'];
+											$k++;
+										}
+										echo '<br>';
+										echo '<table>';
+
+										echo '<tr>';
+										echo '<td></td>';
+										for($k=0;$k<count($borda);$k++)
+										{
+											echo '<td>'.($k+1).'e</td>';
+										}
+										echo '<td>Points</td>';
+										echo '</tr>';
+										for($i=0; $i<count($borda); $i++)
+										{
+											echo '<tr>';
+											echo '<td>';
+											echo $tabOpt[$i];
+											echo '</td>';
+											for($j=0; $j<count($borda[$i]);$j++)
+											{
+												echo '<td>';
+												echo $borda[$i][$j];
+												echo '</td>';
+											}
+											echo '</tr>';
+										}
+										echo '</table>';
+										//fin affichage
+									}
+								}
+								else
+								{
+									echo '<strong>'.'LA LISTE DES OPTIONS EST VIDE'.'</strong>';								
+								}
+								echo '</div>';
 							}
 							?>
 						</div>
@@ -324,25 +410,25 @@
 		if($(this).val()==-1)
 		{
 			$("#borda").fadeOut(400);
-			$("#concordet").fadeOut(400);
+			$("#condorcet").fadeOut(400);
 			$("#alternatif").fadeOut(400);
 		}
 		else if($(this).val()==0)
 		{
 			$("#borda").fadeIn(400);
-			$("#concordet").fadeOut(400);
+			$("#condorcet").fadeOut(400);
 			$("#alternatif").fadeOut(400);
 		}
 		else if($(this).val()==1)
 		{
 			$("#borda").fadeOut(400);
-			$("#concordet").fadeIn(400);
+			$("#condorcet").fadeIn(400);
 			$("#alternatif").fadeOut(400);
 		}
 		else
 		{
 			$("#borda").fadeOut(400);
-			$("#concordet").fadeOut(400);
+			$("#condorcet").fadeOut(400);
 			$("#alternatif").fadeIn(400);
 		}
 	});
