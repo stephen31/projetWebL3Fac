@@ -242,6 +242,14 @@
 												<?php echo $comment['com_id'] ?>
 											</span>
 											<span class="repondre">Repondre</span>
+											<?php
+												if($isModerateur==true || $isAdmin==true)
+												{
+													echo '<span><a href="../controleurs/ControleurSondage.php?action=supprimerCommentaire&donnee='.$sondage[0]["sondage_id"].'&donnee2='.$comment["com_id"].'">Supprimer</a></span>';
+												}
+
+
+											?>
 										</div>	
 									</div>
 									<p id="comment_content"><?php echo $comment['texte'] ?></p>
@@ -418,7 +426,7 @@ $(".like-button").click(function(){
 		success:function(result){
 			if($.trim(result) != "success")
 			{
- 					status.html(result).fadeIn(400); // on fadeIn les echo renvoyer par la fonction inscription
+ 					alert(result);
  				}
  				else
  				{

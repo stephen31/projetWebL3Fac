@@ -252,6 +252,26 @@ class Commentaire extends Model
             return false;
     }
 
+    // retire un votant a la table votant
+    public function deleteCommentaire($idc)
+    {
+        $sql ='DELETE FROM commentaire WHERE
+        sondage_id =? and
+        com_id=?';
+
+        $res = $this->executerRequete($sql,array($this->sondage_id,$idc));
+        //echo $this->sondage_id,$opt;
+        if($res->rowCount()==1)
+        {
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 
 
 
