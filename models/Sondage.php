@@ -864,7 +864,7 @@ public function addReponse($id_s,$id_ut,$array)
         $sond=new Sondage();
         $sond->constructeurParametre($id_s);
         $opts=$this->getOptions($id_s);
-        $tab=array(array());;
+        $tab=array(array());
         $k=1;
         $id;
 		$mafonction;
@@ -945,7 +945,7 @@ public function addReponse($id_s,$id_ut,$array)
 		$sond=new Sondage();
         $sond->constructeurParametre($id_s);
         $opts=$this->getOptions($id_s);
-        $tab=array(array());;
+        $tab=array(array());
         $k=1;
 		$l;
         $id;
@@ -995,6 +995,116 @@ public function addReponse($id_s,$id_ut,$array)
 			}
 		}
 		return $tab;
+	}
+	
+	public function majoriteabs($id_s,$i,&$tab)
+	{
+		$bool=false;
+		$sql1='select count(distinct vote_id) as nb from reponseanonyme where sondage_id=?';
+		$res1=$this->executerRequete($sql1,array($id_s));
+		$resul1=$res1->fetch();
+		$resultat1=$resul1['nb'];
+		
+		$sql2='select count(distinct ut_id) as nb from reponse where sondage_id=?';
+		$res2=$this->executerRequete($sql2,array($id_s));
+		$resul2=$res2->fetch();
+		$resultat2=$resul2['nb'];
+		
+		$resultat=$resultat1+$resultat2;
+		for($j=0;$j<count($tab);$j++)
+		{
+			//echo $tab[$j][$i].'[';
+			if($tab[$j][$i] >= ($resultat/2)+1)
+				return $j;
+		}
+		//echo 'end';
+		return $bool;
+	}
+	
+	public function modifTab(&$tab,$i)
+	{
+		for($j=0;$j<count($tab);$j++)
+			$tab[$j][$i]=$tab[$j][$i-1];
+		$min1=$tab[0][$i];
+		$indmin1=0;
+		$min2=$tab[0][$i];
+		$indmin2=0;
+		for($j=1;$j<count($tab);$j++)
+		{
+			if($tab[$j][$i]<$min1 && $tab[$j][$i]!=0)
+			{
+				$min1=$tab[$j][$i];
+				$indmin1=$j;
+			}
+		}
+		
+		for($j=1;$j<count($tab);$j++)
+		{
+			if($tab[$j][$i]<$min2 && $tab[$j][$i]>$min1 && $tab[$j][$i]!=0)
+			{
+				$min2=$tab[$j][$i];
+				$indmin2=$j;
+			}
+		}
+		$tab[$indmin1][$i]=0;
+		$tab[$indmin2][$i]=$tab[$indmin2][$i]+$min1;		
+	}
+	public function alternative($id_s,&$tab,&$nbtour)
+	{
+	
+		$tab=array(array());
+		$sond=new Sondage();
+        $sond->constructeurParametre($id_s);
+        $opts=$this->getOptions($id_s);
+        $tab=array(array());
+        $k=1;
+        $id;
+		$mafonction;
+        foreach($opts as $opt)
+        {
+            $mafonction="setOption".$k;
+            $sond->$mafonction($opt['titre']);
+            $k++;
+        }
+		$i=0;
+		$bool=false;
+		for($j=0;$j<sizeof($opts);$j++)
+			{
+				$k=$j+1;
+				$mafonction="getOption".$k;
+				foreach($opts as $opt)
+				{
+					if($opt['titre']===$sond->$mafonction())
+						{
+							$id=$opt['option_id'];
+						}
+				}
+				$sql1='SELECT COUNT(*) as nb FROM reponseanonyme where option_id=? and rang=1';
+				$res1=$this->executerRequete($sql1,array($id));
+				$resul1=$res1->fetch();
+				$resultat1=$resul1['nb'];
+				
+				$sql2='SELECT COUNT(*) as nb FROM reponse where option_id=? and rang=1';
+				$res2=$this->executerRequete($sql2,array($id));
+				$resul2=$res2->fetch();
+				$resultat2=$resul2['nb'];
+				
+				$resultat=$resultat1+$resultat2;
+				$tab[$j][$i]=$resultat;
+			}
+		while($i<sizeof($opts))
+		{
+			$bool=$this->majoriteabs($id_s,$i,$tab);
+			if($bool==false)
+			{
+				$nbtour++;
+				$i=$i+1;
+				$this->modifTab($tab,$i);
+			}
+			else
+				break;
+		}
+		return $bool;
 	}
 
 

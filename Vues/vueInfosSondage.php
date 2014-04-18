@@ -208,7 +208,7 @@
 								echo '<div id="condorcet" style="display:none;">';
 								if(sizeof($options))
 								{
-									if($gagnant)
+									if($gagnant!=false)
 									{
 										$tabOpt=array();
 										$k=0;
@@ -284,6 +284,50 @@
 										echo '</table>';
 										//fin affichage
 									}
+								}
+								else
+								{
+									echo '<strong>'.'LA LISTE DES OPTIONS EST VIDE'.'</strong>';								
+								}
+								echo '</div>';
+								
+								echo '<div id="alternatif" style="display:none;">';
+								if(sizeof($options))
+								{
+									$tabOpt=array();
+									$k=0;
+									foreach($options as $option)
+									{
+										$tabOpt[$k]=$option['titre'];
+										$k++;
+									}
+									echo '<br>';
+										echo '<table>';
+
+										echo '<tr>';
+										echo '<td></td>';
+										for($k=0;$k<$nombreTour;$k++)
+										{
+											echo '<td>'.($k+1).'e tour</td>';
+										}
+										echo '</tr>';
+										for($i=0; $i<count($tableau); $i++)
+										{
+											echo '<tr>';
+											echo '<td>';
+											echo $tabOpt[$i];
+											echo '</td>';
+											for($j=0; $j<count($tableau[$i]);$j++)
+											{
+												echo '<td>';
+												echo $tableau[$i][$j];
+												echo '</td>';
+											}
+											echo '</tr>';
+										}
+										echo '</table>';
+
+									echo '<strong>'.'LE GAGNANT EST: '.$tabOpt[$alternative].'</strong>';
 								}
 								else
 								{
