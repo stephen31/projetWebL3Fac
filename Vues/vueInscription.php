@@ -296,8 +296,8 @@
 						}
 						else
 						{
-							//$("#table_connexion").replaceWith('<p>Vous venez d\'effectuer votre inscription sur Sondagax<br/>Un lien d\'activation de votre vient de vous etre envoyer</p>');
-							$("#bloc_global").replaceWith('<?php $this->titre = "Inscription Terminee"; ?><div id="bloc_contents"><p style="text-align:center;color:red"> Vous venez d\'effectuer votre inscription sur Sondagax<br/>Un lien d\'activation de votre vient de vous etre envoyer</p></div>');
+							alert("Inscription relalisée avec succes, un lien d'activation vient de vous être envoyer ");
+							window.location.href = "../index.php";
 						}
 					},
 					error:function(result)

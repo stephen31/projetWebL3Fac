@@ -8,7 +8,6 @@
 				<span class="sondage_auteur"> creeé par <span class="nom_auteur"><?php echo $sondage['ut_nom'] ." ". $sondage['ut_prenom']; ?></span></span>
 				<span class="sondage_heure"> le : <span style="color:#309eda;font-weight:bold"><?php echo $sondage['sondage_date_create']; ?></span></span>
 				<span class="sondage_heure">fini le : <span style="color:red;font-weight:bold"><?php echo $sondage['date_fin']; ?></span></span>
-				<div class="sondage_nb_coms">12 commantaires</div>
 			</div>
 			<div class="desc_sondage">
 				<?php echo $sondage['texte_desc']; ?>

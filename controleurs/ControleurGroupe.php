@@ -35,6 +35,7 @@ class ControleurGroupe extends Controleur
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -52,6 +53,7 @@ class ControleurGroupe extends Controleur
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -69,6 +71,7 @@ class ControleurGroupe extends Controleur
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -84,6 +87,7 @@ class ControleurGroupe extends Controleur
 		else
 		{
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -112,11 +116,12 @@ class ControleurGroupe extends Controleur
 			if(($isInGroupe==false && $isInListeAttente==false) || ($isInGroupe==false && $isInListeAttente==true))
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 
 			}
 
 			$isModerateur;
-			$idAdmin;
+			$isAdmin;
 
 			if($admin==true)
 			{
@@ -136,6 +141,8 @@ class ControleurGroupe extends Controleur
 				$isModerateur=0;
 			}
 
+			echo $isModerateur;
+			echo $isAdmin;
 			/*print_r($infosGroupe);
 			print_r($sondageInfos);
 			print_r($allComments);
@@ -158,7 +165,10 @@ class ControleurGroupe extends Controleur
 							"isModerateur"=>$isModerateur,"isAdmin"=>$isAdmin,"createur"=>$createurGroupe,"haveModerateur"=>$haveModerateur));
 					}
 					else
+					{
 						$this->erreur("Vous ne pouvez acceder a cette page");
+						exit();
+					}
 				}
 				else
 				{
@@ -173,6 +183,7 @@ class ControleurGroupe extends Controleur
 		else
 		{
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -265,10 +276,12 @@ class ControleurGroupe extends Controleur
 			if(($admin==false || $isModerateur==false) and ($isPrivate ==true || $isPublicInscrit == true))
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 			else if ($isInGroupe == true)
 			{
 				$this->erreur("Vous etes déja inscrit a ce groupe");
+				exit();
 			}
 			else{
 				$res = $this->groupe->addInscrit2($id);
@@ -279,6 +292,7 @@ class ControleurGroupe extends Controleur
 		else
 		{
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -301,25 +315,30 @@ class ControleurGroupe extends Controleur
 			if(($admin==false || $isModerateur==false) and ($isPrivate ==true || $isPublic == true))
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 			else if ($isInGroupe == true)
 			{
 				$this->erreur("Vous etes deja dans ce groupe");
+				exit();
 			}
 			else if ($isInListeAttente== true)
 			{
 				$this->erreur("Vous avez fait une demande pour integrer ce groupe ! Le moderateur ou l'admin valideront votre demande");
+				exit();
 			}
 			else
 			{
 				$res = $this->groupe->addInscrit($id);
 				$this->erreur("Vous Venez de faire une demande pour integrer le groupe");
+				exit();
 			}
 
 		}
 		else
 		{
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -340,10 +359,12 @@ class ControleurGroupe extends Controleur
 			if(($admin==false || $isModerateur==false) and ($isPrivate ==true || $isPublic == true))
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 			else if ($isInGroupe == true)
 			{
 				$this->erreur("cette utiliateur est déja inscrit a ce groupe");
+				exit();
 			}
 			else
 			{
@@ -356,6 +377,7 @@ class ControleurGroupe extends Controleur
 				else
 				{
 					$this->erreur("Erreur lors de la valdiation de la demande");
+					exit();
 				}
 
 			}
@@ -364,6 +386,7 @@ class ControleurGroupe extends Controleur
 		else
 		{
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -385,25 +408,30 @@ class ControleurGroupe extends Controleur
 			if(($admin==false || $isModerateur==false) and ($isPublicInscrit==true || $isPublic == true || $isPrivate==true ))
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 			else if ($isInGroupe == true)
 			{
 				$this->erreur("cette utiliateur est déja inscrit a ce groupe");
+				exit();
 			}
 			else if($admin==true && $isPrivate == true)
 			{
 				$res = $this->groupe->addInscrit2($idU);
+				exit();
 			}
 
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 
 		}
 		else
 		{
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -456,6 +484,7 @@ class ControleurGroupe extends Controleur
 				if(!$resultatDeleteInscrit)
 				{
 					$this->erreur("Erreur lors de la suppression de l'inscrit");
+					exit();
 				}
 				Header('Location: '.ABSOLUTE_ROOT.'/controleurs/ControleurGroupe.php?action=afficherInfosGroupe&donnee='.$id_g);
 				exit();
@@ -463,12 +492,14 @@ class ControleurGroupe extends Controleur
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 
 		}
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -490,12 +521,14 @@ class ControleurGroupe extends Controleur
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 
 		}
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -520,12 +553,14 @@ class ControleurGroupe extends Controleur
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 
 		}
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -673,6 +708,7 @@ class ControleurGroupe extends Controleur
 				if(!$resultatDeleteModerateur)
 				{
 					$this->erreur("Erreur lors de la suppression");
+					exit();
 				}
 				Header('Location: '.ABSOLUTE_ROOT.'/controleurs/ControleurGroupe.php?action=afficherRetraitModerateurGroupe&donnee='.$id_g);
 
@@ -680,12 +716,14 @@ class ControleurGroupe extends Controleur
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 
 		}
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -708,12 +746,14 @@ class ControleurGroupe extends Controleur
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 
 		}
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -864,6 +904,7 @@ class ControleurGroupe extends Controleur
 			{
 			//echo "KEKE PRO";
 				$instance->erreur("Cette page n'existe pas");
+				exit();
 			}
 		}
 		?>

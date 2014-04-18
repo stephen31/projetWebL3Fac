@@ -871,7 +871,13 @@ input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
 	vertical-align: top;
 } 
 
-
+#error
+{
+	color:red;
+	position: absolute;
+	top:100px;
+	left:50px;
+}
 fieldset > legend {
 	font-size: 16px;
 	font-weight: 700;
@@ -1254,6 +1260,15 @@ fieldset table tr:hover td {
 	width: 560px;
 	padding-left:40px;
 	margin-top: 20px;
+}
+
+.gagnant
+{
+	position:absolute;
+	left:0;
+	margin-left: 120px;
+	color:red;
+	text-align: center;
 }
 
 .comment-controls span 

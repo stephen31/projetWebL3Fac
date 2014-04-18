@@ -18,7 +18,7 @@
 							<div class="control-group">
 								<label class="control-label" for="newpseudo">
 
-
+									
 									Pseudo:
 
 
@@ -294,7 +294,7 @@
 						else
 						{
 							//$("#table_connexion").replaceWith('<p>Vous venez d\'effectuer votre inscription sur Sondagax<br/>Un lien d\'activation de votre vient de vous etre envoyer</p>');
-							$("#bloc_global").replaceWith('<?php $this->titre = "Inscription Terminee"; ?><div id="bloc_contents"><p style="text-align:center;color:red">Modification effectuées avec succes</p></div>');
+							alert('modification effectuée');
 							window.location.href = "../index.php";
 						}
 					},

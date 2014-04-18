@@ -243,7 +243,7 @@
 										}
 										echo '</table>';
 										//fin affichage
-										echo '<strong>'.'LE GAGNANT EST: '.$tabOpt[$gagnant].'</strong>';
+										echo '<strong class="gagnant">'.'LE GAGNANT EST: '.$tabOpt[$gagnant].'</strong>';
 									}
 									else
 									{
@@ -327,7 +327,7 @@
 										}
 										echo '</table>';
 
-									echo '<strong>'.'LE GAGNANT EST: '.$tabOpt[$alternative].'</strong>';
+									echo '<strong class="gagnant">'.'LE GAGNANT EST: '.$tabOpt[$alternative].'</strong>';
 								}
 								else
 								{

@@ -55,6 +55,7 @@ class ControleurSondage extends Controleur
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -71,6 +72,7 @@ class ControleurSondage extends Controleur
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -95,12 +97,14 @@ class ControleurSondage extends Controleur
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 
 		}
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -125,12 +129,14 @@ class ControleurSondage extends Controleur
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 
 		}
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -156,12 +162,14 @@ class ControleurSondage extends Controleur
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 
 		}
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -190,12 +198,14 @@ class ControleurSondage extends Controleur
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();;
 			}
 
 		}
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -224,12 +234,14 @@ class ControleurSondage extends Controleur
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 
 		}
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -291,7 +303,11 @@ class ControleurSondage extends Controleur
 						$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"condorcet"=>$resCondorcet,"gagnant"=>$checkGagnant,"alternative"=>$resAlternative,"tableau"=>$tab,"nombreTour"=>$nbtour,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
 					}
 					else
+					{
 						$this->erreur("Vous ne pouvez acceder a cette page");
+						exit();
+					}
+
 				}
 				else if($isSondageGroupe == true)
 				{
@@ -303,12 +319,13 @@ class ControleurSondage extends Controleur
 					else
 					{
 						$this->erreur("Vous ne pouvez acceder a cette page");
+						exit();
 					}
 				}
 				else
 				{
 					$this->vue = new VueConnecter("InfosSondage");
-					$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"condorcet"=>$resCondorcet,"gagnant"=>$checkGagnant,"alternative"=>$resAlternative,"tableau"=>$tab,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
+					$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"condorcet"=>$resCondorcet,"gagnant"=>$checkGagnant,"alternative"=>$resAlternative,"tableau"=>$tab,"nombreTour"=>$nbtour,"isAdmin"=>$admin,"isModerateur"=>$isModerateur));
 				}
 				
 			}
@@ -328,7 +345,11 @@ class ControleurSondage extends Controleur
 				$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"borda"=>$resBorda,"condorcet"=>$resCondorcet,"gagnant"=>$checkGagnant,"alternative"=>$resAlternative,"tableau"=>$tab,"nombreTour"=>$nbtour));
 			}
 			else
+			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
+			}
+
 		}
 	}
 	//fonction qui verifie si un pseudo peut etre ajouter a un sondage prive
@@ -567,12 +588,14 @@ class ControleurSondage extends Controleur
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 
 		}
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -601,12 +624,14 @@ class ControleurSondage extends Controleur
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 
 		}
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -633,6 +658,7 @@ class ControleurSondage extends Controleur
 					else
 					{
 						$this->erreur("Vous n'avez pas le droit de participer");
+						exit();
 					}
 				}
 
@@ -651,6 +677,7 @@ class ControleurSondage extends Controleur
 					else
 					{
 						$this->erreur("Vous n'avez pas le droit de participer");
+						exit();
 					}		
 				}
 				else if(!($this->sondage->checkDejaVoter($_SESSION['id'],$id_s)) && !isset($_COOKIE['sondage_id']))
@@ -664,11 +691,13 @@ class ControleurSondage extends Controleur
 				else //pas le droit d'acceder au vote
 				{
 					$this->erreur("Vous n'avez pas le droit de participer");
+					exit();
 				}
 			}
 			else 
 			{
 				$this->erreur("cette page n'existe pas");
+				exit();
 			}
 
 		}
@@ -679,6 +708,7 @@ class ControleurSondage extends Controleur
 				if($this->sondage->checkSondageGroupe($id_s) || $this->sondage->checkSondagePrivate($id_s) || !$this->sondage->checkPublic($id_s))
 				{
 					$this->erreur("Vous ne pouvez pas participer");
+					exit();
 				}
 				else if(!isset($_COOKIE[$id_s]))
 				{
@@ -692,11 +722,13 @@ class ControleurSondage extends Controleur
 				else 
 				{
 					$this->erreur("Vous avez deja participer");
+					exit();
 				}
 			}
 			else 
 			{
 				$this->erreur("cettte page n'existe pas");
+				exit();
 			}
 		}
 	}
@@ -715,6 +747,7 @@ class ControleurSondage extends Controleur
 		else
 		{
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -745,6 +778,7 @@ class ControleurSondage extends Controleur
 			else //pas le droit d'acceder de voter
 			{
 				$this->erreur("Vous n'avez pas le droit de participer");
+				exit();
 			}
 			
 		}
@@ -773,6 +807,7 @@ class ControleurSondage extends Controleur
 			else
 			{
 				$this->erreur("Vous avez deja voté");
+				exit();
 			}
 		}
 
@@ -965,6 +1000,7 @@ class ControleurSondage extends Controleur
 		else
 		{
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -1016,6 +1052,7 @@ class ControleurSondage extends Controleur
 		else
 		{
 			$this->erreur("cette page n'existe pas");
+			exit();
 		}
 	}
 
@@ -1066,6 +1103,7 @@ class ControleurSondage extends Controleur
 		else
 		{
 			$this->erreur("cette page n'existe pas");
+			exit();
 		}
 	}
 
@@ -1130,6 +1168,7 @@ class ControleurSondage extends Controleur
 		else
 		{
 			$this->erreur("cette page n'existe pas");
+			exit();
 		}
 	}
 
@@ -1163,12 +1202,14 @@ class ControleurSondage extends Controleur
 			else
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
+				exit();
 			}
 
 		}
 		else
 		{	
 			$this->erreur("Vous ne pouvez acceder a cette page");
+			exit();
 		}
 	}
 
@@ -1211,6 +1252,7 @@ class ControleurSondage extends Controleur
 			{
 			//echo "KEKE PRO";
 				$instance->erreur("Cette page n'existe pas");
+				exit();
 			}
 		}
 		?>

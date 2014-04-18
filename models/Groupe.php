@@ -475,6 +475,8 @@ class Groupe extends Model
     // retire un inscrit a la table inscrit
     public function deleteInscrit($idU)
     {
+        $this->beginTransaction();
+
         $sql ='DELETE FROM inscrit WHERE
         groupe_id =? and
         ut_id=?';
@@ -483,11 +485,30 @@ class Groupe extends Model
         //echo $this->sondage_id,$opt;
         if($res->rowCount()==1)
         {
+            $res1 = $this->checkModerateur($idU);
+            $resT;
 
+            if($res1 == 1)
+            {
+                $resT=$this->deleteModerateur($idU);
+                if($resT==true)
+                {
+                    $this->commit();
+                    return true;
+                }
+                else
+                {
+                    $this->rollback();
+                    return false;
+                }
+            }
+
+            $this->commit();
             return true;
         }
         else
         {
+            $this->rollback();
             return false;
         }
     }

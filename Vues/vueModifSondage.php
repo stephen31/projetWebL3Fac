@@ -270,15 +270,6 @@ $(document).ready(function(){
 			}
 			else // on traite la creation du sondage avec AJAX
 			{
-				/*alert(nom);
-				alert(desc);
-				alert(type);
-				alert(typeMethode);
-				alert(visi);
-				alert(datefin);
-				alert(option1);
-				alert(option2);*/
-
 				$.ajax({
 					type:"post",
 					url:$(this).attr('action'),

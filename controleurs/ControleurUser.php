@@ -3,6 +3,8 @@
 require_once "Controleur.php";
 require_once ROOT.'/models/Utilisateur.php';
 require_once ROOT.'/models/Sondage.php';
+require_once ROOT.'/models/Groupe.php';
+require_once ROOT.'/models/Commentaire.php';
 require ROOT . '/public/lib/PHPMailer/class.phpmailer.php';
 
 
@@ -94,7 +96,8 @@ class ControleurUser extends Controleur
 		{
 			$this->vue = new VueConnecter("ModifInfos");
 			$utilisateur = new Utilisateur($_SESSION['id']);
-			$this->vue->generer(array("utilisateur"=>$utilisateur));
+			$infouser = $utilisateur->getInfosUser();
+			$this->vue->generer(array("utilisateur"=>$infouser));
 		}
 		else
 		{

@@ -273,6 +273,14 @@ class Commentaire extends Model
     }
 
 
+    /* Renvoie le nombre de commentaire*/
+
+    public function getNbCommentaire($id_s)
+    {
+        $sql='SELECT count(com_id) FROM commentaire WHERE sondage_id=?';
+        $tuple = $this->executerRequete($sql,array($id_s));
+        return $tuple->fetchAll();
+    }
 
 
 
