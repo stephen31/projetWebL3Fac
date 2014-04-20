@@ -720,7 +720,7 @@ public function getSondagesFinisConnect($id_ut)
 {
     $sql ='SELECT DISTINCT  s.sondage_date_create,s.sondage_id, s.ut_id, s.titre, s.texte_desc, s.sondage_droit, s.date_fin, s.type_methode, s.visibilite, s.groupe_id, u.ut_nom, u.ut_prenom
     FROM sondage s natural join utilisateur u
-    WHERE s.date_fin < NOW() AND ((s.ut_id=? OR s.sondage_droit=0 OR s.sondage_droit=1 
+    WHERE s.date_fin < NOW() AND ((s.ut_id=? OR (s.sondage_droit=0 AND s.groupe_id IS NULL) OR (s.sondage_droit=1 AND s.groupe_id IS NULL) 
         OR EXISTS(SELECT * FROM votant v WHERE s.sondage_id=v.sondage_id AND v.ut_id=? ) 
         OR EXISTS(SELECT * FROM groupe g WHERE s.groupe_id=g.groupe_id AND(g.ut_id=? OR EXISTS( SELECT * FROM inscrit i WHERE g.groupe_id=i.groupe_id AND i.ut_id=?))) ) 
 AND NOT EXISTS ( SELECT * FROM reponse r WHERE r.ut_id=? AND r.sondage_id=s.sondage_id)) 
