@@ -343,6 +343,43 @@
 		</tr>
 		<tr>
 			<td>
+				<div class="form registration">
+				<?php $date= date("Y-m-d");?>
+				<?php if($sondage[0]['visibilite']==2 || ($sondage[0]['visibilite']==1 and $sondage[0]['date_fin']<=$date )): ?>
+				<fieldset>
+					<legend>
+						<br/>
+						<br/>
+						<br/>
+
+						REPONSES
+					</legend>
+							<?php foreach ($ensIdUt as $id_ut): ?>
+							<?php $cpt=""; $cpt=$cpt.$id_ut['ut_nom']." ".$id_ut['ut_nom'].":";?>
+									<?php foreach ($reponses as $reponse): ?>
+										<?php if($id_ut['ut_id']==$reponse['ut_id']):?>
+										<?php $cpt=$cpt." ".$reponse['titre']." rang:".$reponse['rang']."|" ?>	
+										<?php endif; ?>
+									<?php endforeach; ?>
+									<?php echo $cpt."<br>"?>
+							<?php endforeach; ?>
+							
+							<?php foreach ($ensIdVote as $vote): ?>
+							<?php $cpt=""; $cpt=$cpt."Anonyme:";?>
+									<?php foreach ($reponsesanonymes as $reponseanonyme): ?>
+										<?php if($vote['vote_id']==$reponseanonyme['vote_id']):?>
+										<?php $cpt=$cpt." ".$reponseanonyme['titre']." rang:".$reponseanonyme['rang']."|" ?>	
+										<?php endif; ?>
+									<?php endforeach; ?>
+									<?php echo $cpt."<br>"?>
+							<?php endforeach; ?>
+				</div>
+				</fieldset>
+				<?php endif; ?>
+			</td>
+		</tr>
+		<tr>
+			<td>
 
 				<fieldset>
 					<legend>

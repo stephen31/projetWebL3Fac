@@ -609,12 +609,12 @@ public function checkPseudoVotant($pseudo,$id_s)
     }
 
 
-    public function checkDroitAccesSondagePrivee($id_u)
+     public function checkDroitAccesSondagePrivee($id_u)
     {
-        $sql='SELECT * FROM sondage,utilisateur
-        WHERE sondage.ut_id=? and sondage.sondage_id=?';
+        $sql='SELECT * FROM sondage,utilisateur,votant
+        WHERE sondage.ut_id=? and sondage.sondage_id=? OR EXISTS(SELECT * FROM votant v WHERE v.sondage_id=? AND v.ut_id=? )';
 
-        $res = $this->executerRequete($sql,array($id_u,$this->sondage_id));
+        $res = $this->executerRequete($sql,array($id_u,$this->sondage_id,$this->sondage_id,$id_u));
         if(count($res->fetchAll())>0)
         {
             return true;
@@ -1107,7 +1107,37 @@ public function addReponse($id_s,$id_ut,$array)
 		return $bool;
 	}
 
-
+	//fonction qui renvoie id des utilisateurs ayant voté
+	public function getIdVote($id_s)
+	{
+		$sql='select distinct(u.ut_id),u.ut_nom,u.ut_prenom from reponse r,utilisateur u where r.sondage_id=43 and u.ut_id=r.ut_id';
+		$res=$this->executerRequete($sql,array($id_s));
+		return ($res->fetchAll());
+	}
+	
+	
+	//fonction qui renvoie l'id des votes
+	
+	public function getVoteNonConnect($id_s)
+	{
+		$sql='select distinct(vote_id) from reponseanonyme where sondage_id=?';
+		$res=$this->executerRequete($sql,array($id_s));
+		return ($res->fetchAll());
+	}
+	public function getReponses($id_s)
+	{
+		$sql='select u.ut_id,u.ut_nom,u.ut_prenom,o.titre,r.rang from reponse r,utilisateur u,`option` o where r.ut_id=u.ut_id and r.option_id=o.option_id and r.sondage_id=?';
+		
+		$res=$this->executerRequete($sql,array($id_s));
+		return ($res->fetchAll());
+	}
+	public function getReponsesAnnonymes($id_s)
+	{
+		$sql='select r.option_id,o.titre,r.vote_id,r.rang from reponseanonyme r,`option` o where r.option_id=o.option_id and r.sondage_id=?';
+		
+		$res=$this->executerRequete($sql,array($id_s));
+		return ($res->fetchAll());
+	}
 
 }
 
