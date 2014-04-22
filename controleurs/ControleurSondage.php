@@ -1145,7 +1145,7 @@ class ControleurSondage extends Controleur
 				$res3 = $comInstance->checkDejaSoutenu($_SESSION['id']) ;
 				if($res3==true)
 				{
-					echo " Vous avez deja voter";
+					echo " Vous avez deja aimé";
 					exit();
 				}
 			// on verifie si le commentaire contient du texte
