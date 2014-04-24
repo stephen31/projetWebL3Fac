@@ -192,7 +192,7 @@ class Sondage extends Model
     {
         $this->sondage_droit=$sd;
     }
-    public function seDateFin($df)
+    public function setDateFin($df)
     {
         $this->date_fin=$df;
     }
