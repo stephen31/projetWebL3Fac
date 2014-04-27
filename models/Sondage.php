@@ -1110,7 +1110,7 @@ public function addReponse($id_s,$id_ut,$array)
 	//fonction qui renvoie id des utilisateurs ayant voté
 	public function getIdVote($id_s)
 	{
-		$sql='select distinct(u.ut_id),u.ut_nom,u.ut_prenom from reponse r,utilisateur u where r.sondage_id=43 and u.ut_id=r.ut_id';
+		$sql='select distinct(u.ut_id),u.ut_nom,u.ut_prenom from reponse r,utilisateur u where r.sondage_id=? and u.ut_id=r.ut_id';
 		$res=$this->executerRequete($sql,array($id_s));
 		return ($res->fetchAll());
 	}
