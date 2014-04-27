@@ -141,8 +141,6 @@ class ControleurGroupe extends Controleur
 				$isModerateur=0;
 			}
 
-			echo $isModerateur;
-			echo $isAdmin;
 			/*print_r($infosGroupe);
 			print_r($sondageInfos);
 			print_r($allComments);
