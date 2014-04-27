@@ -478,7 +478,6 @@ public function deleteModerateur($idM)
     //check si deja dans la liste des personnes pouvant voter au sondage // retourne vrai si present dans votant , faux sinon
 public function checkPseudoVotant($pseudo,$id_s)
 {
-        //echo $this->getSondageId();
     $sql="SELECT u.ut_id FROM votant v,utilisateur u WHERE u.ut_id=v.ut_id and u.ut_pseudo=? and v.sondage_id=?";
     $tuple = $this->executerRequete($sql,array($pseudo,$id_s));
 

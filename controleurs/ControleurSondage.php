@@ -154,7 +154,7 @@ class ControleurSondage extends Controleur
 			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
 			$isPrivate = $this->sondage->checkSondagePrivate($id_s);
 			$moderateur = $this->sondage->checkIsModerateur($id);
-			if(($admin == true && $isPrivate == true) && ($moderateur == true && $isPrivate == true)) 
+			if(($admin == true && $isPrivate == true) || ($moderateur == true && $isPrivate == true)) 
 			{
 				$this->vue = new VueConnecter("AjoutVotant");
 				$this->vue->generer(array("sondage"=>$sondageInfos));
@@ -190,7 +190,7 @@ class ControleurSondage extends Controleur
 			$infosUser = $this->sondage->getUserInfosSondagePrive($id_s);
 			//print_r($infosUser);
 			$moderateur = $this->sondage->checkIsModerateur($id);
-			if(($admin == true && $isPrivate == true) && ($moderateur == true && $isPrivate == true)) 
+			if(($admin == true && $isPrivate == true) || ($moderateur == true && $isPrivate == true)) 
 			{
 				$this->vue = new VueConnecter("RetraitVotant");
 				$this->vue->generer(array("sondage"=>$sondageInfos,"infosUser"=>$infosUser));
@@ -375,7 +375,7 @@ class ControleurSondage extends Controleur
 			//print_r($user->getPseudo());
 			if($user->is_dispo_pseudo($user->getPseudo()) == false) // si le pseudo est dispo 
 			{
-				if($this->sondage->checkPseudoVotant($user->getPseudo(),$id_s)==true)
+				if($this->sondage->checkPseudoVotant($user->getPseudo(),$id_s)==false)
 				{
 					//echo $this->sondage->getSondageId();
 					echo "dispo";
@@ -520,7 +520,7 @@ class ControleurSondage extends Controleur
 			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
 			$isPrivate = $this->sondage->checkSondagePrivate($id_s);
 			$moderateur = $this->sondage->checkIsModerateur($id);
-			if(($admin == true && $isPrivate == true) && ($moderateur == true && $isPrivate == true)) 
+			if(($admin == true && $isPrivate == true) || ($moderateur == true && $isPrivate == true)) 
 			{
 				$user = new Utilisateur();
 				$user->POSTToVar($_POST);// on echappe le code html des possible donnees recues et on initialise les attributs de l'instance avec les donnees!!
@@ -586,7 +586,7 @@ class ControleurSondage extends Controleur
 			$admin =$this->sondage->checkSondageAdmin($id_s,$id); // on check s'il est admin du sondage (c.a.d) que c'est lui qui l'a cree
 			$isPrivate = $this->sondage->checkSondagePrivate($id_s); // on verifie si le sondage est privé 
 			$moderateur = $this->sondage->checkIsModerateur($id);
-			if(($admin == true && $isPrivate == true) && ($moderateur == true && $isPrivate == true)) 
+			if(($admin == true && $isPrivate == true) || ($moderateur == true && $isPrivate == true)) 
 			{
 				$user = new Utilisateur($ut_id);
 				//echo $ut_id,$this->sondage->getSondageId();

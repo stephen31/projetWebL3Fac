@@ -288,7 +288,7 @@
 					},
 					success:function(result){
 						if($.trim(result) != "successsuccessUpdateSuccess"){ //success renvoyer par verif pseudo et verifemail et de la confirmation de la mise a jour
-							status.html("Respectez ce qui est ecrit en rouge !!!").fadeIn(400); // on fadeIn les echo renvoyer par la fonction inscription
+							status.html(" Respectez ce qui est ecrit en rouge SVP!!!!").fadeIn(400); // on fadeIn les echo renvoyer par la fonction inscription
 							$("#registerbtn").attr('value','VALIDER');
 						}
 						else

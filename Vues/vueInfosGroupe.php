@@ -10,7 +10,7 @@
 
 
 						INFORMATION GROUPE <?php echo "".$groupe[0]['groupe_nom'];?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
+						<div id="blocControlGroupe">
 						<?php 
 							if($isAdmin == 1)
 							{
@@ -24,6 +24,7 @@
 								{
 									echo 
 									'<a href="../controleurs/ControleurGroupe.php?action=afficherRetraitModerateurGroupe&donnee='.$groupe[0]["groupe_id"].'">
+
 									<div class="btn_modif">
 										retrait<br/>Moderateur
 									</div>
@@ -43,7 +44,7 @@
 
 
 						?>
-
+						</div>
 					</legend>
 					<div class="form registration">
 						<div class="control-group">
