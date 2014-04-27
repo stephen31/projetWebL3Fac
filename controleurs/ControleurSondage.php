@@ -336,7 +336,7 @@ class ControleurSondage extends Controleur
 				{
 					$this->vue = new VueConnecter("InfosSondage");
 
-					$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"condorcet"=>$resCondorcet,"gagnant"=>$checkGagnant,"alternative"=>$resAlternative,"tableau"=>$tab,"isAdmin"=>$admin,"isModerateur"=>$isModerateur,"ensIdUt"=>$IdutDejaVote,"ensIdVote"=>$id_vote,"reponses"=>$ensReponses,"reponsesanonymes"=>$ensReponsesAnonymes));
+					$this->vue->generer(array("sondage"=>$sondageInfos,"groupe"=>$infosGroupe,"options"=>$optionsGroupe,"comments"=>$allComments,"Souscomments"=>$allSousCommentaire,"borda"=>$resBorda,"condorcet"=>$resCondorcet,"gagnant"=>$checkGagnant,"alternative"=>$resAlternative,"tableau"=>$tab,"nombreTour"=>$nbtour,"isAdmin"=>$admin,"isModerateur"=>$isModerateur,"ensIdUt"=>$IdutDejaVote,"ensIdVote"=>$id_vote,"reponses"=>$ensReponses,"reponsesanonymes"=>$ensReponsesAnonymes));
 
 				}
 				

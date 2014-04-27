@@ -1,5 +1,4 @@
 <?php
-//session_start();
 require_once "Controleur.php";
 require_once ROOT.'/models/Utilisateur.php';
 require_once ROOT.'/models/Sondage.php';
@@ -27,7 +26,6 @@ class ControleurUser extends Controleur
 		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
 		{
 			$id=$_SESSION['id'];
-			//echo $id;
 			$sondages=$sondage->getSondagesUserConnectAccueuil($id);
 			$this->vue = new VueConnecter("Accueil");
 			$this->vue->generer(array("sondages"=>$sondages));
@@ -37,6 +35,22 @@ class ControleurUser extends Controleur
 			$sondages=$sondage->getSondagesPublic();
 			$this->vue = new VueNonConnecter("Accueil");
 			$this->vue->generer(array("sondages"=>$sondages));
+		}
+	}
+
+	public function afficherContact()
+	{
+		$sondage=new Sondage();
+		
+		if(isset($_SESSION['pseudo']) && isset($_SESSION['email'])) // si les variables de sessions sont definit on affiche la vue connecter
+		{
+			$this->vue = new VueConnecter("Contact");
+			$this->vue->generer(array());
+		}
+		else
+		{
+			$this->vue = new VueNonConnecter("Contact");
+			$this->vue->generer(array());
 		}
 	}
 
@@ -256,15 +270,13 @@ class ControleurUser extends Controleur
 	public function validerInscription()
 	{
 		$this->utilisateur->POSTToVar($_POST);
-		//extract($_POST);
-		//print_r($_POST);
+
 		if(empty($this->utilisateur->getNom())||empty($this->utilisateur->getPrenom())||empty($this->utilisateur->getPseudo())||empty($this->utilisateur->getPass1())||empty($this->utilisateur->getPass2()))
 		{
 			echo " tous les champs n'ont pas été rempli<br />";
 			exit();
 		}
 
-		//$this->utilisateur->getPseudo() = preg_replace('#[^a-z0-9]#i', '', $this->utilisateur->getPseudo()); // on filtre le pseudo s'il contient des caractere tel que #
 		$valid= $this->utilisateur->is_valid_inscription($this->utilisateur->getPseudo(),$this->utilisateur->getEmail());
 		$validpseudo =$valid["pseudocheck"];
 		$validemail =$valid["emailcheck"];
@@ -516,24 +528,18 @@ class ControleurUser extends Controleur
 
 	public function miseAJourUtilisateur()
 	{
-		//echo "sauceman";
 		$this->utilisateur->POSTToVar($_POST);
-		//echo $this->utilisateur->getNom(),$this->utilisateur->getPrenom(),$this->utilisateur->getPseudo(),$this->utilisateur->getEmail(),$this->utilisateur->getPass1(),$this->utilisateur->getPass2();
 		if(empty($this->utilisateur->getNom())||empty($this->utilisateur->getPrenom())||empty($this->utilisateur->getPseudo())||empty($this->utilisateur->getEmail())||empty($this->utilisateur->getPass1())||empty($this->utilisateur->getPass2()))
 		{
 			echo " tous les champs n'ont pas été rempli<br />";
 		}
 
-		//$this->utilisateur->getPseudo() = preg_replace('#[^a-z0-9]#i', '', $this->utilisateur->getPseudo()); // on filtre le pseudo s'il contient des caractere tel que #
 		$valid= $this->utilisateur->is_valid_inscription($this->utilisateur->getPseudo(),$this->utilisateur->getEmail());
 		$validpseudo =$valid["pseudocheck"];
 		$validemail =$valid["emailcheck"];
 
-		// on reverifie le formulaire
 		$return1=$this->verifPseudo();
 		$return2=$this->verifEmail();
-
-		//echo $validpseudo,$validemail,$return1,$return2;
 
 		if($validpseudo>0 && $return1 != 4) // on teste si le pseudo est dispo et qu'il n'est pa identique a celui actuel
 		{
@@ -680,13 +686,12 @@ function generateRandomPassword() {
 		}
 		else
 		{
-			//echo "KEKE PRO";
 			$instance->erreur("Cette page n'existe pas");
 		}
 
 
 	}
-	?>
+?>
 
 
 

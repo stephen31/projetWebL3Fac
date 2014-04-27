@@ -119,7 +119,7 @@
 						<div class="control-group">
 							Liste des options:
 							<?php foreach($options as $option): ?>
-								<span>,<?php echo $option['titre']; ?></span>
+								<span><?php echo $option['titre']; ?>,</span>
 							<?php endforeach; ?>
 						</div>
 					</div>
@@ -302,30 +302,30 @@
 										$k++;
 									}
 									echo '<br>';
-										echo '<table>';
+									echo '<table>';
 
+									echo '<tr>';
+									echo '<td></td>';
+									for($k=0;$k<$nombreTour;$k++)
+									{
+										echo '<td>'.($k+1).'e tour</td>';
+									}
+									echo '</tr>';
+									for($i=0; $i<count($tableau); $i++)
+									{
 										echo '<tr>';
-										echo '<td></td>';
-										for($k=0;$k<$nombreTour;$k++)
+										echo '<td>';
+										echo $tabOpt[$i];
+										echo '</td>';
+										for($j=0; $j<count($tableau[$i]);$j++)
 										{
-											echo '<td>'.($k+1).'e tour</td>';
+											echo '<td>';
+											echo $tableau[$i][$j];
+											echo '</td>';
 										}
 										echo '</tr>';
-										for($i=0; $i<count($tableau); $i++)
-										{
-											echo '<tr>';
-											echo '<td>';
-											echo $tabOpt[$i];
-											echo '</td>';
-											for($j=0; $j<count($tableau[$i]);$j++)
-											{
-												echo '<td>';
-												echo $tableau[$i][$j];
-												echo '</td>';
-											}
-											echo '</tr>';
-										}
-										echo '</table>';
+									}
+									echo '</table>';
 
 									echo '<strong class="gagnant">'.'LE GAGNANT EST: '.$tabOpt[$alternative].'</strong>';
 								}
@@ -344,37 +344,43 @@
 		<tr>
 			<td>
 				<div class="form registration">
-				<?php $date= date("Y-m-d");?>
-				<?php if($sondage[0]['visibilite']==2 || ($sondage[0]['visibilite']==1 and $sondage[0]['date_fin']<=$date )): ?>
-				<fieldset>
-					<legend>
-						<br/>
-						<br/>
-						<br/>
+					<?php $date= date("Y-m-d");?>
+					<?php if($sondage[0]['visibilite']==2 || ($sondage[0]['visibilite']==1 and $sondage[0]['date_fin']<=$date )): ?>
+						<fieldset>
+							<legend>
+								<br/>
+								<br/>
+								<br/>
 
-						REPONSES
-					</legend>
-							<?php foreach ($ensIdUt as $id_ut): ?>
-							<?php $cpt=""; $cpt=$cpt.$id_ut['ut_nom']." ".$id_ut['ut_nom'].":";?>
-									<?php foreach ($reponses as $reponse): ?>
-										<?php if($id_ut['ut_id']==$reponse['ut_id']):?>
-										<?php $cpt=$cpt." ".$reponse['titre']." rang:".$reponse['rang']."|" ?>	
-										<?php endif; ?>
-									<?php endforeach; ?>
-									<?php echo $cpt."<br>"?>
-							<?php endforeach; ?>
-							
-							<?php foreach ($ensIdVote as $vote): ?>
-							<?php $cpt=""; $cpt=$cpt."Anonyme:";?>
-									<?php foreach ($reponsesanonymes as $reponseanonyme): ?>
-										<?php if($vote['vote_id']==$reponseanonyme['vote_id']):?>
-										<?php $cpt=$cpt." ".$reponseanonyme['titre']." rang:".$reponseanonyme['rang']."|" ?>	
-										<?php endif; ?>
-									<?php endforeach; ?>
-									<?php echo $cpt."<br>"?>
-							<?php endforeach; ?>
-				</div>
-				</fieldset>
+								REPONSES
+							</legend>
+							<div id="tabReponses">
+								<?php foreach ($ensIdUt as $id_ut): ?>
+									<div class="repUt">
+										<?php $cpt="<span class='pseudoRep'>"; $cpt=$cpt.$id_ut['ut_nom']." ".$id_ut['ut_prenom'].":</span>";?>
+										<?php foreach ($reponses as $reponse): ?>
+											<?php if($id_ut['ut_id']==$reponse['ut_id']):?>
+												<?php $cpt=$cpt."<span class='opt'> ".$reponse['titre']." </span><span class='rang'>rang:".$reponse['rang']."</span>|" ?>	
+											<?php endif; ?>
+										<?php endforeach; ?>
+										<?php echo $cpt."<br>"?>
+									</div>
+								<?php endforeach; ?>
+
+								<?php foreach ($ensIdVote as $vote): ?>
+									<div class="repAn">
+										<?php $cpt="<span class='pseudoRepAn'>"; $cpt=$cpt."Anonyme:</span>";?>
+										<?php foreach ($reponsesanonymes as $reponseanonyme): ?>
+											<?php if($vote['vote_id']==$reponseanonyme['vote_id']):?>
+												<?php $cpt=$cpt."<span class='opt'> ".$reponseanonyme['titre']." </span>rang:".$reponseanonyme['rang']."|" ?>	
+											<?php endif; ?>
+										<?php endforeach; ?>
+										<?php echo $cpt."<br>"?>
+									</div>
+								<?php endforeach; ?>
+							</div>
+						</div>
+					</fieldset>
 				<?php endif; ?>
 			</td>
 		</tr>
@@ -398,7 +404,7 @@
 											<a href="#"><?php echo $comment['ut_pseudo'] ?></a>
 										</div>
 										<div class="date">
-											<span class="live-date">il y a <?php echo $comment['commentaire_date'] ?></span>
+											<span class="live-date">le :  <?php echo $comment['commentaire_date'] ?></span>
 										</div>
 										<div class="comment-controls">
 											<span href="<?php echo ABSOLUTE_ROOT . "/controleurs/ControleurSondage.php?action=validerAjoutSoutien&donnee={$sondage[0]['sondage_id']}"; ?>" class="like-button">
@@ -409,10 +415,10 @@
 											</span>
 											<span class="repondre">Repondre</span>
 											<?php
-												if($isModerateur==true || $isAdmin==true)
-												{
-													echo '<span><a href="../controleurs/ControleurSondage.php?action=supprimerCommentaire&donnee='.$sondage[0]["sondage_id"].'&donnee2='.$comment["com_id"].'">Supprimer</a></span>';
-												}
+											if($isModerateur==true || $isAdmin==true)
+											{
+												echo '<span><a href="../controleurs/ControleurSondage.php?action=supprimerCommentaire&donnee='.$sondage[0]["sondage_id"].'&donnee2='.$comment["com_id"].'">Supprimer</a></span>';
+											}
 
 
 											?>
@@ -441,7 +447,7 @@
 														<a href="#"><?php echo $Souscomment['ut_pseudo'] ?></a>
 													</div>
 													<div class="date">
-														<span class="live-date">il ya <?php echo $Souscomment['commentaire_date'] ?></span>
+														<span class="live-date">le :  <?php echo $Souscomment['commentaire_date'] ?></span>
 													</div>
 													<div class="comment-controls">
 														<span href="<?php echo ABSOLUTE_ROOT . "/controleurs/ControleurSondage.php?action=validerAjoutSoutien&donnee={$sondage[0]['sondage_id']}"; ?>" class="like-button">
@@ -487,32 +493,32 @@
  $(document).ready(function(){
 
 
- 		$('#sondage_typeMethode').change(function() {
-		if($(this).val()==-1)
-		{
-			$("#borda").fadeOut(400);
-			$("#condorcet").fadeOut(400);
-			$("#alternatif").fadeOut(400);
-		}
-		else if($(this).val()==0)
-		{
-			$("#borda").fadeIn(400);
-			$("#condorcet").fadeOut(400);
-			$("#alternatif").fadeOut(400);
-		}
-		else if($(this).val()==1)
-		{
-			$("#borda").fadeOut(400);
-			$("#condorcet").fadeIn(400);
-			$("#alternatif").fadeOut(400);
-		}
-		else
-		{
-			$("#borda").fadeOut(400);
-			$("#condorcet").fadeOut(400);
-			$("#alternatif").fadeIn(400);
-		}
-	});
+ 	$('#sondage_typeMethode').change(function() {
+ 		if($(this).val()==-1)
+ 		{
+ 			$("#borda").fadeOut(400);
+ 			$("#condorcet").fadeOut(400);
+ 			$("#alternatif").fadeOut(400);
+ 		}
+ 		else if($(this).val()==0)
+ 		{
+ 			$("#borda").fadeIn(400);
+ 			$("#condorcet").fadeOut(400);
+ 			$("#alternatif").fadeOut(400);
+ 		}
+ 		else if($(this).val()==1)
+ 		{
+ 			$("#borda").fadeOut(400);
+ 			$("#condorcet").fadeIn(400);
+ 			$("#alternatif").fadeOut(400);
+ 		}
+ 		else
+ 		{
+ 			$("#borda").fadeOut(400);
+ 			$("#condorcet").fadeOut(400);
+ 			$("#alternatif").fadeIn(400);
+ 		}
+ 	});
 
  	$('.repondre').click(function()
  	{
@@ -592,10 +598,10 @@ $(".like-button").click(function(){
 		success:function(result){
 			if($.trim(result) != "success")
 			{
- 					alert(result);
- 				}
- 				else
- 				{
+				alert(result);
+			}
+			else
+			{
 
  					//$("#table_connexion").replaceWith('<p>Vous venez d\'effectuer votre inscription sur Sondagax<br/>Un lien d\'activation de votre vient de vous etre envoyer</p>');
  					$($this).find(".nbS").hide().html(parseInt(nbSoutient)+1).fadeIn(400);

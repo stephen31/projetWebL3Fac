@@ -1049,8 +1049,48 @@ fieldset table tr:hover td {
 	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);	
 }
 
+#tabReponses
+{
+	height:200px;
+	overflow: scroll;
+	margin-top: 40px;
+}
 
+.repUt
+{
+	display:block;
+	margin-top:6px;
+	margin-bottom: 6px;
+}
+.repAn
+{
+	display:block;
+	margin-top:4px;
+	margin-bottom: 4px;
+}
+.pseudoRep
+{
+	font-weight: bold;
+	color:blue;
+	margin-right:10px;
+}
+.pseudoRepAn
+{
+	font-weight: bold;
+	color:orange;
+	margin-right:10px;
+}
+.opt
+{
+	border:1px solid grey;
+	margin-right: 5px;
+	margin-left:10px;
+}
 
+.rang
+{
+	margin-right:5px;
+}
 /* PAGE GROUPES */
 
 

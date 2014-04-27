@@ -42,7 +42,7 @@
 							<a href="<?php echo ABSOLUTE_ROOT . '/controleurs/ControleurGroupe.php?action=afficherGroupes'; ?>" class="btn">Groupes</a>
 						</li>
 						<li>
-							<a href="<?php echo ABSOLUTE_ROOT . '/contact.php'; ?>" class="btn">Contact</a>
+							<a href="<?php echo ABSOLUTE_ROOT . '/controleurs/ControleurUser.php?action=afficherContact'; ?>" class="btn">Contact</a>
 						</li>
 					</ul>
 				</nav>
