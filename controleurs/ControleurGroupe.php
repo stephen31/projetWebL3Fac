@@ -101,7 +101,7 @@ class ControleurGroupe extends Controleur
 			$id=$_SESSION['id'];
 			$admin =$this->groupe->checkGroupeAdmin($id); // on check s'il est admin du groupe (c.a.d) que c'est lui qui l'a cree
 			$isPrivate = $this->groupe->checkGroupePrivate(); // on check si le sondage est privee		
-			$isInGroupePrivate = $this->groupe->isInGroupePrivate($_SESSION['pseudo']);
+			$isInGroupePrivate = $this->groupe->isInGroupePrivate($_SESSION['id']);
 			$infosSondage = $this->groupe->getAllSondagesGroupe();
 			$createurGroupe = $this->groupe->getCreateurGroupe();
 			$haveModerateur = $this->groupe->checkHaveModerateur();
@@ -113,7 +113,7 @@ class ControleurGroupe extends Controleur
 			$isInGroupe =$this->groupe->checkIsInGroupe($id);
 			$isInListeAttente =$this->groupe->checkIsInGroupeAttente($id);
 
-			if(($isInGroupe==false && $isInListeAttente==false) || ($isInGroupe==false && $isInListeAttente==true))
+			if(($isInGroupe==false && $isInListeAttente==false && $isPrivate==false) || ($isInGroupe==false && $isInListeAttente==true && $isPrivate==false))
 			{
 				$this->erreur("Vous ne pouvez acceder a cette page");
 				exit();
@@ -154,6 +154,8 @@ class ControleurGroupe extends Controleur
 			}
 			else
 			{
+				/*ECHO $isPrivate;
+				echo $isInGroupePrivate;*/
 				if($isPrivate == true)
 				{
 					if($isInGroupePrivate == true)
@@ -161,6 +163,7 @@ class ControleurGroupe extends Controleur
 						$this->vue = new VueConnecter("InfosGroupe");
 						$this->vue->generer(array("groupe"=>$groupeInfos,"sondages"=>$infosSondage,"UserInscrit"=>$UserInscrit,"UserDemande"=>$UserDemande,
 							"isModerateur"=>$isModerateur,"isAdmin"=>$isAdmin,"createur"=>$createurGroupe,"haveModerateur"=>$haveModerateur));
+						exit();
 					}
 					else
 					{

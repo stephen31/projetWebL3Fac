@@ -1,7 +1,9 @@
 <?php $this->titre="Mes Sondages Cres" ;?>
 <div id="bloc_contents">
 	<h3> MES SONDAGES CRES </h3>
+	<?php $previousValue = null;?>
 	<?php foreach($sondages as $sondage): ?>
+		<?php if($sondage['sondage_id'] != $previousValue): ?>
 		<div class="sondage">
 			<h4><a href="<?php echo ABSOLUTE_ROOT . "/controleurs/ControleurSondage.php?action=afficherInfosSondage&donnee={$sondage['sondage_id']}"; ?>">
 				<?php echo $sondage['titre']; ?></a>
@@ -79,6 +81,9 @@
 				} 
 				?>
 			</div>
+
 		</div>
+		<?php $previousValue = $sondage['sondage_id'];?>
+		<?php endif;?>
 	<?php endforeach; ?>
 </div>
