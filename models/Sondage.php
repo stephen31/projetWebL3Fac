@@ -693,12 +693,12 @@ public function checkPseudoVotant($pseudo,$id_s)
         WHERE s.date_fin >= NOW() AND s.ut_id<>? AND (((s.sondage_droit=0 AND s.groupe_id IS NULL) OR (s.sondage_droit=1 AND s.groupe_id IS NULL)
             OR EXISTS(SELECT * FROM votant v WHERE s.sondage_id=v.sondage_id AND v.ut_id=? ) 
             OR EXISTS(SELECT * FROM groupe g WHERE s.groupe_id=g.groupe_id AND(g.ut_id=? OR EXISTS( SELECT * FROM inscrit i WHERE g.groupe_id=i.groupe_id AND i.ut_id=?))) ) 
-AND NOT EXISTS ( SELECT * FROM reponse r WHERE r.ut_id=? AND r.sondage_id=s.sondage_id))
-ORDER BY s.sondage_date_create desc';
+		AND NOT EXISTS ( SELECT * FROM reponse r WHERE r.ut_id=? AND r.sondage_id=s.sondage_id))
+		ORDER BY s.sondage_date_create desc';
 
-$sondage_pub=$this->executerRequete($sql,array($id_ut,$id_ut,$id_ut,$id_ut,$id_ut));
-return ($sondage_pub->fetchAll());
-}
+		$sondage_pub=$this->executerRequete($sql,array($id_ut,$id_ut,$id_ut,$id_ut,$id_ut));
+		return ($sondage_pub->fetchAll());
+	 }
     // pour n'afficher que 5 sondage sur la page d'accueil dont la date de fin n'est pas depassée
 public function getSondagesUserConnectAccueuil($id_ut)
 {
@@ -933,7 +933,7 @@ public function addReponse($id_s,$id_ut,$array)
 			}
 			if( $cpt == (count($tab)-1))
 				{
-					return $i;
+					return $i+1;
 				}
 		}
 		return $bool;
@@ -999,6 +999,7 @@ public function addReponse($id_s,$id_ut,$array)
 	public function majoriteabs($id_s,$i,&$tab)
 	{
 		$bool=false;
+		$opts=$this->getOptions($id_s);
 		$sql1='select count(distinct vote_id) as nb from reponseanonyme where sondage_id=?';
 		$res1=$this->executerRequete($sql1,array($id_s));
 		$resul1=$res1->fetch();
@@ -1010,11 +1011,13 @@ public function addReponse($id_s,$id_ut,$array)
 		$resultat2=$resul2['nb'];
 		
 		$resultat=$resultat1+$resultat2;
-		for($j=0;$j<count($tab);$j++)
+		for($j=0;$j<sizeof($opts);$j++)
 		{
-			//echo $tab[$j][$i].'[';
+			//echo $tab[$j][$i].'|';
 			if($tab[$j][$i] >= ($resultat/2)+1)
-				return $j;
+			{
+				return $j+1;
+			}
 		}
 		//echo 'end';
 		return $bool;
@@ -1094,16 +1097,18 @@ public function addReponse($id_s,$id_ut,$array)
 		while($i<sizeof($opts))
 		{
 			$bool=$this->majoriteabs($id_s,$i,$tab);
-			if($bool==false)
+			if(!$bool)
 			{
 				$nbtour++;
 				$i=$i+1;
 				$this->modifTab($tab,$i);
 			}
 			else
+			{
 				break;
+			}
 		}
-		return $bool;
+		return $bool-1;
 	}
 
 	//fonction qui renvoie id des utilisateurs ayant voté

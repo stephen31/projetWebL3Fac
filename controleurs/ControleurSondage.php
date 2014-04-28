@@ -734,13 +734,13 @@ class ControleurSondage extends Controleur
 				}
 				else 
 				{
-					$this->erreur("Vous avez deja participer");
+					$this->erreur("Vous avez deja participé");
 					exit();
 				}
 			}
 			else 
 			{
-				$this->erreur("cettte page n'existe pas");
+				$this->erreur("cette page n'existe pas");
 				exit();
 			}
 		}
